@@ -158,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/17/%E4%B8%BB%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/21/%E7%BF%BB%E5%A2%99/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -172,7 +172,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/17/%E4%B8%BB%E9%A2%98/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/09/21/%E7%BF%BB%E5%A2%99/" class="post-title-link" itemprop="url">未命名</a>
         </h2>
 
         <div class="post-meta">
@@ -181,16 +181,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-09-17 23:14:01" itemprop="dateCreated datePublished" datetime="2020-09-17T23:14:01+08:00">2020-09-17</time>
+              <time title="创建时间：2020-09-21 23:19:59 / 修改时间：23:59:22" itemprop="dateCreated datePublished" datetime="2020-09-21T23:19:59+08:00">2020-09-21</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-19 15:23:42" itemprop="dateModified" datetime="2020-09-19T15:23:42+08:00">2020-09-19</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -198,7 +192,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>620</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -217,36 +211,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>​                                                                          </p>
-<h3 id="Next主题配置"><a href="#Next主题配置" class="headerlink" title="Next主题配置"></a>Next主题配置</h3><h4 id="1，下载地址"><a href="#1，下载地址" class="headerlink" title="1，下载地址"></a>1，下载地址</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
-
-<p>下载主题zip包并下载，解压放在博客根目录/themes 重命名文件夹为next。</p>
-<p>或          博客根目录打开命令行，输入命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next themes&#x2F;next</span><br></pre></td></tr></table></figure>
-
-<h4 id="2，修改语言"><a href="#2，修改语言" class="headerlink" title="2，修改语言"></a>2，修改语言</h4><p>修改博客配置文件下的language项为zh-CN</p>
-<p>看一下主题文件夹内的languange文件夹中中文的配置文件叫什么名字，Next主题有些版本的叫zh-Hans </p>
-<h4 id="3，修改菜单及创建分类页"><a href="#3，修改菜单及创建分类页" class="headerlink" title="3，修改菜单及创建分类页"></a>3，修改菜单及创建分类页</h4><p>修改主题配置文件下的menu项，把tags项前面的#去掉就行。</p>
-<p>接着在输入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
-
-<p>新建出标签页。</p>
-<p>同样，在开启分类页的时候要输入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
-
-<p>来新建出分类页。</p>
-<h4 id="4，修改主题风格"><a href="#4，修改主题风格" class="headerlink" title="4，修改主题风格"></a>4，修改主题风格</h4><p>Next自带四种主题风格，可以在主题配置文件搜索Scheme项，将需要的风格前的#去掉，只开启一个风格。</p>
-<h4 id="5，设置头像"><a href="#5，设置头像" class="headerlink" title="5，设置头像"></a>5，设置头像</h4><p>在线图片设置：编辑主题配置文件，修改字段avatar中的url值，设置成头像的链接地址，可以设置成在线的图片地址。</p>
-<p>本地设置：放置在source/images目录下，设置url为：/images/图片名</p>
-<p>这个rounded项可以设置头像为圆形，设置为ture后会自动根据头像的尺寸将头像变化为圆形或者椭圆。</p>
-<p>设置opacity的值控制头像的透明度，值为0-1</p>
-<h4 id="6，实现全站及文章字数统计及阅读时长"><a href="#6，实现全站及文章字数统计及阅读时长" class="headerlink" title="6，实现全站及文章字数统计及阅读时长"></a>6，实现全站及文章字数统计及阅读时长</h4><p>跟目录命令行运行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-symbols-count-time --svae</span><br></pre></td></tr></table></figure>
-
-<p>博客配置文件底部添加如下内容，保存。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">    symbols : true</span><br><span class="line">    time:true</span><br><span class="line">    total_symbols:true</span><br><span class="line">    total_time:true</span><br></pre></td></tr></table></figure>
-
-<h3 id="v2rayN的使用"><a href="#v2rayN的使用" class="headerlink" title="v2rayN的使用"></a>v2rayN的使用</h3><h4 id="1，v2ray免费节点订阅地址"><a href="#1，v2ray免费节点订阅地址" class="headerlink" title="1，v2ray免费节点订阅地址"></a>1，v2ray免费节点订阅地址</h4><p>(直接复制链接地址粘贴到订阅地址里即可)</p>
+          <h3 id="v2rayN的使用"><a href="#v2rayN的使用" class="headerlink" title="v2rayN的使用"></a>v2rayN的使用</h3><h4 id="1，v2ray免费节点订阅地址"><a href="#1，v2ray免费节点订阅地址" class="headerlink" title="1，v2ray免费节点订阅地址"></a>1，v2ray免费节点订阅地址</h4><p>(直接复制链接地址粘贴到订阅地址里即可)</p>
 <p>二爷：<a target="_blank" rel="noopener" href="https://jiang.netlify.com/">https://jiang.netlify.com/</a></p>
 <p>油脸博士: <a target="_blank" rel="noopener" href="https://youlianboshi.netlify.com/">https://youlianboshi.netlify.com/</a></p>
 <p>kitsunebi：<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/eycorsican/rule-sets/master/kitsunebi_sub">https://raw.githubusercontent.com/eycorsican/rule-sets/master/kitsunebi_sub</a></p>
@@ -260,6 +225,128 @@
 <h4 id="4，在谷歌浏览器访问"><a href="#4，在谷歌浏览器访问" class="headerlink" title="4，在谷歌浏览器访问"></a>4，在谷歌浏览器访问</h4><p><a target="_blank" rel="noopener" href="https://www.youtube.com/%EF%BC%8C%E8%AE%BF%E9%97%AE%E6%88%90%E5%8A%9F%E5%8D%B3%E4%B8%BA%E7%BF%BB%E5%A2%99%E6%88%90%E5%8A%9F%E3%80%82">https://www.youtube.com/，访问成功即为翻墙成功。</a></p>
 <h4 id="5，若页面无法正常显示"><a href="#5，若页面无法正常显示" class="headerlink" title="5，若页面无法正常显示"></a>5，若页面无法正常显示</h4><p>提示“failed to handler mux client connection”的错误，可能是因为服务器与自己电脑时间不对应。</p>
 <p>点击控制面板–&gt;时钟和区域–&gt;时间和日期–&gt;Internet时间–&gt;更改设置–&gt;立即更新。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/17/%E4%B8%BB%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="yoyo">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoyo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/17/%E4%B8%BB%E9%A2%98/" class="post-title-link" itemprop="url">Next主题配置</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-17 23:14:01" itemprop="dateCreated datePublished" datetime="2020-09-17T23:14:01+08:00">2020-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-22 13:00:02" itemprop="dateModified" datetime="2020-09-22T13:00:02+08:00">2020-09-22</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>​                                                                       </p>
+<h4 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
+
+<p>下载主题zip包并下载，解压放在博客根目录/themes 重命名文件夹为next。</p>
+<p>或          博客根目录打开命令行，输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next themes&#x2F;next</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改语言"><a href="#修改语言" class="headerlink" title="修改语言"></a>修改语言</h4><p>修改博客配置文件下的language项为zh-CN</p>
+<p>看一下主题文件夹内的languange文件夹中中文的配置文件叫什么名字，Next主题有些版本的叫zh-Hans </p>
+<h4 id="修改菜单及创建分类页"><a href="#修改菜单及创建分类页" class="headerlink" title="修改菜单及创建分类页"></a>修改菜单及创建分类页</h4><p>修改主题配置文件下的menu项，把tags项前面的#去掉就行。</p>
+<p>接着在输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
+
+<p>新建出标签页。</p>
+<p>同样，在开启分类页的时候要输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
+
+<p>来新建出分类页。</p>
+<h4 id="修改主题风格"><a href="#修改主题风格" class="headerlink" title="修改主题风格"></a>修改主题风格</h4><p>Next自带四种主题风格，可以在主题配置文件搜索Scheme项，将需要的风格前的#去掉，只开启一个风格。</p>
+<h4 id="设置头像"><a href="#设置头像" class="headerlink" title="设置头像"></a>设置头像</h4><p>在线图片设置：编辑主题配置文件，修改字段avatar中的url值，设置成头像的链接地址，可以设置成在线的图片地址。</p>
+<p>本地设置：放置在source/images目录下，设置url为：/images/图片名</p>
+<p>这个rounded项可以设置头像为圆形，设置为ture后会自动根据头像的尺寸将头像变化为圆形或者椭圆。</p>
+<p>设置opacity的值控制头像的透明度，值为0-1</p>
+<h4 id="实现全站及文章字数统计及阅读时长"><a href="#实现全站及文章字数统计及阅读时长" class="headerlink" title="实现全站及文章字数统计及阅读时长"></a>实现全站及文章字数统计及阅读时长</h4><p>跟目录命令行运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-symbols-count-time --svae</span><br></pre></td></tr></table></figure>
+
+<p>博客配置文件底部添加如下内容，保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">    symbols : true</span><br><span class="line">    time:true</span><br><span class="line">    total_symbols:true</span><br><span class="line">    total_time:true</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改github域名"><a href="#修改github域名" class="headerlink" title="修改github域名"></a>修改github域名</h4><h5 id="1，域名解析到github"><a href="#1，域名解析到github" class="headerlink" title="1，域名解析到github"></a>1，域名解析到github</h5><p>（1）先添加一个CNAME记录类型，主机记录写@，后面记录值写上你的<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a><br>（2）再添加一个CNAME记录类型，主机记录写www，后面记录值也是<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a></p>
+<p>这样别人用www和不用www都能访问你的网站（其实www的方式，会先解析成<a target="_blank" rel="noopener" href="http://xxxx.github.io,然后根据cname再变成http//xxx.com%EF%BC%8C%E5%8D%B3%E4%B8%AD%E9%97%B4%E6%98%AF%E7%BB%8F%E8%BF%87%E4%B8%80%E6%AC%A1%E8%BD%AC%E6%8D%A2%E7%9A%84%EF%BC%89">http://xxxx.github.io，然后根据CNAME再变成http://xxx.com，即中间是经过一次转换的）</a></p>
+<p>也可以使用A记录，A记录是直接解析到空间的ip地址。</p>
+<p>CNAME是解析到别名。</p>
+<h5 id="2，ping域名"><a href="#2，ping域名" class="headerlink" title="2，ping域名"></a>2，ping域名</h5><p>ping是对网络目标进行检测的基本命令工具。</p>
+<p>但域名和IP并不是一一对应的关系</p>
+<p>ping域名，可以得到一个IP为目标</p>
+<p>但是ping ip 得到的是整个服务器 并不是某一个域名<img src=""><img src="F:\信安\sql\386.png" alt="386"></p>
+<p>直接ping域名没有成功，ping www.+域名成功了。</p>
+<p>判断域名有没有解析成功，在DOS系统界面里输入ping+空格+网址。</p>
+<p>可以看到目标解析IP地址和相应的网址响应时间，即说明解析成功。</p>
+<h5 id="3，github修改文件"><a href="#3，github修改文件" class="headerlink" title="3，github修改文件"></a>3，github修改文件</h5><p>修改CNAME文件</p>
+<p><img src="F:\信安\sql\388.png"></p>
+<p>再修改custom domain为自己的域名</p>
+<p><img src="F:\信安\sql\387.png"></p>
 
       
     </div>
@@ -293,7 +380,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/12/blog/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/09/12/blog/" class="post-title-link" itemprop="url">搭建博客</a>
         </h2>
 
         <div class="post-meta">
@@ -310,7 +397,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-17 18:39:41" itemprop="dateModified" datetime="2020-09-17T18:39:41+08:00">2020-09-17</time>
+                <time title="修改时间：2020-09-21 23:59:30" itemprop="dateModified" datetime="2020-09-21T23:59:30+08:00">2020-09-21</time>
               </span>
 
           <br>
@@ -338,7 +425,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h3><h4 id="一，github注册"><a href="#一，github注册" class="headerlink" title="一，github注册"></a>一，github注册</h4><p><strong>使用github来托管项目文件</strong></p>
+          <h4 id="一，github注册"><a href="#一，github注册" class="headerlink" title="一，github注册"></a>一，github注册</h4><p><strong>使用github来托管项目文件</strong></p>
 <p><strong>仓库：即你的项目，你想在github上开源一个项目，就必须要新建一个Repository。</strong></p>
 <p><strong>创建项目</strong>    项目名：用户名.github.io</p>
 <p>搭建步骤：创建个人站点–新建仓库（注:仓库名必须是【用户名.github.io】）</p>
@@ -490,90 +577,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/12/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="yoyo">
-      <meta itemprop="description" content="Hello!">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yoyo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/12/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-12 20:37:59" itemprop="dateCreated datePublished" datetime="2020-09-12T20:37:59+08:00">2020-09-12</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>367</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
 
@@ -694,7 +697,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4 分钟</span>
+    <span title="站点阅读时长">5 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
