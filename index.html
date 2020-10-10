@@ -18,20 +18,20 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoyo2yong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"www.yoyo2tong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Hello!">
 <meta property="og:type" content="website">
 <meta property="og:title" content="yoyo">
-<meta property="og:url" content="http://yoyo2yong.xyz/index.html">
+<meta property="og:url" content="http://www.yoyo2tong.xyz/index.html">
 <meta property="og:site_name" content="yoyo">
 <meta property="og:description" content="Hello!">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="yoyo">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoyo2yong.xyz/">
+<link rel="canonical" href="http://www.yoyo2tong.xyz/">
 
 
 <script id="page-configurations">
@@ -75,6 +75,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="yoyo" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -164,7 +165,201 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoyo2yong.xyz/2020/10/03/guosai/">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="yoyo">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoyo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/09/xiuleihua/" class="post-title-link" itemprop="url">反序列化漏洞</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-09 17:58:04" itemprop="dateCreated datePublished" datetime="2020-10-09T17:58:04+08:00">2020-10-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-10 13:44:58" itemprop="dateModified" datetime="2020-10-10T13:44:58+08:00">2020-10-10</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p><strong>把对象转换为字节序列的过程称为对象的序列化</strong>；<strong>把字节序列恢复为对象的过程称为对象的反序列化</strong>。</p>
+<p>对象的序列化主要有两种用途：</p>
+<p>1） 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；</p>
+<p>2） 在网络上传送对象的字节序列。</p>
+<p>序列化和反序列化本身并不存在问题。但当输入的反序列化的数据可被用户控制，那么攻击者即可通过构造恶意输入，让反序列化产生非预期的对象，在此过程中执行构造的任意代码。</p>
+<p>常见的php系列化和反系列化方式主要有：serialize，unserialize；json_encode，json_decode</p>
+<h4 id="漏洞触发条件"><a href="#漏洞触发条件" class="headerlink" title="漏洞触发条件"></a>漏洞触发条件</h4><p>unserialize函数，json_decode函数变量可控，php文件中存在可利用的类，类中有魔术方法</p>
+<p>php将所有以 __ (两个下划线) 开头的类方法保留为魔术方法</p>
+<p><strong>常用的魔术方法</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__construct()  当一个对象创建时自动调用</span><br><span class="line">__wakeup()     使用unserialse()函数时会自动调用</span><br><span class="line">__destruct()   当对象被销毁时自动调用（php绝大多数情况下会自动调用销毁对象）</span><br><span class="line">__sleep()      使用serialize()函数是触发</span><br><span class="line">__toString()  把类当作字符串使用时触发，返回值需要为字符串</span><br><span class="line">    (例如一个类A,实例化之后为$a,<span class="keyword">echo</span> $a, 或者$a与字符串对比，这时就会触发该函数)</span><br></pre></td></tr></table></figure>
+
+<h4 id="不同属性序列化"><a href="#不同属性序列化" class="headerlink" title="不同属性序列化"></a>不同属性序列化</h4><p>Public属性序列化后格式:成员名</p>
+<p>Private属性序列化后格式:%00类名%00成员名</p>
+<p>Protected属性序列化后的格式:%00*%00成员名</p>
+<p>new类名()：调用这个类的构造函数初始化对象，类名（）这个是构造函数，用来初始化。</p>
+<p>在进行类的序列化时 私有属性 会加空白字符类名空白字符；保护属性会加 * （注意空白字符不是空格，空格的16进制为20，空白字符的16进制为00）</p>
+<p><img src="D:\blog\source_posts\2.png"></p>
+<h4 id="在类外定义类中的值"><a href="#在类外定义类中的值" class="headerlink" title="在类外定义类中的值"></a>在类外定义类中的值</h4><p><strong>重新定义类中属性的值</strong></p>
+<p>通过new 类名 （”对类中的变量重新定义“）</p>
+<p><img src="D:\blog\source_posts\3.png"></p>
+<p><strong>在类的外面定义类中的函数并调用方法</strong></p>
+<p><img src="D:\blog\source_posts\5.png"></p>
+<h3 id="wakeup绕过"><a href="#wakeup绕过" class="headerlink" title="wakeup绕过"></a>wakeup绕过</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__wakeup 使用unserialse（）函数时会自动调用</span><br><span class="line">但是序列化字符串中表示对象属性个数的值大于 真实的属性个数时会跳过__wakeup的执行</span><br><span class="line"></span><br><span class="line">CVE-2016-7124(绕过__wakeup)</span><br><span class="line">漏洞影响版本：</span><br><span class="line">PHP5 &lt; 5.6.25</span><br><span class="line">PHP7 &lt; 7.0.10</span><br></pre></td></tr></table></figure>
+
+<h3 id="OC绕过"><a href="#OC绕过" class="headerlink" title="OC绕过"></a>OC绕过</h3><p>OC绕过是通过修改O：数字（C：数字）来绕过正则匹配</p>
+<p>例：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/[oc]:\d+:/&#x27;</span>,$var))&#123;</span><br><span class="line"><span class="keyword">die</span>(<span class="string">&#x27;error&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//若传入的参数有匹配了这个正则，则输入错误。</span></span><br><span class="line">我们可以使用+号当做空格绕过，即O:+<span class="number">4</span>即可绕过。</span><br></pre></td></tr></table></figure>
+
+<h3 id="私有属性绕过"><a href="#私有属性绕过" class="headerlink" title="私有属性绕过"></a>私有属性绕过</h3><p>私有属性产生的一些不可见字符如果被过滤掉，可以用字符编码来替换这些字符进行绕过。</p>
+<p>例：当反序列化中的属性是private时，在url输入payload时空字符不能被识别，会导致反序列化失败，我们可以在把空字符转换为16进制绕过。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\00就是16进制的chr（0）</span><br><span class="line">%00是chr(0)的url编码</span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\信安\sql\437.png"></p>
+<p>可以看出，当属性为private时，例：private $address = ‘shanxi’,反序列化的时候应为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00test\00address</span><br></pre></td></tr></table></figure>
+
+<p>当属性为protected时，例：protected $age = ‘21’,反序列化的时候应该为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00*\00age</span><br></pre></td></tr></table></figure>
+
+<p>当代码过滤一些字符的时候<code>例如：flag</code>，我们可以通过16进制编码把flag编写为16进制，这时我们可以把表示字符串的字符s改为大写，这样它在反序列化的时候就能识别16进制，既可以绕过过滤，又可以成功执行反序列化。</p>
+<p><img src="F:\信安\sql\438.png"></p>
+<p><img src="F:\信安\sql\439.png"></p>
+<p>可以看到，当s为大写时，可以成功识别16进制。</p>
+<h4 id="unserialize4"><a href="#unserialize4" class="headerlink" title="unserialize4"></a>unserialize4</h4><p>cURL会话</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">初始化一个新的cURL会话并获取一个网页</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 创建一个新cURL资源</span></span><br><span class="line">$ch = curl_init();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置URL和相应的选项</span></span><br><span class="line">curl_setopt($ch, CURLOPT_URL, <span class="string">&quot;http://www.runoob.com/&quot;</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抓取URL并把它传递给浏览器</span></span><br><span class="line">curl_exec($ch);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">curl_close($ch);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    <span class="comment">//创建cURL就可以使用一些协议读取和执行相关命令</span></span><br><span class="line">   <span class="comment">// http://www.xxx.com/ssrf.php?url=file:///flag</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $a;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $b = strpos(<span class="keyword">$this</span>-&gt;a, <span class="string">&#x27;flag&#x27;</span>);<span class="comment">//strpos()函数查找字符串在另一字符串中第一次出现的位置。如果                                         flag在a中出现过，则$b为真</span></span><br><span class="line">        <span class="keyword">if</span>($b) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Bye!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        $c = curl_init();<span class="comment">//初始化一个cURL会话</span></span><br><span class="line">        </span><br><span class="line">        curl_setopt($c, CURLOPT_URL, <span class="keyword">$this</span>-&gt;a);<span class="comment">//设定请求的url</span></span><br><span class="line">        curl_setopt($c, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);<span class="comment">//	启用时会将头文件的信息作为数据流输出。 参数为1表示输出信息头,为0表示不输出</span></span><br><span class="line">        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">echo</span> curl_exec($c);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">&quot;z&quot;</span>])) &#123;</span><br><span class="line">    unserialize($_GET[<span class="string">&quot;z&quot;</span>]);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//由于一次GET传输会先进行URL解码，这里对字母a进行双url编码</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\信安\sql\452.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload</span><br><span class="line">O:5:&quot;Hello&quot;:1:&#123;S:4:&quot;%00*%00a&quot;;S:14:&quot;file:&#x2F;&#x2F;&#x2F;fl%25%36%31g&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符逃逸"><a href="#字符逃逸" class="headerlink" title="字符逃逸"></a>字符逃逸</h3><p>反序列化字符串都是以一<code>&quot;;&#125;</code>结束的，所以如果我们把<code>&quot;;&#125;</code>带入需要反序列化的字符串中（除了结尾处），就能让反序列化提前闭合结束，后面的内容就丢弃了。</p>
+<p>在反序列化的时候php会根据s所指定的字符长度去读取后边的字符,我们可以根据需求指定s的长度。</p>
+<p>例：字符逃逸将age从13变成35。</p>
+<p><img src="F:\信安\sql\420.png"></p>
+<h3 id="PHar反序列化"><a href="#PHar反序列化" class="headerlink" title="PHar反序列化"></a>PHar反序列化</h3><p>Phar反序列化可以在不使用php函数unserialize（）的前提下，进行php反序列化漏洞。</p>
+<p>大多数PHP文件操作允许使用各种URL协议去访问文件路径：如<code>data://</code>，<code>zlib://</code>或<code>php://</code>。<br>例如常见的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include(&#39;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;index.php&#39;);</span><br><span class="line">include(&#39;data:&#x2F;&#x2F;text&#x2F;plain;base64,xxxxxxxxxxxx&#39;);</span><br></pre></td></tr></table></figure>
+
+<p><code>phar://</code>也是流包装的一种</p>
+<h4 id="phar原理"><a href="#phar原理" class="headerlink" title="phar原理"></a>phar原理</h4><p>phar的本质是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
+<p>phar文件类似zip和jar，它将PHP文件打包成一个文件然后PHP可以在不解压的情况下去访问这个包里面的php，并执行。</p>
+<h4 id="phar文件标识"><a href="#phar文件标识" class="headerlink" title="phar文件标识"></a>phar文件标识</h4><p><strong>1，a stub</strong></p>
+<p>可以理解为一个标志，格式为<code>xxx&lt;?php xxx;__HALT_COMPILER();?&gt;</code>，前面内容不限，但必须以<code>__HALT_COMPILER();?&gt;</code>来结尾，否则phar扩展将无法识别这个文件为phar文件。</p>
+<p><strong>2，manifest</strong></p>
+<p>phar文件本质上是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
+<p><strong>3，contents</strong></p>
+<p>被压缩文件的内容。</p>
+<p><strong>4，signature</strong></p>
+<p>签名，发在文件末尾。</p>
+<h4 id="构建phar文件"><a href="#构建phar文件" class="headerlink" title="构建phar文件"></a>构建phar文件</h4><p><strong>将php.ini中的phar.readonly选项设置为Off，否则无法生成phar文件。不同的php.ini文件对应着phpstudy的不同版本。</strong></p>
+<p><img src="F:\信安\sql\421.png"></p>
+<p><strong>执行下面的文本生成phar文件</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    $phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>); <span class="comment">//后缀名必须为phar，文件名可自己设置，例·：test.php</span></span><br><span class="line">    $phar-&gt;startBuffering();</span><br><span class="line">    $phar-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); <span class="comment">//设置stub</span></span><br><span class="line">    $o = <span class="keyword">new</span> TestObject();</span><br><span class="line">    $o -&gt; data=<span class="string">&#x27;hu3sky&#x27;</span>;<span class="comment">//类中有一个属性data,属性值为hu3sky</span></span><br><span class="line">    $phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">    $phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>, <span class="string">&quot;test&quot;</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line">    <span class="comment">//签名自动计算</span></span><br><span class="line">    $phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">//该文本的文件名为phar.php</span></span><br></pre></td></tr></table></figure>
+
+<p>修改php-5.5.38文件，可以看到成功执行，生成phar文件。</p>
+<p><img src="F:\信安\sql\428.png"></p>
+<h4 id="打开phar文件"><a href="#打开phar文件" class="headerlink" title="打开phar文件"></a>打开phar文件</h4><p>可以看到该phar文件由四部分组成，文件标识（__HALT_COMPILER()）</p>
+<p>manifest（反序列化内容） ，压缩文件内容，签名。</p>
+<p><img src="F:\信安\sql\435.png"></p>
+<h4 id="利用phar文件"><a href="#利用phar文件" class="headerlink" title="利用phar文件"></a>利用phar文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当用phar:&#x2F;&#x2F;访问phar文件时，会触发反序列化，会触发魔法函数。</span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\信安\sql\449.jpg"></p>
+<p>当在setStub添加图片文件头，可以绕过图片头检测。</p>
+<p><img src="F:\信安\sql\431.png"></p>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>只要phar://协议解析文件的时候，就会造成序列化的问题，所以文件操作的函数都可以触发这种序列化：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fileatime / filectime / filemtime</span><br><span class="line">stat / fileinode / fileowner / filegroup / fileperms</span><br><span class="line">file / file_get_contents / readfile / `fopen``</span><br><span class="line">file_exists / is_dir / is_executable / is_file / is_link / is_readable / is_writeable / is_writable</span><br><span class="line">parse_ini_file</span><br><span class="line">unlink</span><br><span class="line">copy</span><br><span class="line"><span class="keyword">include</span></span><br><span class="line">扩展</span><br><span class="line">exif_thumbnail</span><br><span class="line">exif_imagetype</span><br><span class="line">imageloadfont</span><br><span class="line">imagecreatefrom***</span><br><span class="line">hash_hmac_file</span><br><span class="line">hash_file</span><br><span class="line">hash_update_file</span><br><span class="line">md5_file</span><br><span class="line">sha1_file</span><br><span class="line">get_meta_tags</span><br><span class="line">get_headers</span><br><span class="line">getimagesize</span><br><span class="line">getimagesizefromstring</span><br></pre></td></tr></table></figure>
+
+<p>绕过图片头检测</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;&#125;</span><br><span class="line">$jpeg_header_size = </span><br><span class="line"><span class="string">&quot;图片&quot;</span>;</span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">$phar-&gt;setStub($jpeg_header_size.<span class="string">&quot; __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line">$phar-&gt;setMetadata($o);</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="session反序列化"><a href="#session反序列化" class="headerlink" title="session反序列化"></a>session反序列化</h3><h4 id="sseion的简单介绍"><a href="#sseion的简单介绍" class="headerlink" title="sseion的简单介绍"></a>sseion的简单介绍</h4><p><img src="F:\信安\sql\445.png"></p>
+<p><strong>PHP session 变量用于存储有关用户会话的信息，或更改用户会话的设置。Session 变量保存的信息是单一用户的，并且可供应用程序中的所有页面使用。</strong></p>
+<p>Session 的工作机制是：为每个访问者创建一个唯一的 id (UID)，并基于这个 UID 来存储变量。UID 存储在 cookie 中，亦或通过 URL 进行传导。</p>
+<p><strong>开启session</strong></p>
+<p>在您把用户信息存储到 PHP session 中之前，首先必须启动会话。</p>
+<p><strong>注释：</strong>session_start() 函数必须位于 <html> 标签之前：</p>
+<p><img src="F:\信安\sql\443.png"></p>
+<p><strong>终结session</strong></p>
+<p><img src="F:\信安\sql\444.png"></p>
+<p><img src="F:\信安\sql\446.png"></p>
+<p><img src="F:\信安\sql\447.png"></p>
+<h4 id="开启session并执行文件"><a href="#开启session并执行文件" class="headerlink" title="开启session并执行文件"></a>开启session并执行文件</h4><p><img src="F:\信安\sql\448.png"></p>
+<p><strong>删除文件</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by PhpStorm.</span></span><br><span class="line"><span class="comment"> * Date: 2017/12/16</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">session_start();<span class="comment">// 打开session</span></span><br><span class="line">$_SESSION[<span class="string">&quot;demo1&quot;</span>] = <span class="string">&quot;default_1&quot;</span>;</span><br><span class="line">var_dump(session_name());</span><br><span class="line"><span class="comment">//session的销毁</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="session存储方式"><a href="#session存储方式" class="headerlink" title="session存储方式"></a>session存储方式</h4><p>PHP中的session中的文件内容默认是以文件的方式来存储的，存储方式就是由配置项session.save_handler来进行确定的。</p>
+<p><img src="F:\信安\sql\440.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以如下代码为例，查看不同存储引擎存储的结果</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">ini_set(<span class="string">&#x27;session.serialize_handler&#x27;</span>,<span class="string">&#x27;php_binary&#x27;</span>);<span class="comment">//这里换不同的存储引擎</span></span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">&#x27;username&#x27;</span>] = $_GET[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\信安\sql\441.png"></p>
+<p><img src="F:\信安\sql\442.png"></p>
+<h4 id="有-SESSION赋值的反序列化"><a href="#有-SESSION赋值的反序列化" class="headerlink" title="有$_SESSION赋值的反序列化"></a>有$_SESSION赋值的反序列化</h4><p>当网站序列化存储 <code>session</code> 与反序列化读取 <code>session</code> 的方式不同时，就可能导致 <code>session</code> 反序列化漏洞的产生。 一般都是以 <code>php_serialize</code> 序列化存储 <code>session</code>， 以 <code>PHP</code> 反序列化读取 <code>session</code>，造成反序列化攻击。</p>
+<p><img src="F:\信安\sql\454.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/03/guosai/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -264,7 +459,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoyo2yong.xyz/2020/09/21/over%20walls/">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/09/21/over%20walls/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -356,7 +551,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoyo2yong.xyz/2020/09/17/theme/">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/09/17/theme/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -486,7 +681,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoyo2yong.xyz/2020/09/12/blog/">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/09/12/blog/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -765,7 +960,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -779,7 +974,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="http://www.yoyo2tong.xyz/" title="http:&#x2F;&#x2F;www.yoyo2tong.xyz&#x2F;" rel="noopener" target="_blank">myblog</a>
+          <a href="http://www.yoyo2tong.xyz/" title="http:&#x2F;&#x2F;www.yoyo2tong.xyz&#x2F;">myblog</a>
         </li>
     </ul>
   </div>
@@ -812,12 +1007,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">9k</span>
+    <span title="站点总字数">15k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8 分钟</span>
+    <span title="站点阅读时长">14 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>

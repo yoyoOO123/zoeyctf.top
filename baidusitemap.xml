@@ -1,64 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
   <url>
     <loc>http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/</loc>
-    
     <lastmod>2020-10-10</lastmod>
-    
   </url>
-  
   <url>
     <loc>http://www.yoyo2tong.xyz/2020/10/03/guosai/</loc>
-    
     <lastmod>2020-10-03</lastmod>
-    
   </url>
-  
   <url>
     <loc>http://www.yoyo2tong.xyz/2020/09/17/theme/</loc>
-    
     <lastmod>2020-09-22</lastmod>
-    
   </url>
-  
   <url>
     <loc>http://www.yoyo2tong.xyz/2020/09/21/over%20walls/</loc>
-    
     <lastmod>2020-09-22</lastmod>
-    
   </url>
-  
   <url>
     <loc>http://www.yoyo2tong.xyz/2020/09/12/blog/</loc>
-    
     <lastmod>2020-09-22</lastmod>
-    
   </url>
-  
-  <url>
-    <loc>http://www.yoyo2tong.xyz/categories/index.html</loc>
-    
-    <lastmod>2020-09-16</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.yoyo2tong.xyz/tags/index.html</loc>
-    
-    <lastmod>2020-09-16</lastmod>
-    
-  </url>
-  
-
-  <url>
-    <loc>http://www.yoyo2tong.xyz/</loc>
-    <lastmod>2020-10-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  
-
-  
-</urlset>
+</urlset> 
