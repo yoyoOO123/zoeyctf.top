@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.yoyo2tong.xyz/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/</loc>
+    <loc>http://www.yoyo2tong.xyz/2020/11/10/%E7%AE%80%E5%8D%95%E8%AE%A1%E7%AE%97%E5%99%A8/</loc>
     
-    <lastmod>2020-11-03</lastmod>
+    <lastmod>2020-11-10</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.yoyo2tong.xyz/2020/10/31/SQL%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</loc>
+    <loc>http://www.yoyo2tong.xyz/2020/11/09/Python-HTTP/</loc>
     
-    <lastmod>2020-10-31</lastmod>
+    <lastmod>2020-11-09</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.yoyo2tong.xyz/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/</loc>
+    
+    <lastmod>2020-11-03</lastmod>
     
   </url>
   
@@ -81,7 +88,7 @@
 
   <url>
     <loc>http://www.yoyo2tong.xyz/</loc>
-    <lastmod>2020-11-03</lastmod>
+    <lastmod>2020-11-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
