@@ -2,7 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/</loc>
+    
+    <lastmod>2020-11-15</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.yoyo2tong.xyz/2020/11/10/%E7%AE%80%E5%8D%95%E8%AE%A1%E7%AE%97%E5%99%A8/</loc>
+    
+    <lastmod>2020-11-14</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.yoyo2tong.xyz/2020/11/10/Python-HTTP/</loc>
     
     <lastmod>2020-11-10</lastmod>
     
@@ -33,13 +47,6 @@
     <loc>http://www.yoyo2tong.xyz/2020/09/12/blog/</loc>
     
     <lastmod>2020-10-24</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/</loc>
-    
-    <lastmod>2020-10-19</lastmod>
     
   </url>
   
@@ -81,7 +88,7 @@
 
   <url>
     <loc>http://www.yoyo2tong.xyz/</loc>
-    <lastmod>2020-11-10</lastmod>
+    <lastmod>2020-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
