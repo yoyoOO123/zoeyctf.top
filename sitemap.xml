@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.yoyo2tong.xyz/2020/11/26/md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</loc>
+    
+    <lastmod>2020-11-26</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/</loc>
     
     <lastmod>2020-11-15</lastmod>
@@ -81,7 +88,7 @@
 
   <url>
     <loc>http://www.yoyo2tong.xyz/</loc>
-    <lastmod>2020-11-20</lastmod>
+    <lastmod>2020-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
