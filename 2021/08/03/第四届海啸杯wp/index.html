@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="https://yoyo2yong.xyz">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.yoyo2tong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="webweb1 首先要使$login&#x3D;true，想到的是md5弱类型比较，查看str_shuffle函数的用法，是随机地打乱字符串中的所有字符。如果是md5加密绕过的话，想到的是0e开头绕过和传入数组绕过。但是str_shuffle打乱之后这两种思路都行不通。试图查看str_shuffle函数有没有漏洞，没有找到。 接下来继续观察， $unserialize_str这个函数是可控的，它与$user">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四届海啸杯wp（部分）">
+<meta property="og:url" content="http://www.yoyo2tong.xyz/2021/08/03/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E6%B5%B7%E5%95%B8%E6%9D%AFwp/index.html">
+<meta property="og:site_name" content="zoey">
+<meta property="og:description" content="webweb1 首先要使$login&#x3D;true，想到的是md5弱类型比较，查看str_shuffle函数的用法，是随机地打乱字符串中的所有字符。如果是md5加密绕过的话，想到的是0e开头绕过和传入数组绕过。但是str_shuffle打乱之后这两种思路都行不通。试图查看str_shuffle函数有没有漏洞，没有找到。 接下来继续观察， $unserialize_str这个函数是可控的，它与$user">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802204439477.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214152359.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214216422.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214239858.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214331413.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214346885.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214405078.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214425830.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802214733540.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802215825946.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802215858515.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802215914752.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210802153833.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802215942926.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802220007530.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802220023427.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802220038845.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802233931418.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803000443003.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803000808860.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802232949729.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803001904982.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803005000283.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803005120444.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803004818609.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803010839405.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803010621962.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803013113133.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803013343113.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803013514452.png">
+<meta property="og:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210803012915361.png">
+<meta property="article:published_time" content="2021-08-02T17:41:22.277Z">
+<meta property="article:modified_time" content="2021-08-02T17:39:49.915Z">
+<meta property="article:author" content="zoey">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20210802204439477.png">
+
+<link rel="canonical" href="http://www.yoyo2tong.xyz/2021/08/03/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E6%B5%B7%E5%95%B8%E6%9D%AFwp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第四届海啸杯wp（部分） | zoey</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="zoey" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zoey</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">请多指教！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/08/03/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E6%B5%B7%E5%95%B8%E6%9D%AFwp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第四届海啸杯wp（部分）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-03 01:41:22 / 修改时间：01:39:49" itemprop="dateCreated datePublished" datetime="2021-08-03T01:41:22+08:00">2021-08-03</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="web"><a href="#web" class="headerlink" title="web"></a>web</h1><h2 id="web1"><a href="#web1" class="headerlink" title="web1"></a>web1</h2><p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802204439477.png" alt="image-20210802204439477"></p>
+<p>首先要使$login=true，想到的是md5弱类型比较，查看str_shuffle函数的用法，是随机地打乱字符串中的所有字符。如果是md5加密绕过的话，想到的是0e开头绕过和传入数组绕过。但是str_shuffle打乱之后这两种思路都行不通。试图查看str_shuffle函数有没有漏洞，没有找到。</p>
+<p>接下来继续观察， $unserialize_str这个函数是可控的，它与$username弱类型比较的值要为真，而$username是不可控的，查看弱类型比较还有什么可以利用的地方，发现可以利用0与字符串弱类型比较的结果也为0（这里要注意的是，第一个字符不能为数字），到这里就清楚了，md5在这里就是混淆视线的，我们可以把$username，$password视为随机值。</p>
+<p>那么接下来要思考的是，怎样让$unserialize_str[‘username’]和$unserialize_str[‘password’]的值为0</p>
+<p>注意到 unserialize函数，想到反序列化漏洞，但是在反序列化漏洞中没有找到可以利用的地方。</p>
+<p>还是继续从弱类型比较入手，PHP弱类型 - 简书  <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/90d235d4f745">https://www.jianshu.com/p/90d235d4f745</a></p>
+<p>在这篇文章中找到</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214152359.png" alt="image-20210802214152359"></p>
+<p>这里的json_decode函数让我联想到了unserialize函数，都是可以触发反序列化漏洞的函数。</p>
+<p>这里的payload为 item={“key”:0}，尝试构造这到题的payload，没有成功。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214216422.png" alt="image-20210802214216422"></p>
+<p>继续找弱类型，发现这篇文章，ctf常见php弱类型分析_词语大杂烩-CSDN博客_ctf弱类型  <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq3401247010/article/details/77867399">https://blog.csdn.net/qq3401247010/article/details/77867399</a></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214239858.png" alt="image-20210802214239858"></p>
+<p>发现这道题的payload用的是数组的方法，unserialize函数在数组中不会报错。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214331413.png" alt="image-20210802214331413"></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214346885.png" alt="image-20210802214346885"></p>
+<p>接着绕过正则，<a target="_blank" rel="noopener" href="https://blog.csdn.net/silence1_/article/details/102835743%E5%8F%82%E8%80%83%E4%BA%86%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%EF%BC%8C%E6%9E%84%E9%80%A0payload">https://blog.csdn.net/silence1_/article/details/102835743参考了这篇文章，构造payload</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?str&#x3D;a:2:&#123;s:8:%22username%22;i:0;s:8:%22password%22;i:0;&#125;&amp;code&#x3D;eval(end(current(get_defined_vars())));&amp;b&#x3D;var_dump(highlight_file(end(scandir(pos(localeconv())))));</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214405078.png" alt="image-20210802214405078"></p>
+<h2 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line">$dir = <span class="string">&#x27;sandbox/&#x27;</span> . md5($_SERVER[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]) . <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line"><span class="keyword">if</span>(!file_exists($dir))&#123;</span><br><span class="line">    mkdir($dir);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">switch</span>($_GET[<span class="string">&quot;action&quot;</span>] ?? <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;pwd&#x27;</span>:</span><br><span class="line">        <span class="keyword">echo</span> $dir;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;upload&#x27;</span>:</span><br><span class="line">        $data = $_GET[<span class="string">&quot;data&quot;</span>] ?? <span class="string">&quot;&quot;</span>;</span><br><span class="line">        waf($data);</span><br><span class="line">        file_put_contents(<span class="string">&quot;<span class="subst">$dir</span>&quot;</span> . <span class="string">&quot;index.php&quot;</span>, $data);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>$_SERVER[“REMOTE_ADDR”] 为获取’获取IP</p>
+<p>$a ?? 0 等同于 isset($a) ? $a : 0</p>
+<p>$a ?: 0 等同于 $a ? $a : 0</p>
+<p>可得$_GET[“action”] ?? “” 等同于isset($attion) ? $attion : “”</p>
+<p>我们的目的就是要让$action=’upload’,执行file_put_contents函数</p>
+<p>$dir并不是我们能控制的，也就是file_put_contents函数打开的文件路径是固定的，这里我在本地测试的时候遇到一个问题，文件名中不能含有’/‘</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214425830.png" alt="image-20210802214425830"></p>
+<p>既然名不能有’/‘,我一开始想到的是注释，但是行不通，然后是文件流，base64编码，但是由于$dir不是我们能控制的，所以都行不通。接着发现mkdir函数在创建文件目录或文件是也不能有’/‘等特殊符号，如何存在’/‘，’/‘前面会被当成创建文件目录处理。而这道题中刚好有有mkdir函数<code>if(!file_exists($dir))&#123; mkdir($dir);&#125;</code></p>
+<p>只要执行mkdir函数，file_put_contents函数打开的文件路径就不会报错了。</p>
+<p>这道题还可以通过让$action=pwd,打印出$dir,也就是file_put_contents函数打开的文件路径。</p>
+<p>接下来考虑的是$data变量，因为file_put_contents函数打开的文件后缀为php，也就是如果$data为输入php格式，可以执行php代码。</p>
+<p>这里 waf($data)调用了两个函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">check</span>(<span class="params">$input</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&quot;/&#x27;| |_|php|;|~|\\^|\\+|eval|&#123;|&#125;/i&quot;</span>,$input))&#123;</span><br><span class="line">        <span class="comment">// if(preg_match(&quot;/&#x27;| |_|=|php/&quot;,$input))&#123;</span></span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;hacker!!!&#x27;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> $input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">waf</span>(<span class="params">$input</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(is_array($input))&#123;</span><br><span class="line">      <span class="keyword">foreach</span>($input <span class="keyword">as</span> $key=&gt;$output)&#123;</span><br><span class="line">          $input[$key] = waf($output);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      $input = check($input);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>isArray() 方法用于判断一个对象是否为数组。如果对象是数组返回 true，否则返回 false。我们刚才分析$data的内容应该是php文件的格式，所以不会是一个数组。观察 check方法</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802214733540.png" alt="image-20210802214733540"></p>
+<p>php被过滤，我们可以采用短标签的格式，<code>&lt;?=  ?&gt;</code></p>
+<p>到这里一开始的想法是构造一句话木马，但是这些符号被过滤了，构造失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_  ^  ~  ;  &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后发现反引号没有被过滤，可以构造<?= %09`dir`?></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802215825946.png" alt="image-20210802215825946"></p>
+<p>这里空格被过滤，用%09代替。</p>
+<p>这里当前目录只有index.php,一开始的想法是通过返回上级目录查看内容，也就是<code>cd%09..&amp;&amp;ls</code>,但发现没有执行成功，最后是通过返回根目录</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802215858515.png" alt="image-20210802215858515"></p>
+<p>可以看出最后xxxaf14gss.php即为我们想找的文件，cat  /xxxaf14gss.php，php被过滤，用*绕过</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802215914752.png" alt="image-20210802215914752"></p>
+<h1 id="misc"><a href="#misc" class="headerlink" title="misc"></a>misc</h1><h2 id="隐藏的书"><a href="#隐藏的书" class="headerlink" title="隐藏的书"></a>隐藏的书</h2><p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210802153833.png"></p>
+<p>用Bandzip解压成功</p>
+<p>打开pdf是一篇隐写的论文，到这里就很清楚了，就是需要根据论文的解密方法解开flag.txt的内容</p>
+<h4 id="隐写信息的编码"><a href="#隐写信息的编码" class="headerlink" title="隐写信息的编码"></a>隐写信息的编码</h4><p>编码算法首先应获取秘密信息每一位的 ASCII 码，之后把 ASCII 码转换为十六进制 数，最后用 Unicode 编码字符表示从 ASCII 码转换过来的十六进制数。考虑的中文 ASCII 编码的特殊性，中文一个字符占两个字节，则我们将每个字节分别转为对应 的 ASCII 码，即一个英文字符用两个不可见字符表示，而一个中文字符用四个不可 见字符表示。</p>
+<p>隐写信息的一个英文字符用两个不可见字符表示    ASCII码 –&gt;   十六进制数  –&gt;   Unicode编码</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802215942926.png" alt="image-20210802215942926"></p>
+<h4 id="隐写信息的嵌入"><a href="#隐写信息的嵌入" class="headerlink" title="隐写信息的嵌入"></a>隐写信息的嵌入</h4><p>第一步：找到’.’字符</p>
+<p>第二步：以字符‘.’为界截成 Ca 和 Cb 两部分，并且‘.’字符在 Ca 中</p>
+<p>第三步：Ca、不可见字符串、Cb 的顺序形成新的字符串</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802220007530.png" alt="image-20210802220007530"></p>
+<p>这道题中Ca为Hello.  Cb为Gzmtu，中间为不可见字符串</p>
+<h4 id="隐写信息的解码"><a href="#隐写信息的解码" class="headerlink" title="隐写信息的解码"></a>隐写信息的解码</h4><p>对每一个字符逆的 Unicode编码找到对应的 ASCII 编码；最后，根据 ASCII 码转换出相应的实际字符；</p>
+<p>首先，我们可以从Unicode编码推出hex编码（16进制），再推出ASCII码。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802220023427.png" alt="image-20210802220023427"></p>
+<p>这道题的不可见字符从0606开始，到070D结束。</p>
+<p>因为隐写信息的一个英文字符用两个不可见字符表示，也就是0606代表一个英文字母，060c代表一个英文字母，以此类推到070D。</p>
+<p>一般的flag形式为flag{<strong>****</strong>}，也就是0606表示的是f，060c表示的是l，可以猜测，该算法的0606表示的是16进制66，转换为ASCII码是f。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">例：隐写flag </span><br><span class="line"></span><br><span class="line">f:102(ascii码）---&gt;66（十六进制）</span><br><span class="line"></span><br><span class="line">l:108(ascii码）---&gt;6c（十六进制）</span><br><span class="line"></span><br><span class="line">a:97(ascii码）----&gt;61（十六进制）</span><br><span class="line"></span><br><span class="line">g:103(ascii码）---&gt;67（十六进制）</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802220038845.png" alt="image-20210802220038845"></p>
+<h2 id="神秘的铃声"><a href="#神秘的铃声" class="headerlink" title="神秘的铃声"></a>神秘的铃声</h2><h3 id="010脚本安装"><a href="#010脚本安装" class="headerlink" title="010脚本安装"></a>010脚本安装</h3><p>Templates(模板，范本)—Template Repository</p>
+<p>选中脚本（.bt文件），使用F5运行分析，如果没有窗口，那么手动打开窗口 View—Inspector Windows—Show/Hide All Inspector Windows</p>
+<p>参考文章：<a target="_blank" rel="noopener" href="http://www.cxyzjd.com/article/iamsongyu/84674337">http://www.cxyzjd.com/article/iamsongyu/84674337</a></p>
+<p>打开题目给的wav文件，发现有一个struct UNKNOWNCHUNK unkown模块，发现是一串base64字符串，复制到burpsuit进行解码。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802233931418.png" alt="image-20210802233931418"></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803000443003.png" alt="image-20210803000443003"></p>
+<p>解码完是以PK开头的，保存为zip文件，复制到repeater模块，右键保存为zip文件。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803000808860.png" alt="image-20210803000808860"></p>
+<p>打开文件需要解码，想到WAV文件播放是一段DTMF音频，也就是电话机按键的声音</p>
+<p>识别音频的网站：<a target="_blank" rel="noopener" href="http://dialabc.com/sound/detect/index.html">http://dialabc.com/sound/detect/index.html</a></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210802232949729.png" alt="image-20210802232949729"></p>
+<p>D#*C9A16B即为zip文件的密码，解压得到flag.txt是一串坐标，将其转换为图片得到二维码扫码得到flag：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">img = Image.new(<span class="string">&#x27;RGB&#x27;</span>,(<span class="number">500</span>,<span class="number">500</span>),(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>))</span><br><span class="line"><span class="comment">#创建Image对象</span></span><br><span class="line">f = open(<span class="string">&#x27;flag.txt&#x27;</span>)<span class="comment">#打开flag.txt文件</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> f.readlines():</span><br><span class="line">    point = line.split()</span><br><span class="line">    img.putpixel((int(point[<span class="number">0</span>]),int(point[<span class="number">1</span>])),(<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>))</span><br><span class="line"><span class="comment">#读取文件中的每一行，并修改像素</span></span><br><span class="line">f.close()</span><br><span class="line">img.show()</span><br></pre></td></tr></table></figure>
+
+<p>也可以安装gnuplot</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803001904982.png" alt="image-20210803001904982"></p>
+<h2 id="神秘的网站"><a href="#神秘的网站" class="headerlink" title="神秘的网站"></a>神秘的网站</h2><p>扔到wireshark分析根据题目提示是一个神秘的网站，只需要找HTTP即可。hint提示了上传包那么：直接filter过滤出所有POST协议迅速就能找到上传包。（http.request.method==”POST”）</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803005000283.png" alt="image-20210803005000283"></p>
+<p>追踪该HTTP流，发现有zip文件</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803005120444.png" alt="image-20210803005120444"></p>
+<p>右键，导出分组字节流</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803004818609.png" alt="image-20210803004818609"></p>
+<p>解压得到一个文件和一张图片</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803010839405.png" alt="image-20210803010839405"></p>
+<p>看到最后是KP，想到应该是zip文件开头的PK，自然想到该文件是倒转。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803010621962.png" alt="image-20210803010621962"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">$a = file_get_contents(<span class="string">&#x27;flag&#x27;</span>);</span><br><span class="line">file_put_contents(<span class="string">&quot;flag.zip&quot;</span>,strrev($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>得到zip文件，解压发现需要密码。</p>
+<ul>
+<li>图片只能看到一部分说明chunk被破坏过用010打开可以发现chunk4长度很奇怪应该被改过</li>
+</ul>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803013113133.png" alt="image-20210803013113133"></p>
+<p>将其改大可以恢复图片得到一串字符串</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803013343113.png" alt="image-20210803013343113"></p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803013514452.png" alt="image-20210803013514452"></p>
+<p>得到的这个字符串是zip文件的密码，解压得到一个音频文件，不过该音频文件也是需要倒放，打开au，效果—反向（时间）即可。最后用网易云音乐听歌识曲，flag在评论区。</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210803012915361.png" alt="image-20210803012915361"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/05/PHP-FPM(fastcgi%E5%8D%8F%E8%AE%AE)/" rel="prev" title="php-fpm">
+      <i class="fa fa-chevron-left"></i> php-fpm
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web"><span class="nav-number">1.</span> <span class="nav-text">web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#web1"><span class="nav-number">1.1.</span> <span class="nav-text">web1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web2"><span class="nav-number">1.2.</span> <span class="nav-text">web2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#misc"><span class="nav-number">2.</span> <span class="nav-text">misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%9A%84%E4%B9%A6"><span class="nav-number">2.1.</span> <span class="nav-text">隐藏的书</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E5%86%99%E4%BF%A1%E6%81%AF%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">隐写信息的编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E5%86%99%E4%BF%A1%E6%81%AF%E7%9A%84%E5%B5%8C%E5%85%A5"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">隐写信息的嵌入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E5%86%99%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A7%A3%E7%A0%81"><span class="nav-number">2.1.0.3.</span> <span class="nav-text">隐写信息的解码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%A7%98%E7%9A%84%E9%93%83%E5%A3%B0"><span class="nav-number">2.2.</span> <span class="nav-text">神秘的铃声</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#010%E8%84%9A%E6%9C%AC%E5%AE%89%E8%A3%85"><span class="nav-number">2.2.1.</span> <span class="nav-text">010脚本安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%A7%98%E7%9A%84%E7%BD%91%E7%AB%99"><span class="nav-number">2.3.</span> <span class="nav-text">神秘的网站</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zoey"
+      src="/images/1.jpg">
+  <p class="site-author-name" itemprop="name">zoey</p>
+  <div class="site-description" itemprop="description">Hello!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      博客链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://yoursite.com/" title="http:&#x2F;&#x2F;yoursite.com" rel="noopener" target="_blank">eeknight</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://flag2020.top/" title="https:&#x2F;&#x2F;flag2020.top&#x2F;" rel="noopener" target="_blank">潜心</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://threelisa.top/" title="https:&#x2F;&#x2F;threelisa.top&#x2F;" rel="noopener" target="_blank">左</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zoey</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">91k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

